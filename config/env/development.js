@@ -3,11 +3,11 @@
 module.exports = {
 	db: 'mongodb://localhost/mean-dev',
 	app: {
-		title: 'MEAN.JS - Development Environment'
+		title: 'My Running App'
 	},
 	facebook: {
-		clientID: process.env.FACEBOOK_ID || 'APP_ID',
-		clientSecret: process.env.FACEBOOK_SECRET || 'APP_SECRET',
+		clientID: process.env.FACEBOOK_ID || '1516704285214578',
+		clientSecret: process.env.FACEBOOK_SECRET || '90a674600199dd3e8f8a0bbb62ceb025',
 		callbackURL: 'http://localhost:3000/auth/facebook/callback'
 	},
 	twitter: {

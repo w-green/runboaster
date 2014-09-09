@@ -15,9 +15,9 @@ module.exports = function(config) {
 		files: applicationConfiguration.assets.lib.js.concat(applicationConfiguration.assets.js, applicationConfiguration.assets.tests),
 
 		// Test results reporter to use
-		// Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+		// Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage', 'mocha'
 		//reporters: ['progress'],
-		reporters: ['progress'],
+		reporters: ['mocha'],
 
 		// Web server port
 		port: 9876,
