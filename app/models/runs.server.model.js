@@ -15,8 +15,14 @@ var RunsSchema = new Schema({
 		default : Date.now
 	},
 	time: {
-		minutes : {type: Number},
-		seconds : {type: Number}
+		minutes : {
+      type: Number,
+      required: 'No minutes have been specified'
+    },
+		seconds : {
+      type: Number,
+      required: 'No minutes have been specified'
+    }
 	}
 
 });

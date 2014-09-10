@@ -16,15 +16,16 @@ exports.create = function(req, res) {
   run.time.minutes = req.body.minutes;
   run.time.seconds = req.body.seconds;
 
-  run.save(function(err) {
+  run.save(function(err, product) {
     if (err) {
-      console.log(err);
-      return res.send(400);
+      //console.log(err);
+      return res.status(400).send({ message : errorHandler.getErrorMessage(err) }) // res.send(err);  //next(err); //res.send(400);
+    }else {
+    return res.status(200).jsonp(product).end()
     }
-
-    return res.status(200).end()
   });
 };
+
 
 /**
  * list all runs
@@ -42,10 +43,10 @@ exports.create = function(req, res) {
   });
  };
 
-// Remove a specified run
+// Remove a specified run via its id
  exports.deleteId = function(req, res) {
   var run = new Run();
-      run._id = '540f02849f258886337bbc52';
+      run._id = req.params.runs_id;
 
   run.remove(function(err) {
     if (err) {
