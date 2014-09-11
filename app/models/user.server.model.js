@@ -9,6 +9,8 @@ var mongoose = require('mongoose'),
 
 /**
  * A Validation function for local strategy properties
+ * This does basic checking to make sure a local strategy is used - i.e. not facebook etc,
+ * and that the form has been updated from its original placeholder, and that the length is not 0
  */
 var validateLocalStrategyProperty = function(property) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);

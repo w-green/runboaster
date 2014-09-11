@@ -19,9 +19,9 @@ exports.create = function(req, res) {
   run.save(function(err, product) {
     if (err) {
       //console.log(err);
-      return res.status(400).send({ message : errorHandler.getErrorMessage(err) }) // res.send(err);  //next(err); //res.send(400);
+      return res.status(400).send({ message : errorHandler.getErrorMessage(err) });
     }else {
-    return res.status(200).jsonp(product).end()
+    return res.status(200).jsonp(product).end();
     }
   });
 };
@@ -38,7 +38,7 @@ exports.create = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.status(200).jsonp(runs)
+      res.status(200).jsonp(runs);
     }
   });
  };
@@ -67,7 +67,7 @@ exports.create = function(req, res) {
     .jsonp({
       message: 'This operation can only be used in the test environment'
     });
-  };
+  }
 
   Run.remove({}, function(err) {
     if (err) {

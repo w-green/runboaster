@@ -1,15 +1,20 @@
 'use strict';
 
+// As a factory
 (function() {
 
-  var runsService = function($resource) {
+  var runsService = function ($resource) {
 
-    return $resource('/api/entries/:id'); // Note the full endpoint address - hook up using node routers
+    var al = $resource('/runs/:userId', {userId:'1'});
+    return al;
 
   };
 
-  runsService.$inject = ['$resource'];
-
-  angular.module('runs').service('runsService', runsService);
+  angular.module('runs').factory('runsService', ['$resource', runsService])
 
 }());
+
+
+
+
+
