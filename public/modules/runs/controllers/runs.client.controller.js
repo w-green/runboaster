@@ -1,22 +1,61 @@
 'use strict';
 
-(function() {
+(function(lodash) {
+
+  var _ = lodash;
 
   // MyRunsCtrl controller constructor function
-  function MyRunsCtrl() {
-    var vm = this;
-    vm.name = 'hello world!!!';
+  function MyRunsCtrl(runsService) {
+    var that = this;
+    var sortedAsc = false; // used as a signal for sortResults()
+    var sortByDateAsc = false; // used as a signal for sortByDate()
 
-    // mock data for our runs
-    vm.runs = [
-      { date : new Date(2014, 08, 20), time : { minutes : 31, seconds : 58 } },
-      { date : new Date(2014, 08, 21), time : { minutes : 31, seconds : 20 } },
-      { date : new Date(2014, 08, 22), time : { minutes : 32, seconds : 35 } }
-    ];
-    vm.count = vm.runs.length;
+    that.sortedRuns = null;
+
+    //that.name = 'hello world!!!';
+
+    //that.Allruns = runsService.resource.query();
+
+
+    that.Allruns =  runsService.getRuns(function(data){
+                      that.Allruns = data;
+                      that.sortedRuns = that.sortByDate();
+                    });
+
+// console.log(that.Allruns);
+
+    // sort results by date
+    that.sortByDate = function sortByDate() {
+      if (sortByDateAsc === false) {
+        sortByDateAsc = true;
+        return  that.sortedRuns = _.sortBy(that.Allruns, 'date');
+      } else {
+        sortByDateAsc = false;
+        return  that.sortedRuns = _.sortBy(that.Allruns, 'date').reverse();
+      };
+    };
+
+    // sort results by time
+    that.sortByTime = function sortByTime() {
+      if (sortedAsc === false) {
+        sortedAsc = true;
+        return that.sortedRuns = _.sortBy(that.Allruns, 'time');
+      } else {
+        sortedAsc = false;
+        return that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
+      };
+
+    };
+
+
+
+
+
+
+
   }
 
-  angular.module('runs').controller('MyRunsCtrl', [ MyRunsCtrl ]);
+  angular.module('runs').controller('MyRunsCtrl', [ 'runsService', MyRunsCtrl ]);
 
-}());
+}(window._));
 

@@ -1,0 +1,29 @@
+<section>
+  <div>
+    <p>Recent times</p>
+
+
+<button ng-click="myRuns.sortByTime()">sortByTime</button>
+<button ng-click="myRuns.sortByDate()">sortByDate</button>
+
+<!-- LIST OF RUNS -->
+<ul>
+  <li ng-repeat="run in myRuns.sortedRuns">
+    <div class="dates">{{run.date | date : 'EEEE MMM d, y h:mm:ss a' : timezone}}</div>
+    <div class="times">{{run.time.minutes}} : {{run.time.seconds}}</div>
+  </li>
+</ul>
+
+
+<!--
+    <ul>
+      <li ng-repeat="run in myRuns.Allruns">
+        <div class="dates">{{run.date | date : 'fullDate' : timezone}}</div>
+        <div class="times">{{run.time.minutes}} : {{run.time.seconds}}</div>
+      </li>
+    </ul>
+    <div>{{myRuns.Allruns}}</div>
+-->
+
+  </div>
+</section>
