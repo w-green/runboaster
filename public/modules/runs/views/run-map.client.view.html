@@ -1,0 +1,18 @@
+<section>
+  <div>
+    <p>MAP for single run</p>
+<style>.angular-google-map-container { height: 400px; }</style>
+    <google-map center="mapsCtrl.map.center" zoom="mapsCtrl.map.zoom" draggable="true">
+      <marker coords="mapsCtrl.marker.coords" options="mapsCtrl.marker.options" events="mapsCtrl.marker.events" idkey="mapsCtrl.marker.id" >
+         <marker-label content="mapsCtrl.marker.label" anchor="2 0" class="marker-labels"/></marker-label>
+      </marker>
+
+      <polyline path="mapsCtrl.polylines.path" stroke="mapsCtrl.polylines.stroke" visible='mapsCtrl.polylines.visible' geodesic='mapsCtrl.polylines.geodesic' fit="false" editable="mapsCtrl.polylines.editable" draggable="mapsCtrl.polylines.draggable" ></polyline>
+
+    </google-map>
+
+
+<p> The distance is <span>{{mapsCtrl.distance}}</span> kilometers</p>
+
+  </div>
+</section>

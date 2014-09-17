@@ -22,7 +22,10 @@ module.exports = {
 				'public/lib/angular-animate/angular-animate.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
+				'public/lib/lodash/dist/lodash.underscore.js',
+				'public/lib/angular-google-maps/dist/angular-google-maps.js'
 			]
 		},
 		css: [
@@ -35,6 +38,7 @@ module.exports = {
 			'public/modules/*/*[!tests]*/*.js'
 		],
 		tests: [
+			'https://maps.googleapis.com/maps/api/js?sensor=false',
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/*/tests/*.js'
 		]
