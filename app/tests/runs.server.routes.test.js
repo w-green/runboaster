@@ -29,7 +29,7 @@ describe('RUNS model unit tests - CRUD operations', function(done) {
     .send({'minutes' : '', 'seconds' : 58})
     .end(function(error, res) {
       res.status.should.equal(400);
-      res.body.message.should.match('No minutes have been specified')
+      res.body.message.should.match('No minutes have been specified');
     });
   });
 
@@ -58,7 +58,7 @@ describe('RUNS model unit tests - CRUD operations', function(done) {
           res.status.should.equal(200, res.body.message);
           done();
         });
-    })
+    });
   });
 
   // creates a run then uses the ID of that run to remove it

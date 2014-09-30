@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx
+  version="1.1"
+  creator="RunKeeper - http://www.runkeeper.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1">
+<trk>
+  <name><![CDATA[Running 6/24/14 11:45 am]]></name>
+  <time>2014-06-24T11:45:35Z</time>
+<trkseg>
+<trkpt lat="51.459671000" lon="-0.223984000"><ele>20.0</ele><time>2014-06-24T11:45:35Z</time></trkpt>
+<trkpt lat="51.459671000" lon="-0.223984000"><ele>20.1</ele><time>2014-06-24T11:45:36Z</time></trkpt>
+</trkseg>
+</trk>
+</gpx>

@@ -14,7 +14,7 @@
                 }),
       getRuns : function getRuns(callback){
                   var result = null; // cache the return so subsequent requests are dealt with by cache
-                  if (result !== null) {callback(result)}
+                  if (result !== null) {callback(result);}
                     else {
                       this.resource
                       .query()
@@ -34,7 +34,7 @@
 
   };
 
-  angular.module('runs').factory('runsService', ['$resource', runsService])
+  angular.module('runs').factory('runsService', ['$resource', runsService]);
 
 }());
 

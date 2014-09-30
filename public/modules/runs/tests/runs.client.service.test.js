@@ -22,7 +22,7 @@ describe('runs service', function() {
         result = data;
       },
       function(error){
-        console.log('ERROR DAMN IT !!!!!!!')
+        console.log('ERROR DAMN IT !!!!!!!');
       });
     $httpBackend.flush();
     expect(result.length).toEqual(3);

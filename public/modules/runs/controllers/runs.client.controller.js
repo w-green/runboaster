@@ -32,7 +32,7 @@
       } else {
         sortByDateAsc = false;
         return  that.sortedRuns = _.sortBy(that.Allruns, 'date').reverse();
-      };
+      }
     };
 
     // sort results by time
@@ -43,7 +43,7 @@
       } else {
         sortedAsc = false;
         return that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
-      };
+      }
 
     };
 

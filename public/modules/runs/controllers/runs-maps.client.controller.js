@@ -60,7 +60,7 @@
 
     function metersToKilometers (meters) {
       return (meters / 1000);
-    };
+    }
 
 
   }
