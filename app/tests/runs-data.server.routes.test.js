@@ -40,7 +40,7 @@ describe('feature: Upload of runs data', function () {
                 agent
                     .post('/upload')
                     .type('form')
-                    .attach('fileName', './README.md')
+                    .attach('file', './README.md')
                     .end(function (err, res) {
                         agent
                             .get('/runs-data')
@@ -58,7 +58,7 @@ describe('feature: Upload of runs data', function () {
                 agent
                     .post('/upload')
                     .type('form')
-                    .attach('fileName', './test-files/firsttest.gpx')
+                    .attach('file', './test-files/firsttest.gpx')
                     .end(function (err, res) {
                         expect(res.status).to.equal(401);
                         expect(res.unauthorized).to.be.true;
@@ -76,7 +76,7 @@ describe('feature: Upload of runs data', function () {
                 agent
                     .post('/upload')
                     .type('form')
-                    .attach('fileName', './test-files/firsttest.gpx')
+                    .attach('file', './test-files/firsttest.gpx')
                     .expect(200)
                     .end(function (err, res) {
                         agent
@@ -103,7 +103,7 @@ describe('feature: Upload of runs data', function () {
                 agent
                     .post('/upload')
                     .type('form')
-                    .attach('fileName', '')
+                    .attach('file', '')
                     .end(function (err, res) {
                         agent
                             .get('/runs-data')

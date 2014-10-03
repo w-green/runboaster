@@ -17,7 +17,9 @@ module.exports = {
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
 			],
 			js: [
+				'public/lib/ng-file-upload/angular-file-upload-shim.min.js',
 				'public/lib/angular/angular.js',
+				'public/lib/ng-file-upload/angular-file-upload.min.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-animate/angular-animate.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
@@ -26,6 +28,7 @@ module.exports = {
 				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 				'public/lib/lodash/dist/lodash.underscore.js',
 				'public/lib/angular-google-maps/dist/angular-google-maps.js'
+
 			]
 		},
 		css: [
@@ -38,7 +41,7 @@ module.exports = {
 			'public/modules/*/*[!tests]*/*.js'
 		],
 		tests: [
-			'https://maps.googleapis.com/maps/api/js?sensor=false',
+			'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/*/tests/*.js'
 		]

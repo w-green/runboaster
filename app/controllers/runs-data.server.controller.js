@@ -9,29 +9,36 @@ var mongoose = require('mongoose'),
   tj = require('togeojson'),
   fs = require('fs'),
   jsdom = require('jsdom').jsdom, // node doesn't have xml parsing or a dom. use jsdom
-  rimraf = require('rimraf'); // allows us to delete the upload directory and all files in it
+  //rimraf = require('rimraf'); // allows us to delete the upload directory and all files in it
+  del = require('del');
 
 /**
  * upload a runs data
  */
 exports.create = function(req, res) {
-  if (req.files.fileName === undefined) {return res.status(400).send();}
 
-  var filePath = req.files.fileName.path,
+  if (req.files.file === undefined) {console.error({'message' : 'file non existent'}); return res.status(400).send();}
+
+  var filePath = req.files.file.path,
     userId = req.user._id; // use the request ID
 
   // converts a file from gpx to GeoJson
   function convert(filePath, userId) {
-    var reader = fs.readFileSync(filePath, 'utf8'),
+
+    var reader = fs.readFile(filePath, 'utf8'),
       gpx = jsdom(reader),
       runJson = tj.gpx(gpx);
+
     // Add userId to the data for reference in mongodb
     runJson.user = userId;
+
     // remove the uploads folder we used to temp store the uploaded file
-    rimraf('./uploads', function(err) {
-      if (err) { throw new Error ('rimraf failed to delete the uploads folder. Check runs-data.server.model.test.js' + err); }
+    del('./uploads/*', function(err) {
+      if (err) { throw new Error ('del failed to delete the contents of the uploads folder. Check runs-data.server.model.test.js' + err); }
     });
+
     return runJson;
+
   }
 
 

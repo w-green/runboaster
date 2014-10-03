@@ -55,6 +55,21 @@
 		var user = {{ user | json | safe }};
 	</script>
 
+	<!-- IE 8 and 9 support for file upload refer to angular-file-upload	-->
+	<script>
+	    FileAPI = {
+	        //only one of jsPath or jsUrl.
+	        jsPath: 'public/lib/ng-file-upload/FileAPI.min.js',
+	        //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+	        //only one of staticPath or flashUrl.
+	        staticPath: 'public/lib/ng-file-upload/FileAPI.flash.swf',
+	        //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf',
+
+	        //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+	    }
+	</script>
+
 	<!--Application JavaScript Files-->
 	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>
 	{% endfor %}
