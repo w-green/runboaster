@@ -1,35 +1,30 @@
-<div>
-  <input type="file" name="fileName" ng-file-select="onFileSelect($files)">
-  <input type="file" ng-file-select="onFileSelect($files)" multiple>
-  <div class="button" ng-file-select="onFileSelect($files)" data-multiple="true"></div>
+<form role="form">
+
+<!--   <div class="has-success">
+    <p class="help-block">Finished uploading: <span>{{fileName}}</span></p>
+  </div> -->
+
+<!--   <input id="uploadFile" placeholder="{{fileName}}" disabled="disabled" /> -->
+  <div class="form-group">
+    <div class="fileUpload btn btn-primary">
+        <span>Upload</span>
+        <input id="uploadBtn" upload-file-name class="upload" type="file" name="file" ng-file-select="onFileSelect($files)">
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <input class="form-control btn-default" type="file" name="file" ng-file-select="onFileSelect($files)">
+  </div>
+  <div class="form-group">
+    <input class="form-control" type="file" ng-file-select="onFileSelect($files)" multiple>
+  </div>
+
+  <input type="file">
+  <div class="btn" ng-file-select="onFileSelect($files)" data-multiple="true"></div>
   <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"
         ng-show="dropSupported">drop files here</div>
   <div ng-file-drop-available="dropSupported=true"
         ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
-  <button ng-click="upload.abort()">Cancel Upload</button>
-</div>
-
-
-
-<!-- <section>
-  <form ng-submit="submitForm()" enctype="multipart/form-data">
-    <div class="form-group">
-      <input type="text" name="input" ng-model="uploadData.form.whay" />
-      <input type="file" name="file" accept=".gpx" id="fileGpx" ng-model="form.data">
-      <button class="btn btn-primary" type="submit" id="submitGpx">Submit</button>
-    </div>
-  </form>
-</section> -->
-
-
-<!--
-WORKS WITHOUT USING ANGULARJS - IS THIS CROSS BROWSER? - TEST IN IE
- <section>
-  <form method="post" action="/upload" enctype="multipart/form-data">
-    <div class="form-group">
-      <label for="fileGpx">Select a file to upload: </label>
-      <input type="file" name="fileName" accept=".gpx" id="fileGpx">
-      <button class="btn btn-primary" type="submit" id="submitGpx">Submit</button>
-    </div>
-  </form>
-</section> -->
+  <button class="btn" ng-click="upload.abort()">Cancel Upload</button>
+</form>
