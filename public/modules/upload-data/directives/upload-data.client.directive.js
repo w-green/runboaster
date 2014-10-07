@@ -9,9 +9,15 @@ var uploadFileName = function uploadFileName($compile) {
         return $compile(toBeCompiled)(scope);
       }
 
-      scope.$watch('message', function() {
-        var newEl = compileMe(scope.message);
+      scope.$watchCollection('message', function() {
+        // console.log(scope.message);
+
+        var str = scope.message.join('<br />');
+
+        var newEl = compileMe(str);
         element.parent().after(newEl);
+
+
       });
 
     }

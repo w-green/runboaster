@@ -10,7 +10,8 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
   document.getElementById("uploadBtn").onchange = function () {
       document.getElementById("uploadFile").value = this.value;
   };*/
-  $scope.message = "<p>Files uploaded</p>";
+  $scope.message = [];
+  $scope.message.push("<p>Files uploaded</p>");
   $scope.fileName = 'Choose file';
 
   $scope.onFileSelect = function($files) {
@@ -29,7 +30,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
       var isitGpx = checkSuffix('gpx', file.name);
       console.log(isitGpx);
       if (isitGpx === false) {
-        $scope.message = '<p class="text-danger">The file needs to be a gpx : ' + file.name + '</p>';
+        $scope.message.push('<p class="text-danger">The file needs to be a gpx : ' + file.name + '</p>');
         return;
       }
 
@@ -50,9 +51,9 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
 
-        $scope.message = '<p class="text-success">Successfully uploaded: ' + file.name + '</p>';
-        //$scope.apply();
-        console.log(data);
+        // console.log(config.file.name); // WORKS
+        $scope.message.push('<p class="text-success">Successfully uploaded: ' + config.file.name + '</p>');
+
       });
       //.error(...)
       //.then(success, error, progress);
