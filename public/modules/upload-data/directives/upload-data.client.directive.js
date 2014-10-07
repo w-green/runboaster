@@ -12,9 +12,15 @@ var uploadFileName = function uploadFileName($compile) {
       scope.$watchCollection('message', function() {
         // console.log(scope.message);
 
-        var str = scope.message.join('<br />');
+        //var str = scope.message.join('<br />');
+        // var newEl = compileMe(str);
 
-        var newEl = compileMe(str);
+
+        var num = scope.message.length - 1;
+
+        console.log(scope.message[num]);
+
+        var newEl = compileMe(scope.message[num]);
         element.parent().after(newEl);
 
 
