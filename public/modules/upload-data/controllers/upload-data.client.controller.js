@@ -25,12 +25,11 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
 
     for (var i = 0; i < $files.length; i++) {
       var file = $files[i];
-
       // returns true if suffix is gpx
       var isitGpx = checkSuffix('gpx', file.name);
-      console.log(isitGpx);
+
       if (isitGpx === false) {
-        $scope.message.push('<p class="text-danger">The file needs to be a gpx : ' + file.name + '</p>');
+        $scope.message.push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
         continue;
       }
 
@@ -39,7 +38,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
         method: 'POST',
         //headers: {'header-key': 'header-value'},
         //withCredentials: true,
-        data: {myObj: $scope.myModelObj},
+        //data: {myObj: $scope.myModelObj},
         file: file, // or list of files ($files) for html5 only
         //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
         // customize file formData name ('Content-Disposition'), server side file variable name.
@@ -52,7 +51,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
         // file is uploaded successfully
 
         // console.log(config.file.name); // WORKS
-        $scope.message.push('<p class="text-success">Successfully uploaded: ' + config.file.name + '</p>');
+        $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
 
       });
       //.error(...)
