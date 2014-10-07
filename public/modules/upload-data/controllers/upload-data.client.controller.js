@@ -11,7 +11,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
       document.getElementById("uploadFile").value = this.value;
   };*/
   $scope.message = [];
-  $scope.message.push("<p>Files uploaded</p>");
+  $scope.message.push("<p></p>");
   $scope.fileName = 'Choose file';
 
   $scope.onFileSelect = function($files) {
@@ -31,7 +31,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
       console.log(isitGpx);
       if (isitGpx === false) {
         $scope.message.push('<p class="text-danger">The file needs to be a gpx : ' + file.name + '</p>');
-        return;
+        continue;
       }
 
       $scope.upload = $upload.upload({
