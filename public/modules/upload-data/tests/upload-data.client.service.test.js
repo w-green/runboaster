@@ -21,7 +21,6 @@ describe('Feature: upload data... ', function() {
     });
 
     $httpBackend.flush();
-    console.log(result);
     expect(result.message).toEqual('hello');
 
 

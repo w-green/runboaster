@@ -17,16 +17,12 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
   $scope.onFileSelect = function($files) {
     //$files: an array of files selected, each file has name, size, and type.
 
-    // Angular file upload's file type is not working so we implemented our own.
-    function checkSuffix(suffix, name) {
-      var testSuffix = new RegExp('.' + suffix)
-      return testSuffix.test((name).slice(-4)); // true / false
-    }
-
     for (var i = 0; i < $files.length; i++) {
       var file = $files[i];
+
+      // We've added a decorator to check the suffix
       // returns true if suffix is gpx
-      var isitGpx = checkSuffix('gpx', file.name);
+      var isitGpx = $upload.checkSuffix('gpx', file.name);
 
       if (isitGpx === false) {
         $scope.message.push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
@@ -49,10 +45,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
       }).success(function(data, status, headers, config) {
         // file is uploaded successfully
-
-        // console.log(config.file.name); // WORKS
         $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
-
       });
       //.error(...)
       //.then(success, error, progress);

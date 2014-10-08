@@ -3,7 +3,7 @@ var path = require('path');
 (function(){
   'use strict';
 
-  ddescribe('testing upload', function() {
+  describe('testing upload', function() {
     beforeEach(function() {
       login();
 
@@ -22,22 +22,23 @@ var path = require('path');
 
 
 
-    it('does bullox all', function(){
-      var url, formFile, formSubmit;
-      var fileToUpload = '../../../../test-files/firsttest.gpx';
+    it('displays an a success message with the file name when uploaded', function(){
+      var url, formFile, result;
+      var fileToUpload = '../../../../../test-files/firsttest.gpx';
       var absolutePath = path.resolve(__dirname, fileToUpload);
 
       browser.get('/#!/my/upload/gpx');
-      formFile = element(by.id('fileGpx'));
-      formSubmit = element(by.id('submitGpx'));
 
-
+      formFile = element(by.id('uploadBtn'));
       formFile.sendKeys(absolutePath);
-      formSubmit.click();
-      // lets login
 
+      result = element(by.css('#uploadResults li'));
 
+      result.getText().then(function(data) {
+        expect(data).toContain('firsttest.gpx');
+      });
 
+      // browser.debugger();
 
     });
 
