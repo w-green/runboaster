@@ -6,11 +6,13 @@
 var mongoose = require('mongoose'),
   errorHandler = require('./errors'),
   runsData = mongoose.model('runsData'),
-  tj = require('togeojson'),
-  fs = require('fs'),
-  jsdom = require('jsdom').jsdom, // node doesn't have xml parsing or a dom. use jsdom
-  //rimraf = require('rimraf'); // allows us to delete the upload directory and all files in it
-  del = require('del');
+  Q = require('q'),
+  extras = require('../services/runs-data.server.service.js'),
+  convert = extras.convert,
+  saveData = extras.saveData,
+  deleteFile = extras.deleteFile;
+
+
 
 /**
  * upload a runs data
@@ -21,33 +23,20 @@ exports.create = function(req, res) {
 
   var filePath = req.files.file.path,
     userId = req.user._id; // use the request ID
+    //runJson = Q.defer(); // converted file
 
-  // converts a file from gpx to GeoJson
-  function convert(filePath, userId) {
-
-    var reader = fs.readFile(filePath, 'utf8'),
-      gpx = jsdom(reader),
-      runJson = tj.gpx(gpx);
-
-    // Add userId to the data for reference in mongodb
-    runJson.user = userId;
-
-    // remove the uploads folder we used to temp store the uploaded file
-    del('./uploads/*', function(err) {
-      if (err) { throw new Error ('del failed to delete the contents of the uploads folder. Check runs-data.server.model.test.js' + err); }
+  convert(filePath) // convert file from gpx to GeoJson
+    .then(function(data) {
+      saveData(data, userId);
+      deleteFile();
+    })
+    .then(function() {
+      return res.status(200).end();
+    })
+    .fail(function(err) {
+      console.error(err + err.stack)
+      return res.status(400).end();
     });
-
-    return runJson;
-
-  }
-
-
-  var currentData = new runsData(convert(filePath, userId));
-
-  currentData.save(function(err, currentData) {
-    if (err) { throw new Error ('Unable to save this data, check runs-data.server.model.test.js'); }
-  });
-  return res.status(200).end();
 
 };
 
