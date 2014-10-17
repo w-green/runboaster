@@ -17,7 +17,7 @@ var mongoose = require('mongoose'),
 /**
  * upload a runs data
  */
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
 
   if (req.files.file === undefined) {console.error({'message' : 'file non existent'}); return res.status(400).send();}
 
@@ -27,16 +27,18 @@ exports.create = function(req, res) {
 
   convert(filePath) // convert file from gpx to GeoJson
     .then(function(data) {
-      saveData(data, userId);
+      var result = saveData(data, userId);
       deleteFile();
-    })
-    .then(function() {
-      return res.status(200).end();
+      return result;
     })
     .fail(function(err) {
       console.error(err + err.stack)
       return res.status(400).end();
-    });
+    })
+    .done(function(data) {
+      req.runsDataId = data._id;
+      next();
+    })
 
 };
 

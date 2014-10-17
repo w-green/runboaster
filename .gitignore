@@ -10,3 +10,4 @@ public/lib
 app/tests/coverage/
 .bower-*/
 .idea/
+test-files/2014*

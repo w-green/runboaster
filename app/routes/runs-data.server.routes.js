@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var runsData = require('../../app/controllers/runs-data'),
+  runsSummary = require('../../app/controllers/runs-summary'),
   multer = require('multer'),
   users = require('../../app/controllers/users');
 
@@ -29,7 +30,8 @@ module.exports = function(app) {
         console.error(err.stack);
         res.status(500).render('500', {  error: err.stack});
       },
-      runsData.create
+      runsData.create,
+      runsSummary.create
     );
 };
 
