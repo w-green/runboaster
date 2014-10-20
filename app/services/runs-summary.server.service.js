@@ -1,7 +1,8 @@
 'use strict';
 
-var summaryPrototype = require('../modules/runs-summary/prototypes/runs-summary.server.prototypes--summary.js');
-var summaryBuilder = require('../modules/runs-summary/services/functions/summarybuilder.js');
+var summarymarkerPrototype = require('../modules/runs-summary/prototypes/summarymarker.js');
+var summaryMarkerBuilder = require('../modules/runs-summary/services/functions/summarymarkerbuilder.js');
+var createSummary = require('../modules/runs-summary/services/functions/createsummary.js');
 var totalDistanceCounter = require('../modules/runs-summary/services/functions/totaldistancecounter.js');
 var factory = require('../../lib/custom/utils/object/factory.js');
 
@@ -12,14 +13,6 @@ exports.calculate =
     var totalDistance = 0; // keeps track of total distance (km) for all laps = the runs total distance
     var kmMarkers = []; // Marker points used for map
     var kmMarker = 1000; // used below in reduceData() to mark kms
-
-    var laps = [];
-    var lap = function() {
-      return {
-        started : null,
-        stopped : null
-      };
-    };
 
     // these are used for calculating our pauses
     // it tells us what kmMarker the pauses were in
@@ -41,13 +34,6 @@ exports.calculate =
 
       // output [[ { longitude: -0.220693, latitude: 51.459465 }, { time: Tue Jun 24 2014 13:46:23 GMT+0100 (BST) } ]]
       mappedData = mapData(data);
-
-      // -----  Sets the start and end times for this set of data   ----- // ***** USE FOR TOTAL SUMMARIES
-      // SHOULD THESE BE RENAMED RUNS ? - ARE THEY REALLY LAPS? - YES I THINK IT IS - see runCoords.forEach
-      var aLap = new lap;
-      aLap.started = mappedData[0];
-      aLap.stopped = mappedData[mappedData.length -1];
-      laps.push(aLap);
 
 
       // ----- get the start of each lap ------ //
@@ -113,10 +99,15 @@ exports.calculate =
 
     // Factory used to create new km summaries
     var kmSummaryFactory = function(props) {
-      return factory(summaryPrototype, props);
+      return factory(summarymarkerPrototype, props);
     };
 
     // create summaries - with pauses
-    var summaryList = summaryBuilder(kmMarkers, lapStart, lapEnd, kmSummaryFactory);
+    var summaryList = summaryMarkerBuilder(kmMarkers, lapStart, lapEnd, kmSummaryFactory, totalDistance);
+    // console.log(JSON.stringify(summaryList, null, 2));
 
+    // create summary
+    var summary = createSummary(summaryList, totalDistance);
+
+    return summary;
   }; // calculate

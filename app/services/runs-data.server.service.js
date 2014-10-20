@@ -25,8 +25,9 @@ exports.convert =
 exports.saveData =
   function saveData(run, userId) {
     var result = Q.defer();
+    var runData;
     run.user = userId;
-    var runData = new runsData(run);
+    runData = new runsData(run);
     runData.save(function(err, runData) {
       if (err) { throw new Error ('Unable to save this data, check runs-data.server.model.test.js'); }
         else {result.resolve(runData)}

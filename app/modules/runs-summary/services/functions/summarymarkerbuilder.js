@@ -14,12 +14,12 @@ var addSummaryPauses = require('./addsummarypauses.js');
  *
  */
 
-var summaryBuilder = function summaryBuilder(markers, lapStart, lapEnd, summaryFactory) {
+var summaryMarkerBuilder = function summaryMarkerBuilder(markers, lapStart, lapEnd, kmSummaryFactory, totalDistance) {
   var lapPauses;
   var lapReStart;
   var startOfRun = lapStart[0];
 
-  var summaryList = createSummaryList(markers, startOfRun, summaryFactory);
+  var summaryList = createSummaryList(markers, startOfRun, kmSummaryFactory);
 
   // Only run pauses if there are pauses.
   // Note if only one lapEnd it is the finish of run - not pause
@@ -38,4 +38,4 @@ var summaryBuilder = function summaryBuilder(markers, lapStart, lapEnd, summaryF
 
 };
 
-module.exports = summaryBuilder;
+module.exports = summaryMarkerBuilder;

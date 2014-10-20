@@ -10,7 +10,9 @@ var mongoose = require('mongoose'),
   errorHandler = require('./errors'),
   Q = require('q'),
   geolib = require('../../lib/Geolib/dist/geolib.min.js'),
-  calculate = require('../services/runs-summary.server.service.js').calculate;
+  calculate = require('../services/runs-summary.server.service.js').calculate,
+  saveToDb = require('../modules/runs-summary/services/savetodb.js');
+
 
 exports.create = function(req, res) {
   var query = runsData.where({'_id' : new ObjectId(req.runsDataId)})
@@ -22,7 +24,8 @@ exports.create = function(req, res) {
   });
 
   result.promise
-    .then(calculate);
+    .then(calculate)
+    .then(saveToDb, req.user._id);
 
   return res.status(200).end();
 

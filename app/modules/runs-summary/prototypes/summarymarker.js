@@ -1,12 +1,13 @@
 'use strict';
 
 /**
- *  Prototype for Summaries of km markers
+ *  Prototype for the km markers that are included in the Summary
  */
-  var summaryPrototype = {
+  var summarymarkerPrototype = {
     km : null,
+    totalDistance : null,
     startTime : null,
-    rest : false, //was it paused
+    rest : false, // indicates whether a pause exists in run for quick checking
     paused :
       {
         startTime : [],
@@ -33,11 +34,4 @@
     }
   };
 
-  module.exports = summaryPrototype;
-
-/*
-        this.paused.startTime.reduce(function(prevValue, currentValue, index, array){
-        var current = this.paused.endTime[index] - currentValue;
-        currentValue = prevValue + current;
-        return currentValue;
-      }, 0);*/
+  module.exports = summarymarkerPrototype;
