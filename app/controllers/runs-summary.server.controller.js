@@ -26,12 +26,4 @@ exports.create = function(req, res) {
 
   return res.status(200).end();
 
-/*  var distance =
-    geolib.getDistance(
-      {latitude: 51.5103, longitude: 7.49347},
-      {latitude: 51.5103, longitude: 8.49347}
-    );
-
-  console.log('result');
-  return res.status(200).end();*/
 };

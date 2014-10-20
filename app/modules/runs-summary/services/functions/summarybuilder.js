@@ -34,8 +34,6 @@ var summaryBuilder = function summaryBuilder(markers, lapStart, lapEnd, summaryF
   // adds the pauses to the summaries
   addSummaryPauses(lapPauses, lapReStart, summaryList);
 
-  setTotalTime
-
   return summaryList;
 
 };
