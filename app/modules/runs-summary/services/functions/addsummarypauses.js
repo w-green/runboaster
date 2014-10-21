@@ -27,4 +27,4 @@ function addSummaryPauses(lapPauses, lapReStart, summaryList) {
   });
 };
 
-module.exports = addSummaryPauses
+module.exports = addSummaryPauses;

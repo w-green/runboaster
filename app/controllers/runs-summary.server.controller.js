@@ -15,11 +15,11 @@ var mongoose = require('mongoose'),
 
 
 exports.create = function(req, res) {
-  var query = runsData.where({'_id' : new ObjectId(req.runsDataId)})
+  var query = runsData.where({'_id' : new ObjectId(req.runsDataId)});
   var result = Q.defer();
 
   query.findOne(function(err, run) {
-    if(err) {throw new Error(err + err.stack)}
+    if(err) {throw new Error(err + err.stack);}
     result.resolve(run);
   });
 

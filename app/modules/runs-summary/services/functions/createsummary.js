@@ -15,10 +15,11 @@ var createSummary = function createSummary(summaryList, totalDistance) {
   var totalTime =
     summaryList
       .map(function(list) {
-        return list['totalTime'];
+        return list.totalTime;
       })
       .reduce(function(prevValue, currentValue, index, array) {
-        return currentValue = prevValue + currentValue;
+        var revisedTotalTime = prevValue + currentValue;
+        return revisedTotalTime;
       }, 0);
   var avgSpeedPerKm = totalTime / summaryList.length;
   var restDuration =
@@ -27,7 +28,8 @@ var createSummary = function createSummary(summaryList, totalDistance) {
         return list.paused.totalPauseTime;
       })
       .reduce(function(prevValue, currentValue, index, array) {
-        return currentValue = prevValue + currentValue;
+        var revisedRestDuration = prevValue + currentValue;
+        return revisedRestDuration;
       }, 0);
 
 

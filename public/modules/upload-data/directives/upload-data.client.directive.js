@@ -19,7 +19,7 @@ var uploadFileName = function uploadFileName($compile) {
           .prepend(newEl);
       });
     }
-  }
+  };
 
 };
 

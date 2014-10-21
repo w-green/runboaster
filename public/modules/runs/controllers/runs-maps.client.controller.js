@@ -1,9 +1,10 @@
 'use strict';
 
-(function(lodash) {
+(function(lodash, google) {
 
   var _ = lodash;
 
+  if (google === 'undefined') {return;}
   // MyRunsCtrl controller constructor function
   function MyMapsCtrl() {
     var that = this;
@@ -67,5 +68,5 @@
 
   angular.module('runs').controller('MyMapsCtrl', MyMapsCtrl);
 
-}(window._));
+}(window._, window.google));
 

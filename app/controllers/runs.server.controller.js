@@ -29,6 +29,7 @@ exports.create = function(req, res) {
 
 /**
  * list all runs
+ * This should list last 10 runs from user
  */
  exports.list = function(req, res) {
   var query = Run.find();

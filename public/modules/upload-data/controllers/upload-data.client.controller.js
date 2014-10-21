@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /*
  * Upload a file to the database
@@ -11,11 +11,20 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
       document.getElementById("uploadFile").value = this.value;
   };*/
   $scope.message = [];
-  $scope.message.push("<p></p>");
+  $scope.message.push('<p></p>');
   $scope.fileName = 'Choose file';
 
   $scope.onFileSelect = function($files) {
     //$files: an array of files selected, each file has name, size, and type.
+
+    function uploadSuccess(data, status, headers, config) {
+      // file is uploaded successfully
+      $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
+    }
+
+    function uploadProgress(evt) {
+      console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+    }
 
     for (var i = 0; i < $files.length; i++) {
       var file = $files[i];
@@ -41,12 +50,9 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
         //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
         // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
         //formDataAppender: function(formData, key, val){}
-      }).progress(function(evt) {
-        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-      }).success(function(data, status, headers, config) {
-        // file is uploaded successfully
-        $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
-      });
+      })
+        .progress(uploadProgress)
+        .success(uploadSuccess);
       //.error(...)
       //.then(success, error, progress);
       // access or attach event listeners to the underlying XMLHttpRequest.

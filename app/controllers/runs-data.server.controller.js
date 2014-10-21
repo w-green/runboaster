@@ -32,13 +32,13 @@ exports.create = function(req, res, next) {
       return result;
     })
     .fail(function(err) {
-      console.error(err + err.stack)
+      console.error(err + err.stack);
       return res.status(400).end();
     })
     .done(function(data) {
       req.runsDataId = data._id;
       next();
-    })
+    });
 
 };
 

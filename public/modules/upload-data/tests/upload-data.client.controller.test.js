@@ -42,12 +42,12 @@ describe('Controller: updload-data', function() {
   }));
 
   it('the checkSuffix function should return false if not a gpx file', inject(function($upload){
-    var result = $upload.checkSuffix('gpx', 'file.csv')
+    var result = $upload.checkSuffix('gpx', 'file.csv');
     expect(result).toBe(false);
   }));
 
   it('the checkSuffix function should return true if not a gpx file', inject(function($upload){
-    var result = $upload.checkSuffix('gpx', 'file.gpx')
+    var result = $upload.checkSuffix('gpx', 'file.gpx');
     expect(result).toBe(true);
   }));
 

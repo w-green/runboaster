@@ -23,7 +23,7 @@ var summaryMarkerBuilder = function summaryMarkerBuilder(markers, lapStart, lapE
 
   // Only run pauses if there are pauses.
   // Note if only one lapEnd it is the finish of run - not pause
-  if (lapEnd.length === 0) {return summaryList};
+  if (lapEnd.length === 0) {return summaryList;}
 
   // use the LapEnd but remove the last one as it is when stopped not paused
   lapPauses = lapEnd.slice(0, -1);

@@ -28,10 +28,10 @@
     that.sortByDate = function sortByDate() {
       if (sortByDateAsc === false) {
         sortByDateAsc = true;
-        return  that.sortedRuns = _.sortBy(that.Allruns, 'date');
+        that.sortedRuns = _.sortBy(that.Allruns, 'date');
       } else {
         sortByDateAsc = false;
-        return  that.sortedRuns = _.sortBy(that.Allruns, 'date').reverse();
+        that.sortedRuns = _.sortBy(that.Allruns, 'date').reverse();
       }
     };
 
@@ -39,19 +39,13 @@
     that.sortByTime = function sortByTime() {
       if (sortedAsc === false) {
         sortedAsc = true;
-        return that.sortedRuns = _.sortBy(that.Allruns, 'time');
+        that.sortedRuns = _.sortBy(that.Allruns, 'time');
       } else {
         sortedAsc = false;
-        return that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
+        that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
       }
 
     };
-
-
-
-
-
-
 
   }
 

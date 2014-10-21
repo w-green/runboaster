@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 var uploadService = function uploadService($resource) {
   return $resource('/upload');
-}
+};
 
 
 

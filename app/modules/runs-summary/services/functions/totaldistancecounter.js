@@ -38,7 +38,7 @@ var geolib = require('../../../../../lib/Geolib/dist/geolib.min.js');
 
         kmMarkers.push(marker);
         kmMarker = kmMarker + 1000;
-      };
+      }
 
       return currentValue; // next prevValue
     }); // reduce

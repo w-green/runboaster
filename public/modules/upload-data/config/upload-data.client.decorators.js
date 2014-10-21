@@ -12,9 +12,9 @@ angular.module('upload-data').config(['$provide',
     $provide
       .decorator('$upload', function($delegate) {
         $delegate.checkSuffix = function checkSuffix(suffix, name) {
-          var testSuffix = new RegExp('.' + suffix)
+          var testSuffix = new RegExp('.' + suffix);
           return testSuffix.test((name).slice(-4)); // true / false
-        }
+        };
         return $delegate;
       });
 

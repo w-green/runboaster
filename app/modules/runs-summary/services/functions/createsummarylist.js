@@ -39,6 +39,6 @@ function createSummaryList(markers, startOfRun, summaryFactory) {
   });
 
   return summary;
-}
+};
 
 module.exports = createSummaryList;

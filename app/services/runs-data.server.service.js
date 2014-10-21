@@ -29,8 +29,12 @@ exports.saveData =
     run.user = userId;
     runData = new runsData(run);
     runData.save(function(err, runData) {
-      if (err) { throw new Error ('Unable to save this data, check runs-data.server.model.test.js'); }
-        else {result.resolve(runData)}
+      if (err) {
+        throw new Error ('Unable to save this data, check runs-data.server.model.test.js');
+      }
+        else {
+          result.resolve(runData);
+        }
     });
     return result.promise;
   };

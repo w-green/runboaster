@@ -14,7 +14,7 @@
         endTime : []
       },
     settotalPauseTime : function settotalPauseTime() {
-      return this.paused.totalPauseTime = (this.startTime === null) ?
+      this.paused.totalPauseTime = (this.startTime === null) ?
       0 :
       (function(startTime, endTime){
         return startTime.reduce(function(prevValue, currentValue, index, array){
@@ -28,9 +28,10 @@
     endTime : null,
     totalTime : 0,
     setTotalTime : function setTotalTime() {
-      if (this.startTime === null) {return this.totalTime = null;}
-        else if (this.rest === false) {return this.totalTime = this.endTime - this.startTime;}
-          else {return this.totalTime = this.endTime - this.startTime - this.paused.totalPauseTime;}
+      if (this.startTime === null) {this.totalTime = null;}
+        else if (this.rest === false) {this.totalTime = this.endTime - this.startTime;}
+          else {this.totalTime = this.endTime - this.startTime - this.paused.totalPauseTime;}
+      return;
     }
   };
 
