@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
   runsSummary = mongoose.model('runsSummary'),
   Q = require('q');
 
-var save = function(data, userId) {
+var saveToDb = function(data, userId) {
   var result = Q.defer();
   var summary;
   data.user = userId;
@@ -23,7 +23,7 @@ var save = function(data, userId) {
   return result.promise;
 };
 
-module.exports = save;
+module.exports = saveToDb;
 
 
 

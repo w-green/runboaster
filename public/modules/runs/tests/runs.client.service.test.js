@@ -9,7 +9,7 @@ describe('runs service', function() {
     var result;
 
     // set our mock backend
-    $httpBackend.when('GET', '/runs').respond([
+    $httpBackend.when('GET', '/my/runs').respond([
       { '_id' : 1, 'time' : { 'seconds' : 58, 'minutes' : 21 }, 'date' : '2014-07-09T13:31:25.292Z', '__v' : 0 },
       { '_id' : 2, 'time' : { 'seconds' : 32, 'minutes' : 21 }, 'date' : '2014-08-09T13:31:25.292Z', '__v' : 0 },
       { '_id' : 3, 'time' : { 'seconds' : 45, 'minutes' : 21 }, 'date' : '2014-09-09T13:31:25.292Z', '__v' : 0 }
@@ -35,14 +35,14 @@ describe('runs service', function() {
     var result;
 
     // set our mock backend
-    $httpBackend.when('GET', '/runs').respond([
+    $httpBackend.when('GET', '/my/runs').respond([
       { '_id' : 1, 'time' : { 'seconds' : 58, 'minutes' : 21 }, 'date' : '2014-07-09T13:31:25.292Z', '__v' : 0 },
       { '_id' : 2, 'time' : { 'seconds' : 32, 'minutes' : 21 }, 'date' : '2014-08-09T13:31:25.292Z', '__v' : 0 },
       { '_id' : 3, 'time' : { 'seconds' : 45, 'minutes' : 21 }, 'date' : '2014-09-09T13:31:25.292Z', '__v' : 0 }
     ]);
 
     expect(db).toBeDefined();
-    db.getRuns(function(data){
+    db.getRuns().$promise.then(function(data){
       result = data;
     });
     $httpBackend.flush();

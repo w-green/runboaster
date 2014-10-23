@@ -5,33 +5,24 @@
   var _ = lodash;
 
   // MyRunsCtrl controller constructor function
-  function MyRunsCtrl(runsService) {
+  function MyRunsCtrl(runsSummaries) {
     var that = this;
     var sortedAsc = false; // used as a signal for sortResults()
     var sortByDateAsc = false; // used as a signal for sortByDate()
 
+    that.runs = runsSummaries;
+
     that.sortedRuns = null;
 
-    //that.name = 'hello world!!!';
 
-    //that.Allruns = runsService.resource.query();
-
-
-    that.Allruns =  runsService.getRuns(function(data){
-                      that.Allruns = data;
-                      that.sortedRuns = that.sortByDate();
-                    });
-
-// console.log(that.Allruns);
-
-    // sort results by date
-    that.sortByDate = function sortByDate() {
+/*    // sort results by date
+    that.sortByDate = function sortByDate(runs) {
       if (sortByDateAsc === false) {
         sortByDateAsc = true;
-        that.sortedRuns = _.sortBy(that.Allruns, 'date');
+        that.sortedRuns = _.sortBy(runs, 'date');
       } else {
         sortByDateAsc = false;
-        that.sortedRuns = _.sortBy(that.Allruns, 'date').reverse();
+        that.sortedRuns = _.sortBy(runs, 'date').reverse();
       }
     };
 
@@ -45,11 +36,11 @@
         that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
       }
 
-    };
+    };*/
 
   }
 
-  angular.module('runs').controller('MyRunsCtrl', [ 'runsService', MyRunsCtrl ]);
+  angular.module('runs').controller('MyRunsCtrl', [ 'runsSummaries', MyRunsCtrl ]);
 
 }(window._));
 
