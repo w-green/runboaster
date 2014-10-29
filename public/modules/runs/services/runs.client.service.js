@@ -13,27 +13,13 @@
                   create: { method: 'POST' }
                 }),
       getRuns : function getRuns(){
-                  return this.resource.query();
-                }
-/*
-      getRuns : function getRuns(callback){
-                  var result = null; // cache the return so subsequent requests are dealt with by cache
-                  if (result !== null) {callback(result);}
-                    else {
-                      this.resource
-                      .query()
-                        .$promise
-                        .then(
-                          function(data) {
-                            result = data;
-                            callback(data);
-                          },
-                          function(error) {
-                            console.log('error message - MyRunsCtrl runsService is not working');
-                          });
-                    }
-                }
-*/
+                  if (this.data !== null) {
+                    return this.data;
+                  }
+                  this.data = this.resource.query();
+                  return this.data;
+                },
+      data :    null
     };
     return runs;
 

@@ -9,25 +9,12 @@ angular.module('runs').config(['$stateProvider',
       url : '/runs',
       resolve : {
         runsSummaries : ['runsService', function(runsService) {
-          // return runsService.resource.query();
           return runsService.getRuns().$promise;
         }]
       },
       templateUrl : 'modules/runs/views/list-runs.client.view.html',
-/*      controller: function($scope, promiseObj){
-          $scope.simple = promiseObj;
-
-          console.log(promiseObj);
-      }*/
       controller : 'MyRunsCtrl as myRuns'
     })
-
-
-
-
-
-
-
     .state('run', {
         url : '/run',
         views : {

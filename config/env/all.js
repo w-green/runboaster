@@ -27,7 +27,8 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 				'public/lib/lodash/dist/lodash.underscore.js',
-				'public/lib/angular-google-maps/dist/angular-google-maps.js'
+				'public/lib/angular-google-maps/dist/angular-google-maps.js',
+        'http://d3js.org/d3.v3.min.js'
 
 			]
 		},
@@ -42,6 +43,7 @@ module.exports = {
 		],
 		tests: [
 			'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
+      'http://d3js.org/d3.v3.min.js',
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/*/tests/*.js'
 		]
