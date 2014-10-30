@@ -2,7 +2,7 @@
 
 (function() {
 
-  var lChart = function lChart($window) {
+  var lChart = function lChart($window, $filter) {
 
     return {
 
@@ -14,16 +14,21 @@
         var pathClass='path';
         var xScale, yScale, xAxisGen, yAxisGen, lineFun;
 
+        var getScreenWidth;
         var d3 = $window.d3;
         var rawSvg = elem.find('svg');
         var svg = d3.select(rawSvg[0]);
+        var padding = 20; // pads the chart inside of the svg
+        var chartWidth = rawSvg.attr('width') - padding;
+        var chartHeight = rawSvg.attr('height') - padding;
         var data = [];
         var markerSize = [];
         var longestMarkerTime = 0;
         var shortestMarkerTime = 0;
         var xAxis_base;
         var markerCount;
-        var getScreenWidth;
+
+
 
 
         createDataOb();
@@ -63,6 +68,11 @@
               if (marker.totalTime > longestMarkerTime) {
                 longestMarkerTime = marker.totalTime;
               }
+
+/*              console.log('totalTime = ' + marker.totalTime);
+              var timeMinSec = $filter('date')(marker.totalTime, 'm:ss');
+              console.log('timeMinSec = ' + timeMinSec);*/
+
               var markerData = {
                 km : marker.km,
                 time : marker.totalTime
@@ -91,19 +101,18 @@
 
         // setting the values of the vars declared earlier
         function setChartParameters() {
+
           if (shortestMarkerTime !== 0) {
             xAxis_base = shortestMarkerTime / 1.1;
           }
 
-          console.log(xAxis_base);
-
           xScale = d3.scale.linear()
             .domain([1, markerCount])
-            .range([50, rawSvg.attr('width')]);
+            .range([50, chartWidth]);
 
-          yScale = d3.scale.linear()
+          yScale = d3.time.scale()
             .domain([xAxis_base, longestMarkerTime])
-            .range([rawSvg.attr('height'), 0]);
+            .range([chartHeight, 0]);
 
           xAxisGen = d3.svg.axis()
             .scale(xScale)
@@ -113,7 +122,9 @@
           yAxisGen = d3.svg.axis()
             .scale(yScale)
             .orient('left')
-            .ticks(5);
+            .ticks(d3.time.seconds, 15)
+            .tickFormat(d3.time.format('%Mm %Ss'));
+            // .ticks(5);
 
           lineFun = d3.svg.line()
             .x(function (d) {
@@ -140,7 +151,7 @@
 
           svg.append('svg:g')
              .attr('class', 'x axis')
-             .attr('transform', 'translate(0, 450)')
+             .attr('transform', 'translate(0, 470)')
              .call(xAxisGen);
 
           svg.append('svg:g')
@@ -164,6 +175,6 @@
 
   }; // lChart
 
-  angular.module('charts').directive('lChart', ['$window', lChart]);
+  angular.module('charts').directive('lChart', ['$window', '$filter', lChart]);
 
 }());

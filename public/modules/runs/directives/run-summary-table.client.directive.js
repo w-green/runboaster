@@ -4,7 +4,9 @@
   var _ = lodash;
 
   var runsSummaryTable = function runsSummaryTable($filter) {
+
     return {
+
       restrict : 'E',
       link : function(scope, element, attrs) {
         var runs = scope.myRuns.runs;
