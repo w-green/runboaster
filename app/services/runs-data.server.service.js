@@ -1,7 +1,7 @@
 'use strict';
 
 var Q = require('q'),
-  tj = require('togeojson'),
+  tj = require('../../lib/togeojson/togeojson.js'),
   fs = require('fs'),
   jsdom = require('jsdom').jsdom, // node doesn't have xml parsing or a dom. use jsdom
   del = require('del'),
