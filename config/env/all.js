@@ -28,7 +28,8 @@ module.exports = {
 				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 				'public/lib/lodash/dist/lodash.underscore.js',
 				'public/lib/angular-google-maps/dist/angular-google-maps.js',
-        'http://d3js.org/d3.v3.min.js'
+        'http://d3js.org/d3.v3.min.js',
+        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
 
 			]
 		},

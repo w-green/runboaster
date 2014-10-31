@@ -31,11 +31,42 @@
 
 
 
+
+
+        // Define the div for the tooltip
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+
         createDataOb();
         markerCount = d3.max(markerSize);
         drawAxis();
         data.forEach(function(d) {
           drawLines(d);
+
+
+          // Add the scatterplot
+          svg.selectAll("dot")
+              .data(d.markers)
+          .enter().append("circle")
+              .attr("r", 5)
+              .attr("cx", function(d) { return xScale(d.km); })
+              .attr("cy", function(d) { return yScale(d.time); })
+              .on("mouseover", function(d) {
+                  div.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  // div.html(formatTime(d.time) + "<br/>"  + d.km)
+                  div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) )
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - 28) + "px");
+                  })
+              .on("mouseout", function(d) {
+                  div.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              });
         });
 
 
@@ -68,10 +99,6 @@
               if (marker.totalTime > longestMarkerTime) {
                 longestMarkerTime = marker.totalTime;
               }
-
-/*              console.log('totalTime = ' + marker.totalTime);
-              var timeMinSec = $filter('date')(marker.totalTime, 'm:ss');
-              console.log('timeMinSec = ' + timeMinSec);*/
 
               var markerData = {
                 km : marker.km,
