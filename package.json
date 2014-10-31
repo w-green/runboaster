@@ -48,7 +48,8 @@
     "passport-twitter": "~1.0.2",
     "q": "^1.0.1",
     "simple-node-logger": "^0.92.12",
-    "swig": "~1.4.1"
+    "swig": "~1.4.1",
+    "xmldom": "~0.1.19"
   },
   "devDependencies": {
     "chai": "^1.9.1",
