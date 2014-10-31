@@ -18,7 +18,9 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.min.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
 				'public/lib/lodash/dist/lodash.underscore.min.js',
-				'public/lib/angular-google-maps/dist/angular-google-maps.min.js'
+				'public/lib/angular-google-maps/dist/angular-google-maps.min.js',
+        'http://d3js.org/d3.v3.min.js',
+        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
 
 			]
 		},

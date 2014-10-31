@@ -8,7 +8,8 @@ var ApplicationConfiguration = function () {
         'ngAnimate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils'
+        'ui.utils',
+        'google-maps'
       ];
     // Add a new vertical module
     var registerModule = function (moduleName, dependencies) {
@@ -43,9 +44,25 @@ angular.element(document).ready(function () {
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('articles');'use strict';
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('charts', ['runs']);'use strict';
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');'use strict';
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('runs', [
+  'ngResource',
+  'ui.router',
+  'google-maps'
+]);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('upload-data', [
+  'angularFileUpload',
+  'ngResource',
+  'ui.router'
+]);'use strict';
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('visualisations');'use strict';
 // Configuring the Articles module
 angular.module('articles').run([
   'Menus',
@@ -135,6 +152,214 @@ angular.module('articles').factory('Articles', [
   }
 ]);'use strict';
 // Setting up route
+angular.module('charts').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    $stateProvider.state('charts', {
+      url: '/my/runs/charts',
+      resolve: {
+        runsSummaries: [
+          'runsService',
+          function (runsService) {
+            return runsService.getRuns().$promise;
+          }
+        ]
+      },
+      templateUrl: 'modules/charts/views/charts.client.view.html',
+      controller: 'chartsCtrl'
+    });
+  }
+]);'use strict';
+(function () {
+  var chartsCtrl = function chartsCtrl($scope, runsSummaries) {
+    $scope.runs = runsSummaries;  // console.log(runs);
+  };
+  angular.module('charts').controller('chartsCtrl', [
+    '$scope',
+    'runsSummaries',
+    chartsCtrl
+  ]);
+}());'use strict';
+(function () {
+  var lChart = function lChart($window, $filter) {
+    return {
+      restrict: 'E',
+      template: '<svg width="800" height="500"></svg>',
+      link: function (scope, elem, attr) {
+        var runs = scope.runs;
+        var pathClass = 'path';
+        var xScale, yScale, xAxisGen, yAxisGen, lineFun;
+        var getScreenWidth;
+        var d3 = $window.d3;
+        var rawSvg = elem.find('svg');
+        var svg = d3.select(rawSvg[0]);
+        var padding = 20;
+        // pads the chart inside of the svg
+        var chartWidth = rawSvg.attr('width') - padding;
+        var chartHeight = rawSvg.attr('height') - padding;
+        var data = [];
+        var markerSize = [];
+        var longestMarkerTime = 0;
+        var shortestMarkerTime = 0;
+        var xAxis_base;
+        var markerCount;
+        // Define the div for the tooltip
+        var div = d3.select('body').append('div').attr('class', 'tooltip').style('opacity', 0);
+        createDataOb();
+        markerCount = d3.max(markerSize);
+        drawAxis();
+        var tip = d3.tip().attr('class', 'd3-tip').offset([
+            -10,
+            0
+          ]).html(function (d) {
+            return 'KM: ' + d.km + '<br/>' + 'time: ' + d3.time.format('%M:%S')(new Date(d.time));  // return div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) );
+                                                                                                    // return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+          });
+        svg.call(tip);
+        data.forEach(function (d) {
+          drawLines(d);
+          // Add the scatterplot
+          svg.selectAll('dot').data(d.markers).enter().append('circle').attr('r', 5).attr('cx', function (d) {
+            return xScale(d.km);
+          }).attr('cy', function (d) {
+            return yScale(d.time);
+          }).on('mouseover', tip.show).on('mouseout', tip.hide);
+        });
+        /*          // Add the scatterplot
+          svg.selectAll("dot")
+              .data(d.markers)
+          .enter().append("circle")
+              .attr("r", 5)
+              .attr("cx", function(d) { return xScale(d.km); })
+              .attr("cy", function(d) { return yScale(d.time); })
+              .on("mouseover", function(d) {
+                  div.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  // div.html(formatTime(d.time) + "<br/>"  + d.km)
+                  div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) )
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - 28) + "px");
+                  })
+              .on("mouseout", function(d) {
+                  div.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              });
+        });*/
+        /*  // the data layout produced from createDataOb()
+          var data = [
+            markers : [ {km : 1, time : 291000}, {km : 2, time : 332000}, {km : 3, time : 332000} ],  startTime: "2014-08-07T20:23:56.000Z", totalDistance: 6.51, totalTime: 1854000},
+            markers : [ {km : 1, time : 291000}, {km : 2, time : 332000}, {km : 3, time : 332000} ],  startTime: "2014-08-07T20:23:56.000Z", totalDistance: 6.51, totalTime: 1854000},
+            etc...
+          ]
+        */
+        function createDataOb() {
+          runs.forEach(function (run) {
+            var markersLen;
+            var runData = {};
+            runData.markers = [];
+            markersLen = run.markerItems.length;
+            markerSize.push(markersLen);
+            runData.startTime = run.startTime;
+            run.markerItems.forEach(function (marker) {
+              if (shortestMarkerTime === 0) {
+                shortestMarkerTime = marker.totalTime;
+              } else {
+                if (marker.totalTime < shortestMarkerTime) {
+                  shortestMarkerTime = marker.totalTime;
+                }
+              }
+              if (marker.totalTime > longestMarkerTime) {
+                longestMarkerTime = marker.totalTime;
+              }
+              var markerData = {
+                  km: marker.km,
+                  time: marker.totalTime
+                };
+              runData.markers.push(markerData);
+            });
+            runData.totalDistance = run.totalDistanceKm;
+            runData.totalTime = run.totalTime;
+            data.push(runData);
+          });
+        }
+        //createDataOb
+        /*
+        // Gets screen width of device
+        getScreenWidth = function getScreenWidth() {
+          var resolution = window.devicePixelRatio||screen.pixelDepth||screen.colorDepth;
+          var clientWidth = document.documentElement.clientWidth;
+          var screenWidth;
+          deviceScreenWidth = clientWidth / resolution;
+          return deviceScreenWidth;
+        }; // getScreenWidth
+        */
+        // setting the values of the vars declared earlier
+        function setChartParameters() {
+          if (shortestMarkerTime !== 0) {
+            xAxis_base = shortestMarkerTime / 1.1;
+          }
+          xScale = d3.scale.linear().domain([
+            1,
+            markerCount
+          ]).range([
+            50,
+            chartWidth
+          ]);
+          yScale = d3.time.scale().domain([
+            xAxis_base,
+            longestMarkerTime
+          ]).range([
+            chartHeight,
+            0
+          ]);
+          xAxisGen = d3.svg.axis().scale(xScale).orient('bottom').ticks(markerCount);
+          yAxisGen = d3.svg.axis().scale(yScale).orient('left').ticks(d3.time.seconds, 15).tickFormat(d3.time.format('%Mm %Ss'));
+          // .ticks(5);
+          lineFun = d3.svg.line().x(function (d) {
+            return xScale(d.km);
+          }).y(function (d) {
+            return yScale(d.time);
+          }).interpolate('linear');
+        }
+        // setChartParameters
+        // utility function for generating path colours
+        function getRandomColor() {
+          var letters = '0123456789ABCDEF'.split('');
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+        // getRandomColor
+        function drawAxis() {
+          setChartParameters();
+          svg.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0, 470)').call(xAxisGen);
+          svg.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(45,0)').call(yAxisGen);
+        }
+        // drawAxis
+        function drawLines(d) {
+          svg.append('svg:path').attr({
+            d: lineFun(d.markers),
+            'stroke': getRandomColor(),
+            'stroke-width': 2,
+            'fill': 'none',
+            'class': pathClass
+          });
+        }  // drawLines
+      }  // link
+    };  // returned object
+  };
+  // lChart
+  angular.module('charts').directive('lChart', [
+    '$window',
+    '$filter',
+    lChart
+  ]);
+}());'use strict';
+// Setting up route
 angular.module('core').config([
   '$stateProvider',
   '$urlRouterProvider',
@@ -176,16 +401,20 @@ angular.module('core').controller('HomeController', [
 //Menu service used for managing  menus
 angular.module('core').service('Menus', [function () {
     // Define a set of default roles
-    this.defaultRoles = ['user'];
+    this.defaultRoles = ['*'];
     // Define the menus object
     this.menus = {};
     // A private function for rendering decision 
     var shouldRender = function (user) {
       if (user) {
-        for (var userRoleIndex in user.roles) {
-          for (var roleIndex in this.roles) {
-            if (this.roles[roleIndex] === user.roles[userRoleIndex]) {
-              return true;
+        if (!!~this.roles.indexOf('*')) {
+          return true;
+        } else {
+          for (var userRoleIndex in user.roles) {
+            for (var roleIndex in this.roles) {
+              if (this.roles[roleIndex] === user.roles[userRoleIndex]) {
+                return true;
+              }
             }
           }
         }
@@ -245,7 +474,7 @@ angular.module('core').service('Menus', [function () {
         menuItemClass: menuItemType,
         uiRoute: menuItemUIRoute || '/' + menuItemURL,
         isPublic: isPublic === null || typeof isPublic === 'undefined' ? this.menus[menuId].isPublic : isPublic,
-        roles: roles || this.defaultRoles,
+        roles: roles === null || typeof roles === 'undefined' ? this.menus[menuId].roles : roles,
         position: position || 0,
         items: [],
         shouldRender: shouldRender
@@ -266,7 +495,7 @@ angular.module('core').service('Menus', [function () {
             link: menuItemURL,
             uiRoute: menuItemUIRoute || '/' + menuItemURL,
             isPublic: isPublic === null || typeof isPublic === 'undefined' ? this.menus[menuId].items[itemIndex].isPublic : isPublic,
-            roles: roles || this.defaultRoles,
+            roles: roles === null || typeof roles === 'undefined' ? this.menus[menuId].items[itemIndex].roles : roles,
             position: position || 0,
             shouldRender: shouldRender
           });
@@ -306,6 +535,403 @@ angular.module('core').service('Menus', [function () {
     //Adding the topbar menu
     this.addMenu('topbar');
   }]);'use strict';
+// Setting up route
+angular.module('runs').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    // Runs state routing
+    $stateProvider.state('listRuns', {
+      url: '/runs',
+      resolve: {
+        runsSummaries: [
+          'runsService',
+          function (runsService) {
+            return runsService.getRuns().$promise;
+          }
+        ]
+      },
+      templateUrl: 'modules/runs/views/list-runs.client.view.html',
+      controller: 'MyRunsCtrl as myRuns'
+    }).state('run', {
+      url: '/run',
+      views: {
+        '': { templateUrl: 'modules/runs/views/run.client.view.html' },
+        'columnOne@run': { templateUrl: 'modules/runs/views/run-single.client.view.html' },
+        'columnTwo@run': {
+          templateUrl: 'modules/runs/views/run-map.client.view.html',
+          controller: 'MyMapsCtrl as mapsCtrl'
+        }
+      }
+    });
+  }
+]);'use strict';
+(function (lodash) {
+  var _ = lodash;
+  // MyRunsCtrl controller constructor function
+  function MyRunCtrl($state) {
+    var that = this;
+    that.name = 'hello world';
+    $state.transitionTo('run.map');
+  }
+  angular.module('runs').controller('MyRunCtrl', MyRunCtrl);
+}(window._));'use strict';
+(function (lodash, google) {
+  var _ = lodash;
+  if (google === 'undefined') {
+    return;
+  }
+  // MyRunsCtrl controller constructor function
+  function MyMapsCtrl() {
+    var that = this;
+    that.name = 'hello world';
+    that.map = {
+      center: {
+        latitude: 51.459545,
+        longitude: -0.220431
+      },
+      zoom: 14
+    };
+    that.marker = {
+      id: 0,
+      coords: {
+        latitude: 51.459545,
+        longitude: -0.220431
+      },
+      options: { draggable: true },
+      label: 'START'
+    };
+    that.polylines = {
+      id: 1,
+      path: [
+        {
+          latitude: 51.459545,
+          longitude: -0.220431
+        },
+        {
+          latitude: 51.458987,
+          longitude: -0.232163
+        },
+        {
+          latitude: 51.458532,
+          longitude: -0.23477
+        },
+        {
+          latitude: 51.451967,
+          longitude: -0.232989
+        }
+      ],
+      stroke: {
+        color: '#ff0000',
+        weight: 3
+      },
+      visible: true,
+      editable: false,
+      draggable: false
+    };
+    // We want the distance of the polyline
+    // Returns an array of LtLng objects for the google maps computeLength()
+    var paths = that.polylines.path.map(function (currentVal, index, array) {
+        return new google.maps.LatLng(currentVal.latitude, currentVal.longitude);
+      });
+    that.distance = function () {
+      var meterResult = google.maps.geometry.spherical.computeLength(paths);
+      var kilometerResult = metersToKilometers(meterResult);
+      return Math.round(100 * kilometerResult) / 100;  // rounding to 2 decimal places
+    }();
+    function metersToKilometers(meters) {
+      return meters / 1000;
+    }
+  }
+  angular.module('runs').controller('MyMapsCtrl', MyMapsCtrl);
+}(window._, window.google));'use strict';
+(function (lodash) {
+  var _ = lodash;
+  // MyRunsCtrl controller constructor function
+  function MyRunsCtrl(runsSummaries) {
+    var that = this;
+    var sortedAsc = false;
+    // used as a signal for sortResults()
+    var sortByDateAsc = false;
+    // used as a signal for sortByDate()
+    that.runs = runsSummaries;
+    that.sortedRuns = null;  /*    // sort results by date
+    that.sortByDate = function sortByDate(runs) {
+      if (sortByDateAsc === false) {
+        sortByDateAsc = true;
+        that.sortedRuns = _.sortBy(runs, 'date');
+      } else {
+        sortByDateAsc = false;
+        that.sortedRuns = _.sortBy(runs, 'date').reverse();
+      }
+    };
+
+    // sort results by time
+    that.sortByTime = function sortByTime() {
+      if (sortedAsc === false) {
+        sortedAsc = true;
+        that.sortedRuns = _.sortBy(that.Allruns, 'time');
+      } else {
+        sortedAsc = false;
+        that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
+      }
+
+    };*/
+  }
+  angular.module('runs').controller('MyRunsCtrl', [
+    'runsSummaries',
+    MyRunsCtrl
+  ]);
+}(window._));'use strict';
+(function (lodash) {
+  var _ = lodash;
+  var runsSummaryTable = function runsSummaryTable($filter) {
+    return {
+      restrict: 'E',
+      link: function (scope, element, attrs) {
+        var runs = scope.myRuns.runs;
+        // creates placeholder container
+        var docFragment = document.createDocumentFragment();
+        var tableOfRuns = createTableOfRuns(runs);
+        // layout our table.
+        function createTableOfRuns(runs) {
+          var table = document.createElement('table');
+          table.className = 'table table-responsive table-hover';
+          var thead = document.createElement('thead');
+          var headingRow;
+          var tableHeadings;
+          var tableData;
+          var markerSize;
+          var headings = {
+              date: 'Date',
+              markers: 0,
+              totalDistance: 'Total Distance',
+              totalTime: 'Total Time'
+            };
+          // amends headings.markers to get highest number of markers
+          getMarkerSize(runs, headings);
+          markerSize = headings.markers;
+          // headingRow = document.createDocumentFragment();
+          headingRow = document.createElement('tr');
+          tableHeadings = createTableHeadings(headings, headingRow);
+          thead.appendChild(headingRow);
+          table.appendChild(thead);
+          tableData = createTableData(runs, markerSize, $filter);
+          table.appendChild(tableData);
+          return table;
+          function getMarkerSize(runs, headings) {
+            // used for marker heading - to work out total no. of markers
+            // default = 0 incase it is not resolved (otherwise it runs to infinity)
+            var markers = [];
+            // create the headings
+            runs.forEach(function (run) {
+              // push to markers so we can get the max marker value
+              markers.push(run.markerItems.length);
+            });
+            var markerSize = _.max(markers);
+            headings.markers = markerSize;
+          }
+          function createTableHeadings(headings, headingRow) {
+            for (var heading in headings) {
+              if (headings.hasOwnProperty(heading)) {
+                var container = document.createDocumentFragment();
+                if (heading === 'markers') {
+                  var markerSize = headings[heading];
+                  for (var i = 1; i <= markerSize; i++) {
+                    var thd = document.createElement('th');
+                    var km = document.createTextNode('km ' + i);
+                    thd.appendChild(km);
+                    container.appendChild(thd);
+                  }
+                } else {
+                  var thd2 = document.createElement('th');
+                  thd2.appendChild(document.createTextNode(headings[heading]));
+                  container.appendChild(thd2);
+                }
+                headingRow.appendChild(container);
+              }
+            }
+            return headingRow;
+          }
+          function createTableData(runs, markersSize, $filter) {
+            var markerSize = markersSize;
+            var container = document.createElement('tbody');
+            // var container = document.createDocumentFragment();
+            runs.forEach(function (run) {
+              var tr = document.createElement('tr');
+              var tdStartTime = document.createElement('td');
+              // use filter to change timestamp to time
+              var sTime = $filter('date')(run.startTime, 'EEEE MMM d, y h:mm:ss a');
+              tdStartTime.appendChild(document.createTextNode(sTime));
+              tr.appendChild(tdStartTime);
+              for (var i = 0; i < markerSize; i++) {
+                var td = document.createElement('td');
+                var markerTime;
+                var data;
+                if (run.markerItems[i]) {
+                  markerTime = run.markerItems[i].totalTime;
+                  data = $filter('date')(markerTime, 'm:ss');
+                } else {
+                  data = '';
+                }
+                td.appendChild(document.createTextNode(data));
+                tr.appendChild(td);
+              }
+              var tdTotalDist = document.createElement('td');
+              var dist = +run.totalDistanceKm.toFixed(2);
+              tdTotalDist.appendChild(document.createTextNode(dist));
+              tr.appendChild(tdTotalDist);
+              var tdTotalTime = document.createElement('td');
+              var time = $filter('date')(run.totalTime, 'HH:mm:ss');
+              tdTotalTime.appendChild(document.createTextNode(time));
+              tr.appendChild(tdTotalTime);
+              container.appendChild(tr);
+            });
+            return container;
+          }
+        }
+        element.append(tableOfRuns);
+      }
+    };
+  };
+  angular.module('runs').directive('runsSummaryTable', [
+    '$filter',
+    runsSummaryTable
+  ]);
+}(window._));'use strict';
+// As a factory
+// (function() {
+var runsService = function ($resource) {
+  var runs = {
+      resource: $resource('/my/runs/', {}, {
+        query: {
+          method: 'GET',
+          isArray: true
+        },
+        create: { method: 'POST' }
+      }),
+      getRuns: function getRuns() {
+        if (this.data !== null) {
+          return this.data;
+        }
+        this.data = this.resource.query();
+        return this.data;
+      },
+      data: null
+    };
+  return runs;
+};
+angular.module('runs').factory('runsService', [
+  '$resource',
+  runsService
+]);  // }());
+'use strict';
+/*
+ * Decorator for Angular File Upload service
+ * Adds functionality to check the suffix of a file
+ * $upload: a service from Angular file upload,
+ * $delegate: the original service (in this case $upload) which is returned
+ *  with the added functionality
+ */
+angular.module('upload-data').config([
+  '$provide',
+  function ($provide) {
+    $provide.decorator('$upload', function ($delegate) {
+      $delegate.checkSuffix = function checkSuffix(suffix, name) {
+        var testSuffix = new RegExp('.' + suffix);
+        return testSuffix.test(name.slice(-4));  // true / false
+      };
+      return $delegate;
+    });
+  }
+]);'use strict';
+// Setting up route
+angular.module('upload-data').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    // Runs state routing
+    $stateProvider.state('upload', {
+      url: '/my/upload/gpx',
+      templateUrl: 'modules/upload-data/views/upload-data.client.view.html',
+      controller: 'UploadDataCtrl'
+    });
+  }
+]);'use strict';
+/*
+ * Upload a file to the database
+ * Params: upload data service
+ */
+var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
+  /*  // allows us to see the file that was uploaded
+  document.getElementById("uploadBtn").onchange = function () {
+      document.getElementById("uploadFile").value = this.value;
+  };*/
+  $scope.message = [];
+  $scope.message.push('<p></p>');
+  $scope.fileName = 'Choose file';
+  $scope.onFileSelect = function ($files) {
+    //$files: an array of files selected, each file has name, size, and type.
+    function uploadSuccess(data, status, headers, config) {
+      // file is uploaded successfully
+      $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
+    }
+    function uploadProgress(evt) {
+      console.log('percent: ' + parseInt(100 * evt.loaded / evt.total));
+    }
+    for (var i = 0; i < $files.length; i++) {
+      var file = $files[i];
+      // We've added a decorator to check the suffix
+      // returns true if suffix is gpx
+      var isitGpx = $upload.checkSuffix('gpx', file.name);
+      if (isitGpx === false) {
+        $scope.message.push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
+        continue;
+      }
+      $scope.upload = $upload.upload({
+        url: '/upload',
+        method: 'POST',
+        file: file
+      }).progress(uploadProgress).success(uploadSuccess);  //.error(...)
+                                                           //.then(success, error, progress);
+                                                           // access or attach event listeners to the underlying XMLHttpRequest.
+                                                           //.xhr(function(xhr){xhr.upload.addEventListener(...)})
+    }  /* alternative way of uploading, send the file binary with the file's content-type.
+       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
+       It could also be used to monitor the progress of a normal http post/put request with large data*/
+       // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+  };
+};
+angular.module('upload-data').controller('UploadDataCtrl', [
+  '$scope',
+  '$upload',
+  UploadDataCtrl
+]);// directiveFactory
+var uploadFileName = function uploadFileName($compile) {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      function compileMe(toBeCompiled) {
+        return $compile(toBeCompiled)(scope);
+      }
+      scope.$watchCollection('message', function () {
+        var num = scope.message.length - 1;
+        var newEl = compileMe(scope.message[num]);
+        var resultsList = document.getElementById('uploadResults');
+        angular.element(resultsList).prepend(newEl);
+      });
+    }
+  };
+};
+angular.module('upload-data').directive('uploadFileName', [
+  '$compile',
+  uploadFileName
+]);'use strict';
+var uploadService = function uploadService($resource) {
+  return $resource('/upload');
+};
+angular.module('upload-data').factory('uploadService', [
+  '$resource',
+  uploadService
+]);'use strict';
 // Config HTTP Error Handling
 angular.module('users').config([
   '$httpProvider',
@@ -516,4 +1142,136 @@ angular.module('users').factory('Users', [
   function ($resource) {
     return $resource('users', {}, { update: { method: 'PUT' } });
   }
-]);
+]);'use strict';
+// Setting up route
+angular.module('visualisations').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    $stateProvider.state('vis', {
+      url: '/my/runs/linechart',
+      templateUrl: 'modules/visualisations/views/vis.client.view.html',
+      controller: 'MyVisCtrl'
+    });
+  }
+]);'use strict';
+(function () {
+  var MyVisCtrl = function MyVisCtrl($scope) {
+    $scope.salesData = [
+      {
+        hour: 1,
+        sales: 54
+      },
+      {
+        hour: 2,
+        sales: 66
+      },
+      {
+        hour: 3,
+        sales: 77
+      },
+      {
+        hour: 4,
+        sales: 70
+      },
+      {
+        hour: 5,
+        sales: 60
+      },
+      {
+        hour: 6,
+        sales: 63
+      },
+      {
+        hour: 7,
+        sales: 55
+      },
+      {
+        hour: 8,
+        sales: 47
+      },
+      {
+        hour: 9,
+        sales: 55
+      },
+      {
+        hour: 10,
+        sales: 30
+      }
+    ];
+    $scope.name = 'ME';
+  };
+  angular.module('visualisations').controller('MyVisCtrl', [
+    '$scope',
+    MyVisCtrl
+  ]);
+}());'use strict';
+// (function() {
+var linearChart = function linearChart($parse, $window) {
+  return {
+    restrict: 'EA',
+    template: '<svg width="850" height="200"></svg>',
+    link: function (scope, elem, attrs) {
+      var exp = $parse(attrs.chartData);
+      var salesDataToPlot = exp(scope);
+      var padding = 20;
+      var pathClass = 'path';
+      var xScale, yScale, xAxisGen, yAxisGen, lineFun;
+      var d3 = $window.d3;
+      var rawSvg = elem.find('svg');
+      var svg = d3.select(rawSvg[0]);
+      scope.$watchCollection(exp, function (newVal, oldVal) {
+        salesDataToPlot = newVal;
+        redrawLineChart();
+      });
+      function setChartParameters() {
+        xScale = d3.scale.linear().domain([
+          salesDataToPlot[0].hour,
+          salesDataToPlot[salesDataToPlot.length - 1].hour
+        ]).range([
+          padding + 5,
+          rawSvg.attr('width') - padding
+        ]);
+        yScale = d3.scale.linear().domain([
+          0,
+          d3.max(salesDataToPlot, function (d) {
+            return d.sales;
+          })
+        ]).range([
+          rawSvg.attr('height') - padding,
+          0
+        ]);
+        xAxisGen = d3.svg.axis().scale(xScale).orient('bottom').ticks(salesDataToPlot.length - 1);
+        yAxisGen = d3.svg.axis().scale(yScale).orient('left').ticks(5);
+        lineFun = d3.svg.line().x(function (d) {
+          return xScale(d.hour);
+        }).y(function (d) {
+          return yScale(d.sales);
+        }).interpolate('basis');
+      }
+      function drawLineChart() {
+        setChartParameters();
+        svg.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0,180)').call(xAxisGen);
+        svg.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(20,0)').call(yAxisGen);
+        svg.append('svg:path').attr({
+          d: lineFun(salesDataToPlot),
+          'stroke': 'blue',
+          'stroke-width': 1,
+          'fill': 'none',
+          'class': pathClass
+        });
+      }
+      function redrawLineChart() {
+        setChartParameters();
+        svg.selectAll('g.y.axis').call(yAxisGen);
+        svg.selectAll('g.x.axis').call(xAxisGen);
+        svg.selectAll('.' + pathClass).attr({ d: lineFun(salesDataToPlot) });
+      }
+      drawLineChart();
+    }
+  };
+};
+angular.module('visualisations').directive('linearChart', [
+  '$parse',
+  '$window',
+  linearChart
+]);  // }());

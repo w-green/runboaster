@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
   runsSummary = mongoose.model('runsSummary'),
   errorHandler = require('./errors'),
   Q = require('q'),
-  geolib = require('../../lib/Geolib/dist/geolib.min.js'),
+  geolib = require('../../lib/geolib/geolib.min.js'),
   calculate = require('../services/runs-summary.server.service.js').calculate,
   saveToDb = require('../modules/runs-summary/services/savetodb.js');
 

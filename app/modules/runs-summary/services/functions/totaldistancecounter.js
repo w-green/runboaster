@@ -11,7 +11,7 @@
  */
 
 
-var geolib = require('../../../../../lib/Geolib/dist/geolib.min.js');
+var geolib = require('../../../../../lib/geolib/geolib.min.js');
 
  var totalDistanceCounter =
   function totalDistanceCounter(mappedData, totalDistance, kmMarker, kmMarkers) {

@@ -36,6 +36,13 @@
 	{% for cssFile in cssFiles %}<link rel="stylesheet" href="{{cssFile}}">
 	{% endfor %}
 
+<!-- IE 8 -->
+<!--[if lte IE 9]>
+  <script>
+    document.createElement('runs-summary-table');
+  </script>
+<![endif]-->
+
 	<!-- HTML5 Shim -->
 	<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
