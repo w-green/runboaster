@@ -42,11 +42,34 @@
         createDataOb();
         markerCount = d3.max(markerSize);
         drawAxis();
+
+        var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            return 'KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) ;
+            // return div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) );
+            // return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+          });
+
+        svg.call(tip);
+
         data.forEach(function(d) {
           drawLines(d);
 
 
           // Add the scatterplot
+          svg.selectAll("dot")
+              .data(d.markers)
+          .enter().append("circle")
+              .attr("r", 5)
+              .attr("cx", function(d) { return xScale(d.km); })
+              .attr("cy", function(d) { return yScale(d.time); })
+              .on('mouseover', tip.show)
+              .on('mouseout', tip.hide)
+        });
+
+/*          // Add the scatterplot
           svg.selectAll("dot")
               .data(d.markers)
           .enter().append("circle")
@@ -67,7 +90,7 @@
                       .duration(500)
                       .style("opacity", 0);
               });
-        });
+        });*/
 
 
         /*  // the data layout produced from createDataOb()
