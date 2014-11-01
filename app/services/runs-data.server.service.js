@@ -40,8 +40,8 @@ exports.saveData =
   };
 
 exports.deleteFile =
-  function deleteFile() {
-    del('./uploads/*', function(err) {
+  function deleteFile(filePath) {
+    del(filePath, function(err) {
       if (err) { throw new Error ('del failed to delete the contents of the uploads folder. Check runs-data.server.model.test.js' + err); }
     });
   };

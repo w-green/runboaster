@@ -28,7 +28,7 @@ exports.create = function(req, res, next) {
   convert(filePath) // convert file from gpx to GeoJson
     .then(function(data) {
       var result = saveData(data, userId);
-      deleteFile();
+      deleteFile(filePath);
       return result;
     })
     .fail(function(err) {
