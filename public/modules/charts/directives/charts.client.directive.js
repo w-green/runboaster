@@ -7,7 +7,8 @@
     return {
 
       restrict : 'E',
-      template:'<svg width="800" height="500"></svg>',
+      // template:'<svg width="800" height="500"></svg>',
+      template:'<div class="svgContainer col-sm-10"><svg class="svgChart" viewBox="0 0 800 500"></svg></div><div class="chart--dataselector col-sm-2" data-ng-click="toggleChartData($event)"></div>',
       link : function(scope, elem, attr){
 
         var runs = scope.runs;
@@ -19,18 +20,21 @@
         var rawSvg = elem.find('svg');
         var svg = d3.select(rawSvg[0]);
         var padding = 20; // pads the chart inside of the svg
+        var chartWidth = 800;
+        var chartHeight = 500;
+/*
         var chartWidth = rawSvg.attr('width') - padding;
         var chartHeight = rawSvg.attr('height') - padding;
+*/
+
+
         var data = [];
         var markerSize = [];
         var longestMarkerTime = 0;
         var shortestMarkerTime = 0;
         var xAxis_base;
         var markerCount;
-
-
-
-
+        var runGroup = []; // used to group run path and circles
 
 
         // Define the div for the tooltip
@@ -54,12 +58,67 @@
 
         svg.call(tip);
 
-        data.forEach(function(d) {
-          drawLines(d);
+
+        // Chart data selectors
+        // var chartDataSelector = elem.find('div.chart--dataselector');
+        var chartDataSelector = (function(){
+          var el = document.querySelector('div.chart--dataselector');
+          return angular.element(el);
+        })();
+        // The list of runs from which you can select to show on chart
+        var chartDataSelectorList  = document.createElement('ul');
+
+        addSelectAll();
+
+        function addSelectAll() {
+          var li = document.createElement('li');
+          var anchor = document.createElement('a');
+          anchor.textContent = 'All runs';
+          anchor.className = 'run-all';
+
+          li.appendChild(anchor);
+          chartDataSelectorList.appendChild(li);
+        }
+
+
+
+
+        data.forEach(function(d, index, array) {
+          //drawLines(d);
+
+          createSelectorList();
+
+          // creates the list of runs to the right of the chart
+          // which you select to show on the charts
+          function createSelectorList () {
+
+            var li = document.createElement('li');
+            li.className = '';
+            var anchor = document.createElement('a');
+            anchor.className = 'run-' + index;
+
+            var startDate = d3.time.format("%a %b %e %Y")(new Date(d.startTime));
+            anchor.textContent = startDate;
+
+            li.appendChild(anchor);
+            chartDataSelectorList.appendChild(li);
+          }
+
+          runGroup[index] = svg.append("g");
+          runGroup[index].attr('class', 'runLine vis-hidden run-' + index);
+
+          runGroup[index].append('svg:path')
+             .attr({
+                 d: lineFun(d.markers),
+                 'stroke': getRandomColor(),
+                 'stroke-width': 2,
+                 'fill': 'none',
+                 'class': pathClass
+             });
 
 
           // Add the scatterplot
-          svg.selectAll("dot")
+          runGroup[index].selectAll("dot")
               .data(d.markers)
           .enter().append("circle")
               .attr("r", 5)
@@ -68,6 +127,9 @@
               .on('mouseover', tip.show)
               .on('mouseout', tip.hide)
         });
+
+        chartDataSelector.append(chartDataSelectorList);
+        // console.log(chartDataSelector);
 
 /*          // Add the scatterplot
           svg.selectAll("dot")
@@ -210,7 +272,7 @@
              .call(yAxisGen);
         } // drawAxis
 
-        function drawLines(d) {
+/*        function drawLines(d) {
           svg.append('svg:path')
              .attr({
                  d: lineFun(d.markers),
@@ -219,7 +281,7 @@
                  'fill': 'none',
                  'class': pathClass
              });
-        } // drawLines
+        } // drawLines*/
       } // link
     }; // returned object
 

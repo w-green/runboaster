@@ -1,3 +1,31 @@
+.vis-hidden {
+  visibility: hidden;
+}
+
+l-chart {
+/*  width: 100%;
+  float: left;*/
+}
+
+.svgContainer {
+    height: 0;
+/*
+    width: 80%;
+    padding-top: 48%;
+    position: relative;
+    float: left;*/
+}
+
+.svgChart {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+
+
+
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -21,4 +49,11 @@
   text-align: center;
   left: 0;
   top: 100%;
+}
+
+
+
+ul.chartRuns {
+  width: 10%;
+  float: left;
 }
