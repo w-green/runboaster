@@ -6,6 +6,15 @@
     $scope.runs = runsSummaries;
     var allRunsSelect = false;
 
+
+    $scope.slideOutRuns = function slideOutRuns() {
+      var el = document.querySelector('.chart--dataselector-list');
+      var angEl = angular.element(el);
+      angEl.toggleClass('inactive');
+    }
+
+
+
     $scope.toggleChartData = function toggleChartData($event) {
 
       var e = $event;
@@ -15,14 +24,11 @@
       var el = angular.element(e.target);
       var runNum = el.attr('class');
 
-      console.log(runNum);
       if (runNum === 'run-all') {
         toggleAllRuns();
       }
       else {
         var chartRun = document.querySelector('.' + runNum);
-        console.log(chartRun);
-
         toggleVis(chartRun);
       }
 

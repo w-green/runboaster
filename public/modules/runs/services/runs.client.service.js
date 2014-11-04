@@ -1,5 +1,7 @@
 'use strict';
 
+// DEPRECATED FOR LATEST-TEN.client.service.js
+
 
 // As a factory
 // (function() {

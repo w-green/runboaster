@@ -1,25 +1,18 @@
+<!-- Chart of runs -->
 <section>
   <p>Charts of your runs</p>
-
   <div class="row">
     <l-chart>
     </l-chart>
   </div>
-
-  <!-- <div linear-chart chart-data="salesData"></div> -->
 </section>
 
-<section id="chartDataSelector" style="
-    width: 400px;
-    float: left;
-    position: absolute;
-    top: 0;
-    left: 70%;
-    background-color: black;
-    height: 100%;
-    /* display: none; */
-">
-    <div>
-      <p>Hello</p>
-    </div>
+<!-- Chart data selection -->
+<div class="chart--dataselector-label">
+  <section class="content">
+    <button data-ng-click="slideOutRuns()">Select your runs</button>
   </section>
+</div>
+<section class="chart--dataselector-list inactive">
+    <chart-data-selector></chart-data-selector>
+</section>

@@ -7,8 +7,9 @@ angular.module('charts').config(['$stateProvider',
       state('charts', {
         url: '/my/runs/charts',
         resolve : {
-          runsSummaries : ['runsService', function(runsService) {
-            return runsService.getRuns().$promise;
+          runsSummaries : ['latestTen', function(latestTen) {
+            var res = latestTen.getRuns();
+            return res;
           }]
         },
         templateUrl : 'modules/charts/views/charts.client.view.html',
