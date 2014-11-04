@@ -20,8 +20,8 @@
         var rawSvg = elem.find('svg');
         var svg = d3.select(rawSvg[0]);
         var padding = 20; // pads the chart inside of the svg
-        var chartWidth = 800;
-        var chartHeight = 500;
+        var chartWidth = 800 - padding;
+        var chartHeight = 500 - padding;
 
         var data = runs.runs;
         var markerSize = runs.markerSize;
@@ -116,7 +116,7 @@
           yAxisGen = d3.svg.axis()
             .scale(yScale)
             .orient('left')
-            .ticks(d3.time.seconds, 15)
+            .ticks(d3.time.seconds, 30)
             .tickFormat(d3.time.format('%Mm %Ss'));
             // .ticks(5);
 
@@ -145,12 +145,12 @@
 
           svg.append('svg:g')
              .attr('class', 'x axis')
-             .attr('transform', 'translate(0, 470)')
+             .attr('transform', 'translate(0,' + chartHeight + ')')
              .call(xAxisGen);
 
           svg.append('svg:g')
              .attr('class', 'y axis')
-             .attr('transform', 'translate(45,0)')
+             .attr('transform', 'translate(50, 0)')
              .call(yAxisGen);
         } // drawAxis
 

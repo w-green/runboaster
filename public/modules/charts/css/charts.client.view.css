@@ -7,19 +7,29 @@
 }
 
 section.chart--dataselector-list {
-  width: 200px;
+  width: 300px;
   height: 100%;
   position: absolute;
   top: 80px;
-  left: 50%;
-  background-color: white;
-  transition-duration: 0.3s;
+  left: 100%;
+  /*left: 50%;*/
+  background-color: #000;
+  /*transition-duration: 0.3s;*/
+
+  transform: translateX(-300px);
+  transform: translate3d(-300px, 0, 0);
+  transition: 300ms ease all;
+
 }
 
 section.chart--dataselector-list.inactive {
   left: 100%;
   /*display: none;*/
-  transition-duration: 0.3s;
+  /*transition-duration: 0.3s;*/
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+  transition: 300ms ease all;
+  backface-visibility: hidden;
 }
 
 
@@ -28,6 +38,19 @@ section.chart--dataselector-list.inactive {
   section.chart--dataselector-list {
     left: 85%;
   }
+}
+
+section.chart--dataselector-list ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+section.chart--dataselector-list ul li {
+    display: block;
+    text-align: center;
+    border-bottom: solid 1px #3184a1;
+    border-top: solid 1px #b5dbe9;
 }
 
 
