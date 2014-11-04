@@ -13,18 +13,12 @@ section.chart--dataselector-list {
   top: 80px;
   left: 50%;
   background-color: white;
-    -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
   transition-duration: 0.3s;
 }
 
 section.chart--dataselector-list.inactive {
   left: 100%;
   /*display: none;*/
-    -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
   transition-duration: 0.3s;
 }
 

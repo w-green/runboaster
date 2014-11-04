@@ -3,11 +3,11 @@
 module.exports = function(grunt) {
 	// Unified Watch Object
 	var watchFiles = {
-		serverViews: ['app/views/**/*.*'], 
+		serverViews: ['app/views/**/*.*'],
 		serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js'],
 		clientViews: ['public/modules/**/views/**/*.html'],
 		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
-		clientCSS: ['public/modules/**/*.css'],
+		clientCSS: ['public/modules/**/*.css', 'public/styles/css/main.css'],
 		mochaTests: ['app/tests/**/*.js']
 	};
 
@@ -65,6 +65,14 @@ module.exports = function(grunt) {
 				src: watchFiles.clientCSS
 			}
 		},
+    autoprefixer: {
+      options: {
+        browsers: ['last 2 version','ie 9']
+      },
+      target: {
+        src: watchFiles.clientCSS
+      },
+    },
 		uglify: {
 			production: {
 				options: {
@@ -138,7 +146,7 @@ module.exports = function(grunt) {
 		}
 	});
 
-	// Load NPM tasks 
+	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
 
 	// Making grunt default to force in order not to break the project.
@@ -154,7 +162,7 @@ module.exports = function(grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'concurrent:default']);
+	grunt.registerTask('default', ['lint', 'autoprefixer', 'concurrent:default']);
 
 	// Debug task.
 	grunt.registerTask('debug', ['lint', 'concurrent:debug']);
