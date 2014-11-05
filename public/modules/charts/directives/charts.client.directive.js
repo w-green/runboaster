@@ -1,6 +1,9 @@
+// NEED TO MAKE THIS RESPONSIVE
+
 'use strict';
 
-(function() {
+(function(lodash) {
+  var _ = lodash;
 
   var lChart = function lChart($window, $filter) {
 
@@ -8,37 +11,78 @@
 
       restrict : 'E',
       // template:'<svg width="800" height="500"></svg>',
-      template:'<div class="svgContainer col-sm-10"><svg class="svgChart" viewBox="0 0 800 500"></svg></div>',
+      // template:'<div class="svgContainer col-sm-10"><svg class="svgChart" viewBox="0 0 800 500"></svg></div>',
+      template:'<div class="svgContainer col-xs-10"><svg id="lChart" class="svgChart"></svg></div>',
       link : function(scope, elem, attr){
 
+        //  ----- Our Data ----- //
         var runs = scope.runs;
-        var pathClass='path';
-        var xScale, yScale, xAxisGen, yAxisGen, lineFun;
-
-        var getScreenWidth;
-        var d3 = $window.d3;
-        var rawSvg = elem.find('svg');
-        var svg = d3.select(rawSvg[0]);
-        var padding = 20; // pads the chart inside of the svg
-        var chartWidth = 800 - padding;
-        var chartHeight = 500 - padding;
-
-        var data = runs.runs;
+        var data = scope.runs.runs;
         var markerSize = runs.markerSize;
         var longestMarkerTime = runs.longestMarkerTime;
         var shortestMarkerTime = runs.shortestMarkerTime;
+        //  ----- / Our Data ----- //
 
+
+        // ----- Chart specific ----- //
+        var d3 = $window.d3;
+        var rawSvg = elem.find('svg');
+        var svg = d3.select(rawSvg[0]);
         var xAxis_base;
         var markerCount;
         var runGroup = []; // used to group run path and circles
+        var pathClass='path';
+        var xScale, yScale, xAxisGen, yAxisGen, lineFun;
+        var margin = 20; // pads the chart inside of the svg
+        var chartWidth;
+        var chartHeight = 360 - margin*2;
+        // ----- / Chart specific ----- //
 
 
-        // Define the div for the tooltip
+        // ----- set chart height and width ----- //
+        svg.attr('height', chartHeight + margin*2);
+        setChartWidth();
+
+
+        // param : DOM node
+        // returns parent width
+        function setChartWidth() {
+          var margin = 20; // chart margin
+          var newChartWidth;
+          var pWidth;
+
+          function getParentNodeWidth() {
+            var el = document.getElementById('lChart');
+            var parent = el.parentNode;
+            var pWidth = parseInt(parent.offsetWidth);
+            return pWidth;
+          }
+          pWidth = getParentNodeWidth();
+          newChartWidth = pWidth - margin * 2;
+          chartWidth = newChartWidth;
+          svg.attr('width', pWidth);
+        }
+
+
+        window.onresize = _.debounce(function(){
+          setChartWidth();
+          // ----- Update range of scale with new width ----- //
+          xScale.range([50, chartWidth]);
+
+          // svg.select('.x axis').call(xAxisGen);
+          redrawAxis();
+          redrawPaths();
+        }, 150);
+
+
+        // ----- Tooltip ----- //
         var div = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
 
         markerCount = d3.max(markerSize);
+
+        // ----- Main drawAxis ----- //
         drawAxis();
 
         var tip = d3.tip()
@@ -51,6 +95,7 @@
           });
 
         svg.call(tip);
+        // ----- / Tooltip ----- //
 
 
         data.forEach(function(d, index, array) {
@@ -65,7 +110,7 @@
                  'stroke': getRandomColor(),
                  'stroke-width': 2,
                  'fill': 'none',
-                 'class': pathClass
+                 'class': pathClass + ' path' + index
              });
 
 
@@ -81,16 +126,14 @@
         });
 
 
-        /*
+
         // Gets screen width of device
-        getScreenWidth = function getScreenWidth() {
+        function getScreenWidth() {
           var resolution = window.devicePixelRatio||screen.pixelDepth||screen.colorDepth;
           var clientWidth = document.documentElement.clientWidth;
-          var screenWidth;
-          deviceScreenWidth = clientWidth / resolution;
+          var deviceScreenWidth = clientWidth / resolution;
           return deviceScreenWidth;
         }; // getScreenWidth
-        */
 
 
         // setting the values of the vars declared earlier
@@ -144,15 +187,33 @@
           setChartParameters();
 
           svg.append('svg:g')
-             .attr('class', 'x axis')
+             .attr('class', 'xAxis axis')
              .attr('transform', 'translate(0,' + chartHeight + ')')
              .call(xAxisGen);
 
           svg.append('svg:g')
-             .attr('class', 'y axis')
+             .attr('class', 'yAxis axis')
              .attr('transform', 'translate(50, 0)')
              .call(yAxisGen);
         } // drawAxis
+
+
+        // ----- Redraw axis on window resize ----- //
+        function redrawAxis() {
+          var y = svg.select('.xAxis');
+          y.call(xAxisGen);
+        } // redrawAxis
+
+        // ----- redraw the paths on window resize ----- //
+
+        function redrawPaths() {
+          data.forEach(function(d, index, array) {
+            var line = svg.select('path.path' + index);
+            line.attr({
+                 'd': lineFun(d.markers)
+             });
+          });
+        }
 
       } // link
     }; // returned object
@@ -161,4 +222,4 @@
 
   angular.module('charts').directive('lChart', ['$window', '$filter', lChart]);
 
-}());
+}(window._));

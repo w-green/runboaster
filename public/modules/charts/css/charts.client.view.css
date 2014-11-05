@@ -59,7 +59,11 @@ section.chart--dataselector-list ul li {
 
 /* CHART */
 
-.svgContainer {
+.svgChart {
+  padding : 10px;
+}
+
+/*.svgContainer {
     height: 0;
 }
 
@@ -67,7 +71,7 @@ section.chart--dataselector-list ul li {
     position: absolute;
     top: 0;
     left: 0;
-}
+}*/
 
 /* END CHART */
 
