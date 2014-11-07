@@ -75,27 +75,82 @@
         }, 150);
 
 
-        // ----- Tooltip ----- //
-        var div = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-
         markerCount = d3.max(markerSize);
 
         // ----- Main drawAxis ----- //
         drawAxis();
 
+
+        // ----- Tooltip ----- //
+        var div = svg.append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
         var tip = d3.tip()
           .attr('class', 'd3-tip')
           .offset([-10, 0])
           .html(function(d) {
-            return 'KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) ;
-            // return div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) );
-            // return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+            return 'KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time));
           });
 
         svg.call(tip);
         // ----- / Tooltip ----- //
+/*
+
+        // use rect to capture mouse movements
+        svg.append("rect")
+          .attr("width", chartWidth)
+          .attr("height", chartHeight)
+          .attr('class', 'rectCaptMouse')
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .on("mouseover", function() { focus.style("display", null); })
+          .on("mouseout", function() { focus.style("display", "none"); });
+          // .on("mousemove", _.debounce(mousemove, 10));
+
+        var = rectCaptMouse = d3.select('.rectCaptMouse');// document.querySelector('.rectCaptMouse');
+
+        var focus = svg.append("g")
+          .style("display", "none")
+          .attr('class', 'focus-group');
+
+        focus.append("circle")
+          .attr("class", "y")
+          .style("fill", "none")
+          .style("stroke", "blue")
+          .attr("r", 4);
+
+
+        var bisectDate = d3.bisector(function(d) { return d.km; }).left;
+
+
+        rectCaptMouse.on("mousemove", mousemove);
+
+        var prevMousePos = null;
+        function mousemove() {
+
+          var mousePos = xScale.invert(d3.mouse(this)[0]); // x val mouse position without rounding
+          var xValMousePos = Math.round(mousePos); // x val mouse position with rounding
+          var indx = xValMousePos - 1;
+          var results = [];
+
+          if (xValMousePos !== prevMousePos) {
+            prevMousePos = xValMousePos;
+            results.length = 0;
+
+            data.forEach(function(d, index, array) {
+              var time = d.markers[indx].time;
+              // console.log(time);
+              results.push(time);
+            });
+            if (xValMousePos === 4) {
+              console.log('YES' + results);
+            }
+          }
+
+        } // mousemove
+
+*/
 
 
         data.forEach(function(d, index, array) {
@@ -123,7 +178,11 @@
               .attr("cy", function(d) { return yScale(d.time); })
               .on('mouseover', tip.show)
               .on('mouseout', tip.hide)
-        });
+
+
+        }); // data.forEach
+
+
 
 
 
@@ -154,11 +213,13 @@
           xAxisGen = d3.svg.axis()
             .scale(xScale)
             .orient('bottom')
+            .tickSize(-chartHeight, 0, 0)
             .ticks(markerCount);
 
           yAxisGen = d3.svg.axis()
             .scale(yScale)
             .orient('left')
+            .tickSize(-chartWidth, 0, 0)
             .ticks(d3.time.seconds, 30)
             .tickFormat(d3.time.format('%Mm %Ss'));
             // .ticks(5);
@@ -187,12 +248,12 @@
           setChartParameters();
 
           svg.append('svg:g')
-             .attr('class', 'xAxis axis')
+             .attr('class', 'xAxis axis grid')
              .attr('transform', 'translate(0,' + chartHeight + ')')
              .call(xAxisGen);
 
           svg.append('svg:g')
-             .attr('class', 'yAxis axis')
+             .attr('class', 'yAxis axis grid')
              .attr('transform', 'translate(50, 0)')
              .call(yAxisGen);
         } // drawAxis
@@ -200,20 +261,39 @@
 
         // ----- Redraw axis on window resize ----- //
         function redrawAxis() {
-          var y = svg.select('.xAxis');
-          y.call(xAxisGen);
+          var x = svg.select('.xAxis');
+          x.call(xAxisGen);
+
+          yAxisGen = d3.svg.axis()
+            .scale(yScale)
+            .orient('left')
+            .tickSize(-chartWidth, 0, 0)
+            .ticks(d3.time.seconds, 30)
+            .tickFormat(d3.time.format('%Mm %Ss'));
+
+
+          var y = svg.select('.yAxis');
+          y.call(yAxisGen);
         } // redrawAxis
 
         // ----- redraw the paths on window resize ----- //
 
         function redrawPaths() {
           data.forEach(function(d, index, array) {
-            var line = svg.select('path.path' + index);
-            line.attr({
+            var runPath = svg.select('path.path' + index);
+            runPath.attr({
                  'd': lineFun(d.markers)
              });
           });
         }
+
+/*        // ----- On mouse hover tooltip ----- //
+        var yLines = svg.selectAll('.yAxis');
+        // yLines.on('mouseover', console.log('yes'));
+
+
+        var vertLines = svg.selectAll('.yAxis > g.tick');
+        console.log(vertLines);*/
 
       } // link
     }; // returned object
