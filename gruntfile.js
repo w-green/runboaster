@@ -8,7 +8,8 @@ module.exports = function(grunt) {
 		clientViews: ['public/modules/**/views/**/*.html'],
 		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
 		clientCSS: ['public/modules/**/*.css', 'public/styles/css/main.css'],
-		mochaTests: ['app/tests/**/*.js']
+		mochaTests: ['app/tests/**/*.js'],
+    sass: 'public/styles/sass/**/*.{scss,sass}'
 	};
 
 	// Project Configuration
@@ -47,7 +48,14 @@ module.exports = function(grunt) {
 				options: {
 					livereload: true
 				}
-			}
+			},
+      sass: {
+          files: watchFiles.sass,
+          tasks: ['sass:dev'],
+          options: {
+          livereload: true
+        }
+      }
 		},
 		jshint: {
 			all: {
@@ -143,7 +151,18 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
-		}
+		},
+    sass: {
+      dev: {
+        options: {
+          style: 'expanded',
+          precision: 10
+        },
+        files: {
+          'public/styles/css/main.css' : 'public/styles/sass/main.scss'
+        }
+      }
+    }
 	});
 
 	// Load NPM tasks
