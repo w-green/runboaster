@@ -1,0 +1,104 @@
+// ----- Left Nav ----- //
+
+.left-nav {
+  width: $width;
+  min-height: 100%;
+  position: fixed;
+  top: 50px;
+  left:0px;
+  display: block;
+  overflow: hidden;
+  z-index: 1;
+  background-color: $blue-dark;
+}
+
+.left-nav ul{
+  padding-left: 0;
+  list-style: none;
+}
+
+.left-nav nav > ul li {
+  height: 45px;
+  cursor: pointer;
+  outline: 0;
+  overflow: hidden;
+  position: relative;
+
+  &.open {
+    height: 100%;
+
+    span.toggleIcon {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
+.left-nav span.toggleIcon {
+  position: absolute;
+  right: 15px;
+}
+
+.left-nav nav > ul li {
+  a {
+    padding: 15px 25px;
+    line-height: 16px;
+    font-size: 16px;
+    height: 45px;
+    display: block;
+  }
+
+  &:hover a{
+    background-color: darken($blue-dark, 5%);
+    text-decoration: none;
+  }
+  &.active {
+    border-left: 5px solid green;
+    background-color: darken($blue-dark, 10%);
+  }
+}
+
+
+.left-nav nav ul li.hasChildren ul {
+  margin-left: 25px;
+  border-left: 2px solid #336;
+
+  li:before {
+    width: 15px;
+    position: absolute;
+    left: 0px;
+    top: 22px;
+    content: '';
+    display: inline-block;
+    border: 1px solid #336;
+  }
+
+  li.active:before {
+    border: none;
+  }
+
+  li a{
+    font-size: 14px;
+
+    span.icon {
+      width: 16px;
+      height: 17px;
+      vertical-align: top;
+    }
+    span.navTitle {
+      margin-left: 10px;
+      line-height: 16px;
+    }
+  }
+}
+
+
+.left-nav nav > ul > li span.icon {
+  width: 18px;
+  height: 19px;
+  display: inline-block;
+}
+
+.left-nav nav > ul > li span.navTitle {
+  margin-left: 15px;
+  line-height: 18px;
+}

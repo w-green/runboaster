@@ -2,3 +2,10 @@ body {
   overflow-x: hidden;
   background-color: #FFF;
 }
+
+@import "_variables.scss";
+
+// ----- Font awesome version 4.2.0----- //
+@import "lib/font-awesome/scss/font-awesome.scss";
+@import "components/_left-nav.scss";
+@import "components/_main-content.scss";

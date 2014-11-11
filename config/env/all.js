@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 
 module.exports = {
 	app: {
@@ -25,6 +25,7 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+        'public/lib/class-list/classList.min.js',
 				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 				'public/lib/lodash/dist/lodash.underscore.js',
 				'public/lib/angular-google-maps/dist/angular-google-maps.js',
