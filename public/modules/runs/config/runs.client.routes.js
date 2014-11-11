@@ -5,7 +5,7 @@ angular.module('runs').config(['$stateProvider',
   function($stateProvider) {
     // Runs state routing
     $stateProvider
-    .state('listRuns', {
+    .state('tableRuns', {
       url : '/runs',
       resolve : {
         runsSummaries : ['runsService', function(runsService) {
@@ -15,7 +15,7 @@ angular.module('runs').config(['$stateProvider',
       templateUrl : 'modules/runs/views/list-runs.client.view.html',
       controller : 'MyRunsCtrl as myRuns'
     })
-    .state('run', {
+    .state('mapRuns', {
         url : '/run',
         views : {
 

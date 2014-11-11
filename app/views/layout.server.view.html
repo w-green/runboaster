@@ -51,11 +51,18 @@
 
 <body class="ng-cloak">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
+
 	<section class="content">
-		<section class="container">
+		<section class="container-fluid">
+
+      <!-- Left nav : Navigation area -->
+      <aside id="left-nav" class="left-nav"><span data-ng-include="'/modules/left-nav/views/navigation.client.view.html'"></span></aside>
+      <!-- END Left nav : Navigation area -->
+
 			{% block content %}{% endblock %}
 		</section>
 	</section>
+
 
 	<!--Embedding The User Object-->
 	<script type="text/javascript">
