@@ -7,6 +7,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
+        'public/lib/c3-0.3.0/c3.css'
 			],
 			js: [
 				'public/lib/ng-file-upload/angular-file-upload-shim.min.js',
@@ -22,7 +23,8 @@ module.exports = {
 				'public/lib/lodash/dist/lodash.underscore.min.js',
 				'public/lib/angular-google-maps/dist/angular-google-maps.min.js',
         'http://d3js.org/d3.v3.min.js',
-        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
+        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js',
+        'public/lib/c3-0.3.0/c3.min.js'
 
 			]
 		},

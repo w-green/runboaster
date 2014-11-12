@@ -13,7 +13,7 @@
           // pre: function preLink(scope, iElement, iAttrs, controller) { ... },
           post: function postLink(scope, iElement, iAttrs, controller) {
             scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-              if (fromState.name != '') {
+              if (fromState.name !== '') {
 
                 // remove the li with active
                 if (document.querySelector('.left-nav li.active')) {
@@ -32,7 +32,7 @@
             });
 
           }
-        }
+        };
       },
     };
   };

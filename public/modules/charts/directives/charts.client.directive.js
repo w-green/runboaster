@@ -1,5 +1,3 @@
-// NEED TO MAKE THIS RESPONSIVE
-
 'use strict';
 
 (function(lodash) {
@@ -10,8 +8,6 @@
     return {
 
       restrict : 'E',
-      // template:'<svg width="800" height="500"></svg>',
-      // template:'<div class="svgContainer col-sm-10"><svg class="svgChart" viewBox="0 0 800 500"></svg></div>',
       template:'<div class="svgContainer col-xs-10"><svg id="lChart" class="svgChart"></svg></div>',
       link : function(scope, elem, attr){
 
@@ -82,15 +78,15 @@
 
 
         // ----- Tooltip ----- //
-        var div = svg.append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+        var div = svg.append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 0);
 
         var tip = d3.tip()
           .attr('class', 'd3-tip')
           .offset([-10, 0])
           .html(function(d) {
-            return 'KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time));
+            return 'KM: ' + d.km + '<br/>' + 'time: ' + d3.time.format('%M:%S')(new Date(d.time));
           });
 
         svg.call(tip);
@@ -98,33 +94,33 @@
 /*
 
         // use rect to capture mouse movements
-        svg.append("rect")
-          .attr("width", chartWidth)
-          .attr("height", chartHeight)
+        svg.append('rect')
+          .attr('width', chartWidth)
+          .attr('height', chartHeight)
           .attr('class', 'rectCaptMouse')
-          .style("fill", "none")
-          .style("pointer-events", "all")
-          .on("mouseover", function() { focus.style("display", null); })
-          .on("mouseout", function() { focus.style("display", "none"); });
-          // .on("mousemove", _.debounce(mousemove, 10));
+          .style('fill', 'none')
+          .style('pointer-events', 'all')
+          .on('mouseover', function() { focus.style('display', null); })
+          .on('mouseout', function() { focus.style('display', 'none'); });
+          // .on('mousemove', _.debounce(mousemove, 10));
 
         var = rectCaptMouse = d3.select('.rectCaptMouse');// document.querySelector('.rectCaptMouse');
 
-        var focus = svg.append("g")
-          .style("display", "none")
+        var focus = svg.append('g')
+          .style('display', 'none')
           .attr('class', 'focus-group');
 
-        focus.append("circle")
-          .attr("class", "y")
-          .style("fill", "none")
-          .style("stroke", "blue")
-          .attr("r", 4);
+        focus.append('circle')
+          .attr('class', 'y')
+          .style('fill', 'none')
+          .style('stroke', 'blue')
+          .attr('r', 4);
 
 
         var bisectDate = d3.bisector(function(d) { return d.km; }).left;
 
 
-        rectCaptMouse.on("mousemove", mousemove);
+        rectCaptMouse.on('mousemove', mousemove);
 
         var prevMousePos = null;
         function mousemove() {
@@ -156,7 +152,7 @@
         data.forEach(function(d, index, array) {
           //drawLines(d);
 
-          runGroup[index] = svg.append("g");
+          runGroup[index] = svg.append('g');
           runGroup[index].attr('class', 'runLine vis-hidden run-' + index);
 
           runGroup[index].append('svg:path')
@@ -170,14 +166,14 @@
 
 
           // Add the scatterplot
-          runGroup[index].selectAll("dot")
+          runGroup[index].selectAll('dot')
               .data(d.markers)
-          .enter().append("circle")
-              .attr("r", 5)
-              .attr("cx", function(d) { return xScale(d.km); })
-              .attr("cy", function(d) { return yScale(d.time); })
+          .enter().append('circle')
+              .attr('r', 5)
+              .attr('cx', function(d) { return xScale(d.km); })
+              .attr('cy', function(d) { return yScale(d.time); })
               .on('mouseover', tip.show)
-              .on('mouseout', tip.hide)
+              .on('mouseout', tip.hide);
 
 
         }); // data.forEach
@@ -192,7 +188,7 @@
           var clientWidth = document.documentElement.clientWidth;
           var deviceScreenWidth = clientWidth / resolution;
           return deviceScreenWidth;
-        }; // getScreenWidth
+        } // getScreenWidth
 
 
         // setting the values of the vars declared earlier
