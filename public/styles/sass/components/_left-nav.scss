@@ -1,11 +1,20 @@
 // ----- Left Nav ----- //
 
+
+// ----- For IE 8 &lt ----- //
 .left-nav {
-  width: $width;
+  position: absolute;
+  left: -$left-nav-width;
+}
+// ----- END For IE 8 &lt ----- //
+
+.left-nav {
+  width: $left-nav-width;
   min-height: 100%;
   position: fixed;
   top: 50px;
   left:0px;
+  transform: translateX(-$left-nav-width);
   display: block;
   overflow: hidden;
   z-index: 1;
@@ -101,4 +110,26 @@
 .left-nav nav > ul > li span.navTitle {
   margin-left: 15px;
   line-height: 18px;
+}
+
+
+body.leftNav--open {
+  .left-nav {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: $left-nav-width;
+  }
+}
+
+
+// ----- 768px and up ----- //
+@media (min-width: $screen-sm-min) {
+  .left-nav {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: $left-nav-width;
+  }
+
 }
