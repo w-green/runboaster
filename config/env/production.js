@@ -5,8 +5,8 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				'public/lib/bootstrap/dist/css/bootstrap.min.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
+				// 'public/lib/bootstrap/dist/css/bootstrap.min.css',
+				// 'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
         'public/lib/c3-0.3.0/c3.css'
 			],
 			js: [
