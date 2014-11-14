@@ -11,8 +11,7 @@
     AngMenuIcon.on('click', toggleMenu);
     function toggleMenu(event) {
       event.preventDefault();
-      bod.classList.toggle('leftNav--open');
-      console.log('yea');
+      bod.classList.toggle('leftNav--toggle');
     }
   };
 

@@ -19,7 +19,76 @@
   overflow: hidden;
   z-index: 1;
   background-color: $blue-dark;
+  transition: 250ms cubic-bezier(0.1,.57,.1,1)
 }
+
+
+// ----- 768px and up ----- //
+// Show nav on first load
+@media (min-width: $screen-sm-min) {
+
+  // ----- For IE 8 &lt ----- //
+  .left-nav {
+    position: absolute;
+    left: 0;
+  }
+  // ----- END For IE 8 &lt ----- //
+
+  .left-nav {
+    position: fixed;
+    left:0px;
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: $left-nav-width;
+  }
+
+}
+
+// ----- TRANSITIONED TO STATE ----- //
+
+body.leftNav--toggle {
+
+  // toggle on nav for 767px - (mobile view)
+  // ----- For IE 8 &lt ----- //
+  .left-nav {
+    position: absolute;
+    left: $left-nav-width;
+  }
+  // ----- END For IE 8 &lt ----- //
+
+  .left-nav {
+    position: fixed;
+    left: 0px;
+    transform: translateX(0);
+  }
+
+  // ----- 768px and up ----- //
+  // toggle off nav for 768px +
+
+  @media (min-width: $screen-sm-min) {
+
+    // ----- For IE 8 &lt ----- //
+    .left-nav {
+      position: absolute;
+      left: -$left-nav-width;
+    }
+    // ----- END For IE 8 &lt ----- //
+
+    .left-nav {
+      position: fixed;
+      left:0px;
+      transform: translateX(-$left-nav-width);
+    }
+    .main {
+      margin-left: $left-nav-width;
+    }
+
+  }
+
+}
+
+// ----- END TRANSITIONED TO STATE ----- //
 
 .left-nav ul{
   padding-left: 0;
@@ -113,23 +182,5 @@
 }
 
 
-body.leftNav--open {
-  .left-nav {
-    transform: translateX(0);
-  }
-  .main {
-    margin-left: $left-nav-width;
-  }
-}
 
 
-// ----- 768px and up ----- //
-@media (min-width: $screen-sm-min) {
-  .left-nav {
-    transform: translateX(0);
-  }
-  .main {
-    margin-left: $left-nav-width;
-  }
-
-}

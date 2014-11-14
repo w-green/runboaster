@@ -22,21 +22,28 @@ $top-nav-border: 3px solid $blue-light;
     cursor: pointer;
     border-left: $top-nav-border;
     user-select: none; // disables double click selection of element.
-
-    &:hover {
-      background-color: $green-ultraviolet;
-    }
   }
   .fa-bars {
     color: #FFF;
   }
 }
 
-
-
-
-
 // ----- Overide Bootstrap ----- //
 .navbar {
   border-radius: 0;
 }
+
+// ----- 1200px + ----- //
+@media (min-width: $screen-lg-min) {
+  .menu-icon {
+    &:hover {
+      background-color: $green-ultraviolet;
+    }
+  }
+}
+
+
+
+
+
+
