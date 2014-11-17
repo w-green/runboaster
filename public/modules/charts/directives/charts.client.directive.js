@@ -7,7 +7,8 @@
 
     return {
 
-      restrict : 'E',
+      restrict : 'AE',
+      replace: true,
       template:'<div class="svgContainer col-xs-10"><svg id="lChart" class="svgChart"></svg></div>',
       link : function(scope, elem, attr){
 
@@ -76,7 +77,7 @@
         // ----- Main drawAxis ----- //
         drawAxis();
 
-
+/*
         // ----- Tooltip ----- //
         var div = svg.append('div')
             .attr('class', 'tooltip')
@@ -91,6 +92,7 @@
 
         svg.call(tip);
         // ----- / Tooltip ----- //
+*/
 /*
 
         // use rect to capture mouse movements
@@ -171,9 +173,9 @@
           .enter().append('circle')
               .attr('r', 5)
               .attr('cx', function(d) { return xScale(d.km); })
-              .attr('cy', function(d) { return yScale(d.time); })
-              .on('mouseover', tip.show)
-              .on('mouseout', tip.hide);
+              .attr('cy', function(d) { return yScale(d.time); });
+              // .on('mouseover', tip.show)
+              // .on('mouseout', tip.hide);
 
 
         }); // data.forEach
