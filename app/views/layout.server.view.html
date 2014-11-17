@@ -52,13 +52,13 @@
 <body class="ng-cloak" id="body-js">
 	<header data-ng-include="'/modules/top-nav/views/top-nav.client.view.html'"></header>
 
-	<section class="content">
+
+  <!-- Left nav : Navigation area -->
+  <aside id="left-nav-js" class="left-nav"><span data-ng-include="'/modules/left-nav/views/navigation.client.view.html'"></span></aside>
+  <!-- END Left nav : Navigation area -->
+
+	<section class="content main-content" id="main-content-js">
 		<section class="container-fluid">
-
-      <!-- Left nav : Navigation area -->
-      <aside id="left-nav" class="left-nav"><span data-ng-include="'/modules/left-nav/views/navigation.client.view.html'"></span></aside>
-      <!-- END Left nav : Navigation area -->
-
 			{% block content %}{% endblock %}
 		</section>
 	</section>

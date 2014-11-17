@@ -25,6 +25,17 @@ angular.module('users').config(['$stateProvider',
 			url: '/signin',
 			templateUrl: 'modules/users/views/authentication/signin.client.view.html'
 		}).
+    state('signout', {
+      url: '/auth/one/signout', // need to have a url for links to work in nav
+      controller: function($http, $state, $location, $scope) {
+        $http.get('auth/signout').then(function() {
+          $location.url('/');
+
+          // Need to force a reload otherwise user is not removed.
+          window.location.reload();
+        });
+      }
+    }).
 		state('forgot', {
 			url: '/password/forgot',
 			templateUrl: 'modules/users/views/password/forgot-password.client.view.html'

@@ -5,9 +5,7 @@
       transclude : true,
       replace : true,
       template: '<nav><ul data-ng-transclude=""></ul></nav>',
-      controller : ['$scope', function($scope) {
-
-      }],
+      controller: 'NavController',
       compile : function compile(tElement, tAttrs, transclude) {
         return {
           // pre: function preLink(scope, iElement, iAttrs, controller) { ... },
