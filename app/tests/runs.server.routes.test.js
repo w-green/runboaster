@@ -6,7 +6,10 @@
 var request = require('supertest'),
 		should = require('should'),
     expect = require('expect'),
-		app = require('../../server');
+		app = require('../../server'),
+    mongoose = require('mongoose'),
+    User = mongoose.model('User'),
+    agent = request.agent(app);
 
 /**
  * Unit tests
@@ -32,6 +35,7 @@ describe('RUNS model unit tests - CRUD operations', function(done) {
       res.body.message.should.match('No minutes have been specified');
     });
   });
+
 
   it('should return a list of runs', function(done){
     request(app)
@@ -61,7 +65,6 @@ describe('RUNS model unit tests - CRUD operations', function(done) {
     });
   });
 
-  // creates a run then uses the ID of that run to remove it
   it('should show a 404 - page not found - if no run id is specified', function(done){
     request(app)
       .delete('/runs/' + '')

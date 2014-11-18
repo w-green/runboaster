@@ -55,7 +55,7 @@ var user;
 var uploadRuns;
 
 
-describe.only('getting runs summaries', function() {
+describe('getting runs summaries', function() {
 
     beforeEach(function(done) {
         user = new User({

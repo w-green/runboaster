@@ -11,6 +11,10 @@ var runsData = require('../../app/controllers/runs-data'),
 module.exports = function(app) {
   app.route('/runs-data')
     .get(runsData.list);
+
+  app.route('/runs-data/:run_user_id')
+    .get(runsData.singleRun);
+
   app.route('/upload')
     .post(
       users.requiresLogin,

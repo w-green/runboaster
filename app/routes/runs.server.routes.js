@@ -14,7 +14,6 @@ module.exports = function(app) {
   app.route('/runs/:runs_id')
     .delete(runs.deleteId);
 
-
   app.route('/runs/all')
     .delete(runs.deleteAll);
 };
