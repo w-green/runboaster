@@ -5,55 +5,87 @@
   var _ = lodash;
 
   if (google === 'undefined') {return;}
-  // MyRunsCtrl controller constructor function
+
+  // Maps controller
+  // Used to display google map
   function MyMapsCtrl(singleRunData ) {
-
     var run = singleRunData;
+    var paths = [];
+    var coords;
+    var numPaths;
+    var polylines = [];
+    var Polyline;
+    var that = this;
+    var runStart;
+    var runEnd;
 
-    var line = [];
-    var line2 = [];
-    var firstLap = run[0].features[0].geometry.coordinates[0];
-    var secondLap = run[0].features[0].geometry.coordinates[1];
+    coords = run[0].features[0].geometry.coordinates;
+    coords.forEach(function(val, i, arry) {
+      if (_.isArray(val)) {
+        var newPath = [];
+        val.forEach(function(val, i, arry) {
+          var latLong = {};
+          latLong.latitude = val[1];
+          latLong.longitude = val[0];
+          newPath.push(latLong);
+        });
+        paths.push(newPath);
+      }
+    });
 
-    var getPaths = function aPath() {
-      firstLap.forEach(function(val, index, arry){
-        var latLong = {};
-        latLong.latitude = val[1];
-        latLong.longitude = val[0];
-        line.push(latLong);
-      });
 
-      secondLap.forEach(function(val, index, arry){
-        var latLong = {};
-        latLong.latitude = val[1];
-        latLong.longitude = val[0];
-        line2.push(latLong);
-      });
-
+    numPaths = paths.length;
+    Polyline = function Polyline(){
+      return {
+        id : undefined,
+        path: undefined,
+        stroke : {
+          color : '#FF0000',
+          weight : 3
+        },
+        visible: true,
+        geodesic: true,
+        editable: false,
+        draggable: false
+      };
     };
 
-    getPaths(); // sets lines
+    function createPolylines() {
+      for(var i = 0; i < numPaths; i++) {
+        var newPolyLine = new Polyline();
+        newPolyLine.id = i + 1; // start at 1
+        newPolyLine.path = paths[i];
+        polylines.push(newPolyLine);
+      }
+    }
+    createPolylines();
 
-
-    var that = this;
-
+    // set out the map
     // use the start as the center
+    function getStartnEnd(numPaths) {
+      var last;
+      if(paths[0][0] !== 'undefined') {
+        runStart = paths[0][0];
+        if(numPaths !== 'undefined') {
+          last = paths[numPaths - 1].length - 1;
+          runEnd = paths[numPaths - 1][last];
+        }
+      };
+    }
+
+    getStartnEnd(numPaths);
 
     that.map = {
-      center: {
-          latitude: 51.459545,
-          longitude: -0.220431
-      },
+      center: runStart,
       zoom: 13
     };
+
+    that.polylines = polylines;
 
     that.markers = [
       {
         id : 0,
-        coords : {
-            latitude: 51.459545,
-            longitude: -0.220431
-        },
+        coords : runStart,
         options : {
           labelContent : 'START',
           draggable : true
@@ -61,40 +93,11 @@
       },
       {
         id : 1,
-        coords : {
-            latitude: 51.451967,
-            longitude: -0.232989
-        },
+        coords : runEnd,
         options : {
-          labelContent : '1 KM',
+          labelContent : 'FINISH',
           draggable : true
         }
-      }
-    ];
-
-
-    that.polylines = [
-      {
-        id : 1,
-        path: line,
-        stroke : {
-          color : '#FF0000',
-          weight : 3
-        },
-        visible: true,
-        editable: false,
-        draggable: false
-      },
-      {
-        id : 2,
-        path: line2,
-        stroke : {
-          color : '#00FF00',
-          weight : 3
-        },
-        visible: true,
-        editable: false,
-        draggable: false
       }
     ];
 
