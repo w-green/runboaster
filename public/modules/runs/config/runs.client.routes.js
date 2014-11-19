@@ -17,17 +17,24 @@ angular.module('runs').config(['$stateProvider',
     })
     .state('mapRuns', {
         url : '/run',
+        resolve : {
+          singleRunData : ['singleRun', function(singleRun) {
+            return singleRun.getSingleRun().$promise;
+          }]
+        },
         views : {
 
             // the main template will be placed here (relatively named)
-            '' : { templateUrl: 'modules/runs/views/run.client.view.html' },
+            '' : {
+              templateUrl: 'modules/runs/views/run.client.view.html'
+            },
 
             // the child views will be defined here (absolutely named)
-            'columnOne@run' : {
+            'columnOne@mapRuns' : {
               templateUrl: 'modules/runs/views/run-single.client.view.html'
             },
 
-            'columnTwo@run' : {
+            'columnTwo@mapRuns' : {
                 templateUrl : 'modules/runs/views/run-map.client.view.html',
                 controller : 'MyMapsCtrl as mapsCtrl'
             }
