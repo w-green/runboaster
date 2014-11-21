@@ -45,8 +45,12 @@ module.exports = {
 		js: [
 			'public/config.js',
 			'public/application.js',
-			'public/modules/*/*.js',
-			'public/modules/*/*[!tests]*/*.js'
+      // 'public/modules/*/*.js', // ORIGINAL
+      // 'public/modules/*/*[!tests]*/*.js' // ORIGINAL
+      'public/modules/*[!e2etests]*/*.js', // ADDED FOR PROTRACTOR
+      'public/modules/*[!e2etests]*/*[!tests]*/*.js' // ADDED FOR PROTRACTOR
+
+
 		],
 		tests: [
 			'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',

@@ -8,7 +8,7 @@
 
   // Maps controller
   // Used to display google map
-  function MyMapsCtrl(singleRunData ) {
+  function MyMapsCtrl(singleRunData, latestSummary) {
     var run = singleRunData;
     var paths = [];
     var coords;
@@ -18,6 +18,10 @@
     var that = this;
     var runStart;
     var runEnd;
+
+    var i = latestSummary.getLatestSum();
+
+    console.log(i);
 
     coords = run[0].features[0].geometry.coordinates;
     coords.forEach(function(val, i, arry) {
@@ -70,7 +74,7 @@
           last = paths[numPaths - 1].length - 1;
           runEnd = paths[numPaths - 1][last];
         }
-      };
+      }
     }
 
     getStartnEnd(numPaths);
@@ -103,6 +107,6 @@
 
   }
 
-  angular.module('runs').controller('MyMapsCtrl', ['singleRunData',  MyMapsCtrl]);
+  angular.module('runs').controller('MyMapsCtrl', ['singleRunData', 'latestSummary',  MyMapsCtrl]);
 
 }(window._, window.google));

@@ -38,6 +38,26 @@ exports.create = function(req, res) {
 
 };
 
+/**
+ * Get users latest run
+ */
+
+exports.getLatest = function getLatest(req, res) {
+  var userId = req.params.user_id;
+  runsSummary
+    .find({'user' : new ObjectId(userId)}, {})
+    .sort({'startTime' : -1})
+    .limit(1)
+    .exec(function(err, result) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(result);
+      }
+    });
+};
 
 
 /**
@@ -58,42 +78,3 @@ exports.create = function(req, res) {
       }
     });
 };
-/*
-  runsSummary
-    .find({ occupation: /host/ })
-    .where('name.last').equals('Ghost')
-    .where('age').gt(17).lt(66)
-    .where('likes').in(['vaporizing', 'talking'])
-    .limit(10)
-    .sort('-occupation')
-    .select('name occupation')
-    .exec(callback);
-*/
-
-
- /* query.exec(function(err, runs) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.status(200).jsonp(runs);
-    }
-  });
- };*/
-
-/*// Remove a specified run via its id
- exports.deleteId = function(req, res) {
-  var run = new Run();
-      run._id = req.params.runs_id;
-
-  run.remove(function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-       res.status(200).jsonp(run);
-    }
-  });
- };*/

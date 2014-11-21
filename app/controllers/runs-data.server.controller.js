@@ -49,15 +49,17 @@ exports.create = function(req, res, next) {
  */
 exports.singleRun = function(req, res) {
   var run_user_id = req.params.run_user_id;
-  var query = runsData.find({'user' : new ObjectId(run_user_id)}, {}).sort({'features.properties.time' : -1}).limit(1);
-
-  query.exec(function(err, runs) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.status(200).jsonp(runs);
+  runsData
+    .find({'user' : new ObjectId(run_user_id)}, {})
+    .sort({'features.properties.time' : -1})
+    .limit(1)
+    .exec(function(err, runs) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(runs);
     }
   });
 };

@@ -27,7 +27,7 @@ function saveUser(done) {
   });
   user.save();
   done();
-};
+}
 
 
 describe('runsData model', function() {
