@@ -1,0 +1,49 @@
+// ----- VARS ----- //
+$top-nav-border: 3px solid $blue-light;
+
+
+.top-nav {
+  height: $top-nav-height;
+  background-color: $blue-dark;
+
+  &>:first-child {
+    width: $left-nav-width;
+    height: $top-nav-height;
+    background-color: $turqoise;
+    margin-top: 0;
+  }
+  &>div {
+    height: $top-nav-height;
+    display: inline-block;
+  }
+  .menu-icon {
+    height: $top-nav-height;
+    padding: 13px;
+    cursor: pointer;
+    border-left: $top-nav-border;
+    user-select: none; // disables double click selection of element.
+  }
+  .fa-bars {
+    color: #FFF;
+  }
+}
+
+// ----- Overide Bootstrap ----- //
+.navbar {
+  border-radius: 0;
+}
+
+// ----- 1200px + ----- //
+@media (min-width: $screen-lg-min) {
+  .menu-icon {
+    &:hover {
+      background-color: $green-ultraviolet;
+    }
+  }
+}
+
+
+
+
+
+

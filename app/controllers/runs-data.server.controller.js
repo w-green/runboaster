@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
   errorHandler = require('./errors'),
   runsData = mongoose.model('runsData'),
+  ObjectId = mongoose.Types.ObjectId,
   Q = require('q'),
   extras = require('../services/runs-data.server.service.js'),
   convert = extras.convert,
@@ -40,6 +41,27 @@ exports.create = function(req, res, next) {
       next();
     });
 
+};
+
+
+/**
+ * Get last run
+ */
+exports.singleRun = function(req, res) {
+  var run_user_id = req.params.run_user_id;
+  runsData
+    .find({'user' : new ObjectId(run_user_id)}, {})
+    .sort({'features.properties.time' : -1})
+    .limit(1)
+    .exec(function(err, runs) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(runs);
+    }
+  });
 };
 
 

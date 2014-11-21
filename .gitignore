@@ -11,4 +11,4 @@ app/tests/coverage/
 .bower-*/
 .idea/
 test-files/2014*
-public/styles/css/
+public/styles/css/*

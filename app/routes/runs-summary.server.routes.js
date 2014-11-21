@@ -9,4 +9,7 @@ module.exports = function(app) {
   app.route('/my/runs/')
     .get(runsSummary.listUserRuns);
 
+  app.route('/api/v_1_0_0/:user_id/run/summary/latest')
+    .get(runsSummary.getLatest);
+
 };

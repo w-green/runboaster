@@ -5,68 +5,108 @@
   var _ = lodash;
 
   if (google === 'undefined') {return;}
-  // MyRunsCtrl controller constructor function
-  function MyMapsCtrl() {
+
+  // Maps controller
+  // Used to display google map
+  function MyMapsCtrl(singleRunData, latestSummary) {
+    var run = singleRunData;
+    var paths = [];
+    var coords;
+    var numPaths;
+    var polylines = [];
+    var Polyline;
     var that = this;
-    that.name = 'hello world';
-    that.map = {
-      center: {
-          latitude: 51.459545,
-          longitude: -0.220431
-      },
-      zoom: 14
-    };
+    var runStart;
+    var runEnd;
 
-    that.marker = {
-      id : 0,
-      coords : {
-          latitude: 51.459545,
-          longitude: -0.220431
-      },
-      options : { draggable: true},
-      label : 'START'
-    };
+    var i = latestSummary.getLatestSum();
 
+    console.log(i);
 
-    that.polylines = {
-      id : 1,
-      path: [
-        { latitude: 51.459545, longitude: -0.220431 },
-        { latitude : 51.458987, longitude : -0.232163 },
-        { latitude : 51.458532, longitude : -0.234770 },
-        { latitude : 51.451967, longitude : -0.232989 }
-      ],
-      stroke : {
-        color : '#ff0000',
-        weight : 3
-      },
-      visible: true,
-      editable: false,
-      draggable: false
-    };
-
-
-    // We want the distance of the polyline
-
-    // Returns an array of LtLng objects for the google maps computeLength()
-    var paths = that.polylines.path.map(function(currentVal, index, array) {
-      return new google.maps.LatLng( currentVal.latitude, currentVal.longitude );
+    coords = run[0].features[0].geometry.coordinates;
+    coords.forEach(function(val, i, arry) {
+      if (_.isArray(val)) {
+        var newPath = [];
+        val.forEach(function(val, i, arry) {
+          var latLong = {};
+          latLong.latitude = val[1];
+          latLong.longitude = val[0];
+          newPath.push(latLong);
+        });
+        paths.push(newPath);
+      }
     });
 
-    that.distance = (function () {
-     var meterResult = google.maps.geometry.spherical.computeLength(paths);
-     var kilometerResult = metersToKilometers(meterResult);
-     return Math.round(100 * kilometerResult) / 100; // rounding to 2 decimal places
-    })();
 
-    function metersToKilometers (meters) {
-      return (meters / 1000);
+    numPaths = paths.length;
+    Polyline = function Polyline(){
+      return {
+        id : undefined,
+        path: undefined,
+        stroke : {
+          color : '#FF0000',
+          weight : 3
+        },
+        visible: true,
+        geodesic: true,
+        editable: false,
+        draggable: false
+      };
+    };
+
+    function createPolylines() {
+      for(var i = 0; i < numPaths; i++) {
+        var newPolyLine = new Polyline();
+        newPolyLine.id = i + 1; // start at 1
+        newPolyLine.path = paths[i];
+        polylines.push(newPolyLine);
+      }
+    }
+    createPolylines();
+
+    // set out the map
+    // use the start as the center
+    function getStartnEnd(numPaths) {
+      var last;
+      if(paths[0][0] !== 'undefined') {
+        runStart = paths[0][0];
+        if(numPaths !== 'undefined') {
+          last = paths[numPaths - 1].length - 1;
+          runEnd = paths[numPaths - 1][last];
+        }
+      }
     }
 
+    getStartnEnd(numPaths);
+
+    that.map = {
+      center: runStart,
+      zoom: 13
+    };
+
+    that.polylines = polylines;
+
+    that.markers = [
+      {
+        id : 0,
+        coords : runStart,
+        options : {
+          labelContent : 'START',
+          draggable : true
+        }
+      },
+      {
+        id : 1,
+        coords : runEnd,
+        options : {
+          labelContent : 'FINISH',
+          draggable : true
+        }
+      }
+    ];
 
   }
 
-  angular.module('runs').controller('MyMapsCtrl', MyMapsCtrl);
+  angular.module('runs').controller('MyMapsCtrl', ['singleRunData', 'latestSummary',  MyMapsCtrl]);
 
 }(window._, window.google));
-

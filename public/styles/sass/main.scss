@@ -3,9 +3,15 @@ body {
   background-color: #FFF;
 }
 
+
+@import "lib/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
+
 @import "_variables.scss";
 
 // ----- Font awesome version 4.2.0----- //
 @import "lib/font-awesome/scss/font-awesome.scss";
-@import "components/_left-nav.scss";
+
+// ----- components ----- //
 @import "components/_main-content.scss";
+@import "components/_top-nav.scss";
+@import "components/_left-nav.scss";

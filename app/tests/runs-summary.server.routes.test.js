@@ -6,103 +6,67 @@ var request = require('supertest'),
     app = require('../../server'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    runsSummary = mongoose.model('runsSummary'),
-    agent = request.agent(app);
+    summaryModel = mongoose.model('runsSummary'),
+    agent = request.agent(app),
+    summarData = require('../../test-files/output/runs-summary-stub.js'),
+    ObjectId = mongoose.Types.ObjectId;
 
-// Displays the runs summary data
-
-// e.g. get runs lists last 10 runs
-// USE CASES
-
-// As a user a want to see a list of my last 10 runs.
-// As a user I want to see a list of my fastest runs.
-// As a user I want to see a list of my fastest first km
-
-// As a user I want to see a list of all my runs with paging after 10
-
-
-/*
-
-ALL OF THE FILE FOR THE TESTS
-  .attach('file', './test-files/2014-06-24-1145.gpx')
-  .attach('file', './test-files/2014-07-21-1334.gpx')
-  .attach('file', './test-files/2014-07-22-1314.gpx')
-  .attach('file', './test-files/2014-07-24-1253.gpx')
-  .attach('file', './test-files/2014-07-25-1636.gpx')
-  .attach('file', './test-files/2014-07-30-1342.gpx')
-  .attach('file', './test-files/2014-08-01-0919.gpx')
-  .attach('file', './test-files/2014-08-04-1316.gpx')
-  .attach('file', './test-files/2014-08-07-2023.gpx')
-  .attach('file', './test-files/2014-08-13-2040.gpx')
-  .attach('file', './test-files/2014-08-21-1327.gpx')
-                  */
-
-var files = [
-  './test-files/2014-06-24-1145.gpx',
-  './test-files/2014-07-21-1334.gpx',
-  './test-files/2014-07-22-1314.gpx',
-  './test-files/2014-07-24-1253.gpx',
-  './test-files/2014-07-25-1636.gpx',
-  './test-files/2014-07-30-1342.gpx',
-  './test-files/2014-08-01-0919.gpx',
-  './test-files/2014-08-04-1316.gpx',
-  './test-files/2014-08-07-2023.gpx',
-  './test-files/2014-08-13-2040.gpx',
-  './test-files/2014-08-21-1327.gpx'
-];
 
 var user;
-var uploadRuns;
 
 
-describe.only('getting runs summaries', function() {
+describe('getting runs summaries', function() {
 
-    beforeEach(function(done) {
-        user = new User({
-            firstName: 'Full',
-            lastName: 'Name',
-            displayName: 'Full Name',
-            email: 'test@test.com',
-            username: 'username',
-            password: 'password',
-            provider: 'local'
-        });
-        user.save();
-        done();
+  beforeEach(function(done) {
+      user = new User({
+          firstName: 'Full',
+          lastName: 'Name',
+          displayName: 'Full Name',
+          email: 'test@test.com',
+          username: 'username',
+          password: 'password',
+          provider: 'local'
+      });
+      user.save();
+      done();
+  });
+
+  it('should return the latest run summary', function(done) {
+    summarData.user = user;
+    var runsSummary = new summaryModel(summarData);
+    runsSummary.save(function(err) {
+      if (err) {console.log('failed to save summary ' + err)}
+    });
+
+    // save a later run to check this is the one retrieved
+    var summaryLatest = summarData;
+    summaryLatest._id = new ObjectId('546a77833bba9db643de6344');
+    summaryLatest.startTime = new Date();
+    summaryLatest = new summaryModel(summaryLatest);
+    summaryLatest.save(function(err) {
+      if (err) {console.log('failed to save summaryLatest ' + err)}
     });
 
 
-/**
- * @description We've uploaded the files in this fashion as it seems the only way to do so.
- * TODO = NEED A WAY OF RUNNING THIS IN THE BEFORE
- * AND THEN TEAR DOWN AFTER
- *
- */
-xit('will upload multiple files', function (done) {
     agent
-          .post('/auth/signin')
-          .send(user)
-          .end(function (err, res){
-              files.forEach(function(file, index, array) {
-                agent
-                    .post('/upload')
-                    .type('form')
-                    .attach('file', file)
-                    .expect(200)
-                    .end(function (err, res) {
-                      if(err) {
-                        console.log(err + '  ' + file);
-                      }
-                    });
-              });
-              done();
-        });
-});
+      .post('/auth/signin')
+      .send(user)
+      .end(function(err, res){
+        var userId = res.body._id;
+        agent
+          .get('/api/v_1_0_0/' + userId + '/run/summary/latest')
+          .end(function(err, res){
+            should(new Date(res.body[0].startTime)).eql(summaryLatest.startTime);
+            done();
+          })
+      });
+
+  });
 
 
+  // need to make sure db has 10 runs in it.
+  xit('should list the last ten runs', function(done) {
 
-
-  it('should list the last ten runs', function(done){
     agent
           .post('/auth/signin')
           .send(user)
@@ -110,6 +74,7 @@ xit('will upload multiple files', function (done) {
             expect(res.status).toEqual(200);
             agent
               .get('/my/runs/')
+              .set({'user._id' : res.body._id})
               .end(function(err, res) {
                 expect(err).toBe(null);
                 expect(res.body.length).toEqual(10);
@@ -118,12 +83,10 @@ xit('will upload multiple files', function (done) {
           });
   });
 
-  it('should not allow me to list the last ten runs if I am not signed in', function(){
-    // get my/runs/userId
-  });
-
-  it('should page for the next ten runs', function(){
-
+  afterEach(function(done) {
+    summaryModel.remove().exec();
+    User.remove().exec();
+    done();
   });
 
 });

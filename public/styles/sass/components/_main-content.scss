@@ -1,6 +1,4 @@
-// ----- Main content area ----- //
-// Excludes left nav
-
-.main {
-  margin-left: $width;
+.main-content {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }

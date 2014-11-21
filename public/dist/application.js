@@ -2,7 +2,7 @@
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = function () {
     // Init module configuration options
-    var applicationModuleName = 'mean';
+    var applicationModuleName = 'runningApp';
     var applicationModuleVendorDependencies = [
         'ngResource',
         'ngAnimate',
@@ -404,7 +404,7 @@ angular.module('core').service('Menus', [function () {
     this.defaultRoles = ['*'];
     // Define the menus object
     this.menus = {};
-    // A private function for rendering decision 
+    // A private function for rendering decision
     var shouldRender = function (user) {
       if (user) {
         if (!!~this.roles.indexOf('*')) {
@@ -952,7 +952,7 @@ angular.module('users').config([
               $location.path('signin');
               break;
             case 403:
-              // Add unauthorized behaviour 
+              // Add unauthorized behaviour
               break;
             }
             return $q.reject(rejection);
@@ -1080,7 +1080,7 @@ angular.module('users').controller('SettingsController', [
     // If user is not signed in then redirect back home
     if (!$scope.user)
       $location.path('/');
-    // Check if there are additional accounts 
+    // Check if there are additional accounts
     $scope.hasConnectedAdditionalSocialAccounts = function (provider) {
       for (var i in $scope.user.additionalProvidersData) {
         return true;

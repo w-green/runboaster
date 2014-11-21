@@ -34,7 +34,6 @@
 
 
         data.forEach(function(d, index, array) {
-          //drawLines(d);
 
           createSelectorList();
 
@@ -47,7 +46,7 @@
             var anchor = document.createElement('a');
             anchor.className = 'run-' + index;
 
-            var startDate = d3.time.format("%a %b %e %Y")(new Date(d.startTime));
+            var startDate = d3.time.format('%a %b %e %Y')(new Date(d.startTime));
             anchor.textContent = startDate;
 
             li.appendChild(anchor);

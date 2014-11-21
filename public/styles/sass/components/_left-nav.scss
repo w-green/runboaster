@@ -1,16 +1,96 @@
 // ----- Left Nav ----- //
 
+// ----- For IE 8 &lt ----- //
 .left-nav {
-  width: $width;
-  min-height: 100%;
+  position: absolute;
+  left: -$left-nav-width;
+}
+// ----- END For IE 8 &lt ----- //
+
+.left-nav {
+  width: $left-nav-width;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom:55px;
+
   position: fixed;
   top: 50px;
   left:0px;
+  transform: translateX(-$left-nav-width);
   display: block;
-  overflow: hidden;
   z-index: 1;
   background-color: $blue-dark;
+  transition: 250ms cubic-bezier(0.1,.57,.1,1)
 }
+
+
+// ----- 768px and up ----- //
+// Show nav on first load
+@media (min-width: $screen-sm-min) {
+
+  // ----- For IE 8 &lt ----- //
+  .left-nav {
+    position: absolute;
+    left: 0;
+  }
+  // ----- END For IE 8 &lt ----- //
+
+  .left-nav {
+    position: fixed;
+    left:0px;
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: $left-nav-width;
+  }
+
+}
+
+// ----- TRANSITIONED TO STATE ----- //
+
+body.leftNav--toggle {
+
+  // toggle on nav for -768px (mobile view)
+  // ----- For IE 8 &lt ----- //
+  .left-nav {
+    position: absolute;
+    left: $left-nav-width;
+  }
+  // ----- END For IE 8 &lt ----- //
+
+  .left-nav {
+    position: fixed;
+    left: 0px;
+    transform: translateX(0);
+  }
+
+
+  // toggle off nav for 768px +
+
+  @media (min-width: $screen-sm-min) {
+
+    // ----- For IE 8 &lt ----- //
+    .left-nav {
+      position: absolute;
+      left: -$left-nav-width;
+    }
+    // ----- END For IE 8 &lt ----- //
+
+    .left-nav {
+      position: fixed;
+      left:0px;
+      transform: translateX(-$left-nav-width);
+    }
+    .main-content {
+      margin-left: 0;
+    }
+
+  }
+
+}
+
+// ----- END TRANSITIONED TO STATE ----- //
 
 .left-nav ul{
   padding-left: 0;
@@ -18,11 +98,30 @@
 }
 
 .left-nav nav > ul li {
-  height: 45px;
+  height: 55px;
   cursor: pointer;
   outline: 0;
   overflow: hidden;
   position: relative;
+
+  a {
+    padding: 15px 25px;
+    line-height: 25px;
+    font-size: 16px;
+    height: 55px;
+    display: block;
+  }
+
+  &:hover a{
+    background-color: darken($blue-dark, 5%);
+    text-decoration: none;
+  }
+
+  span.toggleIcon {
+    position: absolute;
+    right: 15px;
+    line-height: 25px;
+  }
 
   &.open {
     height: 100%;
@@ -31,32 +130,32 @@
       transform: rotate(-90deg);
     }
   }
-}
 
-.left-nav span.toggleIcon {
-  position: absolute;
-  right: 15px;
-}
-
-.left-nav nav > ul li {
-  a {
-    padding: 15px 25px;
-    line-height: 16px;
-    font-size: 16px;
-    height: 45px;
-    display: block;
-  }
-
-  &:hover a{
-    background-color: darken($blue-dark, 5%);
-    text-decoration: none;
-  }
   &.active {
     border-left: 5px solid green;
     background-color: darken($blue-dark, 10%);
+
+    a {
+        padding-left: 20px;
+    }
   }
+
 }
 
+@media (min-width: $screen-md-min) {
+    // resize nav smaller for non mobile
+    .left-nav nav > ul li {
+      height: 45px;
+
+      a {
+        height: 45px;
+        line-height: 16px;
+      }
+      span.toggleIcon {
+        line-height: 16px;
+      }
+    }
+}
 
 .left-nav nav ul li.hasChildren ul {
   margin-left: 25px;
@@ -78,6 +177,7 @@
 
   li a{
     font-size: 14px;
+    line-height: 15px;
 
     span.icon {
       width: 16px;

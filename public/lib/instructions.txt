@@ -1,0 +1,2 @@
+Note:
+We've modified c3.js and issued a pull request. In the mean time we've kept the updated version in our git repo so that we do not override it.

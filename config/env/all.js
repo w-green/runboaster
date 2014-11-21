@@ -13,8 +13,9 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				// 'public/lib/bootstrap/dist/css/bootstrap.css',
+				// 'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+        'public/lib/c3-0.3.0/c3.css'
 			],
 			js: [
 				'public/lib/ng-file-upload/angular-file-upload-shim.min.js',
@@ -25,12 +26,15 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-        'public/lib/class-list/classList.min.js',
+        // 'public/lib/polyfill/matchmedia/media.match.min.js',
+        'public/lib/polyfill/class-list/classList.min.js',
+        'http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js',
 				'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
 				'public/lib/lodash/dist/lodash.underscore.js',
 				'public/lib/angular-google-maps/dist/angular-google-maps.js',
         'http://d3js.org/d3.v3.min.js',
-        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js'
+        'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js',
+        'public/lib/c3-0.3.0/c3.js'
 
 			]
 		},
@@ -41,8 +45,12 @@ module.exports = {
 		js: [
 			'public/config.js',
 			'public/application.js',
-			'public/modules/*/*.js',
-			'public/modules/*/*[!tests]*/*.js'
+      // 'public/modules/*/*.js', // ORIGINAL
+      // 'public/modules/*/*[!tests]*/*.js' // ORIGINAL
+      'public/modules/*[!e2etests]*/*.js', // ADDED FOR PROTRACTOR
+      'public/modules/*[!e2etests]*/*[!tests]*/*.js' // ADDED FOR PROTRACTOR
+
+
 		],
 		tests: [
 			'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
