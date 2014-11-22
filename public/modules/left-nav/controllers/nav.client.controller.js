@@ -12,13 +12,32 @@
     window.addEventListener('orientationchange', setHeight);
 
     function setHeight() {
+      var htmlEl;
+      var topNav;
+      setTopNav();
+
+      // Making sure html element has been rendered.
+      // If not nav will not show.
+      function setTopNav() {
+        topNav = document.getElementById('top-nav-js') || '';
+        var timer = setTimeout(setTopNav, 10);
+        if(topNav === ''){
+          timer;
+        }
+        else {
+          clearTimeout(timer);
+          return;
+        }
+      }
+
+      htmlEl = document.querySelector('html');
       var navEl = document.getElementById('left-nav-js');
-      var htmlEl = document.getElementsByTagName('html')[0];
-      var topNav = document.getElementById('top-nav-js');
+
       var mainContent = document.getElementById('main-content-js');
       var htmlHeight = htmlEl.clientHeight;
       var topNavHeight = topNav.clientHeight;
       var nav_Height =  htmlHeight - topNavHeight;
+
 
       navEl.style.height = nav_Height + 'px';
       mainContent.style.height = nav_Height + 'px';

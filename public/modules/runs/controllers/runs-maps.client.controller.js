@@ -77,7 +77,7 @@
     getStartnEnd(numPaths);
 
     that.map = {
-      center: runStart,
+      center: {latitude: paths[0][0].latitude, longitude: paths[0][0].longitude},
       zoom: 14
     };
 
@@ -90,7 +90,7 @@
         coords : runStart,
         options : {
           labelContent : 'START',
-          draggable : true
+          draggable : false
         },
         icon : '/styles/img/maps/1x1pxtransparent.png'
       },
@@ -99,7 +99,7 @@
         coords : runEnd,
         options : {
           labelContent : 'FINISH',
-          draggable : true
+          draggable : false
         },
         icon : '/styles/img/maps/1x1pxtransparent.png'
       }
