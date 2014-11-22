@@ -105,7 +105,6 @@
       }
     ];
 
-// that.markers = [];
 
     lastSummary[0].markerItems.forEach(function(markerItem, ind, arry) {
       var marker = {};
@@ -121,8 +120,6 @@
       marker.icon = '/styles/img/maps/1x1pxtransparent.png';
       that.markers.push(marker);
     });
-
-// console.log(markers);
 
 
   }

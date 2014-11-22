@@ -34,7 +34,8 @@ angular.module('runs').config(['$stateProvider',
 
             // the child views will be defined here (absolutely named)
             'columnOne@mapRuns' : {
-              templateUrl: 'modules/runs/views/run-single.client.view.html'
+              templateUrl : 'modules/runs/views/run-map-summary.client.view.html',
+              controller : 'MapSummaryCtrl as MapSummary'
             },
 
             'columnTwo@mapRuns' : {
