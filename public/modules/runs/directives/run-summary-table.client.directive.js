@@ -1,6 +1,6 @@
 'use strict';
 
-(function(lodash) {
+(function(lodash, sorttable) {
   var _ = lodash;
 
   var runsSummaryTable = function runsSummaryTable($filter) {
@@ -9,7 +9,7 @@
 
       restrict : 'E',
       link : function(scope, element, attrs) {
-        var runs = scope.myRuns.runs;
+        var runs = scope.tableOfRuns.runs;
 
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
@@ -19,7 +19,8 @@
         // layout our table.
         function createTableOfRuns(runs) {
           var table = document.createElement('table');
-          table.className = 'table table-responsive table-hover';
+          // note sortable class added for sorttable.js
+          table.className = 'table table-responsive table-hover sortable';
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;
@@ -109,6 +110,11 @@
               // use filter to change timestamp to time
               var sTime = $filter('date')(run.startTime, 'EEEE MMM d, y h:mm:ss a');
               tdStartTime.appendChild(document.createTextNode(sTime));
+
+              // use sortable custom key attribute for sorttable.js
+              var attTime = $filter('date')(run.startTime, 'yyyyMMddHHmm');
+              tdStartTime.setAttribute('sorttable_customkey', attTime);
+
               tr.appendChild(tdStartTime);
 
               for (var i = 0; i < markerSize; i++) {
@@ -147,11 +153,14 @@
 
         element.append(tableOfRuns);
 
-      }
+        // add the sorttable.js initiation
+        var table = document.querySelector('table.sortable');
+        sorttable.makeSortable(table);
+      } // link
 
     };
   };
 
 angular.module('runs').directive('runsSummaryTable', [ '$filter', runsSummaryTable]);
 
-}(window._));
+}(window._, window.sorttable));

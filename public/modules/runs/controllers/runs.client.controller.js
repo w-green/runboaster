@@ -4,18 +4,21 @@
 
   var _ = lodash;
 
-  // MyRunsCtrl controller constructor function
-  function MyRunsCtrl(runsSummaries) {
+  // table of runs
+  function TableRunsCtrl(runsSummaries) {
     var that = this;
-    var sortedAsc = false; // used as a signal for sortResults()
-    var sortByDateAsc = false; // used as a signal for sortByDate()
 
     that.runs = runsSummaries;
 
+
+/*
+    REMOVED IN FAVOUR OF sorttable.js
+    var sortedAsc = false; // used as a signal for sortResults()
+    var sortByDateAsc = false; // used as a signal for sortByDate()
+
     that.sortedRuns = null;
 
-
-/*    // sort results by date
+    // sort results by date
     that.sortByDate = function sortByDate(runs) {
       if (sortByDateAsc === false) {
         sortByDateAsc = true;
@@ -40,7 +43,7 @@
 
   }
 
-  angular.module('runs').controller('MyRunsCtrl', [ 'runsSummaries', MyRunsCtrl ]);
+  angular.module('runs').controller('TableRunsCtrl', [ 'runsSummaries', TableRunsCtrl ]);
 
 }(window._));
 

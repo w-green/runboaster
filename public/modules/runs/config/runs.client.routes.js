@@ -12,8 +12,8 @@ angular.module('runs').config(['$stateProvider',
           return runsService.getRuns().$promise;
         }]
       },
-      templateUrl : 'modules/runs/views/list-runs.client.view.html',
-      controller : 'MyRunsCtrl as myRuns'
+      templateUrl : 'modules/runs/views/run-table.client.view.html',
+      controller : 'TableRunsCtrl as tableOfRuns'
     })
     .state('mapRuns', {
         url : '/run',

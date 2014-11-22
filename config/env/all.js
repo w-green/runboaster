@@ -34,7 +34,8 @@ module.exports = {
 				'public/lib/angular-google-maps/dist/angular-google-maps.js',
         'http://d3js.org/d3.v3.min.js',
         'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js',
-        'public/lib/c3-0.3.0/c3.js'
+        'public/lib/c3-0.3.0/c3.js',
+        'public/lib/sorttable/sorttable.min.js'
 
 			]
 		},
