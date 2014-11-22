@@ -8,7 +8,7 @@
   function MyRunCtrl($state) {
     var that = this;
     that.name = 'hello world';
-    $state.transitionTo('run.map');
+    // $state.transitionTo('run.map');
 
   }
 

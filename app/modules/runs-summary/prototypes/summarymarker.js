@@ -5,6 +5,7 @@
  */
   var summarymarkerPrototype = {
     km : null,
+    coords : null,
     totalDistance : null,
     startTime : null,
     rest : false, // indicates whether a pause exists in run for quick checking

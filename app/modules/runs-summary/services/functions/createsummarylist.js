@@ -17,6 +17,11 @@ function createSummaryList(markers, startOfRun, summaryFactory) {
   markers.forEach(function(marker, index, array) {
     var kmSummaryProps = {
       km : marker.meters / 1000,
+      coords :
+        {
+          longitude : marker.data[0].longitude,
+          latitude : marker.data[0].latitude,
+        },
       startTime : getStartTime(),
       endTime : marker.data[1].time,
       rest : false, //was it paused

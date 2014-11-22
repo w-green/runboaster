@@ -16,14 +16,15 @@
         static="true"
         geodesic="true"
         editable="p.editable"
-        draggable="p.draggable">
+        draggable="false">
       </ui-gmap-polyline>
 
       <ui-gmap-marker
         ng-repeat="m in mapsCtrl.markers"
         coords="m.coords"
         options="m.options"
-        idkey="m.id">
+        idkey="m.id"
+        icon="m.icon">
       </ui-gmap-marker>
 
     </ui-gmap-google-map>

@@ -8,7 +8,7 @@
 
   // Maps controller
   // Used to display google map
-  function MyMapsCtrl(singleRunData, latestSummary) {
+  function MyMapsCtrl(singleRunData, lastSummary) {
     var run = singleRunData;
     var paths = [];
     var coords;
@@ -19,9 +19,6 @@
     var runStart;
     var runEnd;
 
-    var i = latestSummary.getLatestSum();
-
-    console.log(i);
 
     coords = run[0].features[0].geometry.coordinates;
     coords.forEach(function(val, i, arry) {
@@ -81,10 +78,11 @@
 
     that.map = {
       center: runStart,
-      zoom: 13
+      zoom: 14
     };
 
     that.polylines = polylines;
+
 
     that.markers = [
       {
@@ -93,7 +91,8 @@
         options : {
           labelContent : 'START',
           draggable : true
-        }
+        },
+        icon : '/styles/img/maps/1x1pxtransparent.png'
       },
       {
         id : 1,
@@ -101,12 +100,33 @@
         options : {
           labelContent : 'FINISH',
           draggable : true
-        }
+        },
+        icon : '/styles/img/maps/1x1pxtransparent.png'
       }
     ];
 
+// that.markers = [];
+
+    lastSummary[0].markerItems.forEach(function(markerItem, ind, arry) {
+      var marker = {};
+      marker.id = ind + 2; // start after id of start and end
+      marker.coords = {
+        latitude : markerItem.coords.latitude,
+        longitude : markerItem.coords.longitude
+      };
+      marker.options = {
+        labelContent : markerItem.km + '<br />km',
+        draggable : false
+      };
+      marker.icon = '/styles/img/maps/1x1pxtransparent.png';
+      that.markers.push(marker);
+    });
+
+// console.log(markers);
+
+
   }
 
-  angular.module('runs').controller('MyMapsCtrl', ['singleRunData', 'latestSummary',  MyMapsCtrl]);
+  angular.module('runs').controller('MyMapsCtrl', ['singleRunData', 'lastSummary',  MyMapsCtrl]);
 
 }(window._, window.google));

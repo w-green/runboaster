@@ -54,6 +54,7 @@ exports.calculate =
       var revisedTotalDistance = totalDistanceCounter(mappedData, totalDistance, kmMarker, kmMarkers);
       totalDistance = revisedTotalDistance;
 
+      // console.log(JSON.stringify(kmMarkers, null, 2));
 
       // ----- Updates the km marker ----- //
       // with output from totalDistanceCounter()

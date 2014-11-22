@@ -20,6 +20,9 @@ angular.module('runs').config(['$stateProvider',
         resolve : {
           singleRunData : ['singleRun', function(singleRun) {
             return singleRun.getSingleRun().$promise;
+          }],
+          lastSummary : ['latestSummary', function(latestSummary) {
+            return latestSummary.getLatestSum().$promise;
           }]
         },
         views : {
