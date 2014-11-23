@@ -25,27 +25,7 @@
 }
 
 
-// ----- 768px and up ----- //
-// Show nav on first load
-@media (min-width: $screen-sm-min) {
 
-  // ----- For IE 8 &lt ----- //
-  .left-nav {
-    position: absolute;
-    left: 0;
-  }
-  // ----- END For IE 8 &lt ----- //
-
-  .left-nav {
-    position: fixed;
-    left:0px;
-    transform: translateX(0);
-  }
-  .main-content {
-    margin-left: $left-nav-width;
-  }
-
-}
 
 // ----- TRANSITIONED TO STATE ----- //
 
@@ -142,21 +122,6 @@ body.leftNav--toggle {
 
 }
 
-@media (min-width: $screen-md-min) {
-    // resize nav smaller for non mobile
-    .left-nav nav > ul li {
-      height: 45px;
-
-      a {
-        height: 45px;
-        line-height: 16px;
-      }
-      span.toggleIcon {
-        line-height: 16px;
-      }
-    }
-}
-
 .left-nav nav ul li.hasChildren ul {
   margin-left: 25px;
   border-left: 2px solid #336;
@@ -201,4 +166,43 @@ body.leftNav--toggle {
 .left-nav nav > ul > li span.navTitle {
   margin-left: 15px;
   line-height: 18px;
+}
+
+
+
+// ----- 768px and up ----- //
+// Show nav on first load
+@media (min-width: $screen-sm-min) {
+
+  // ----- For IE 8 &lt ----- //
+  .left-nav {
+    position: absolute;
+    left: 0;
+  }
+  // ----- END For IE 8 &lt ----- //
+
+  .left-nav {
+    position: fixed;
+    left:0px;
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: $left-nav-width;
+  }
+
+}
+
+@media (min-width: $screen-md-min) {
+    // resize nav smaller for non mobile
+    .left-nav nav > ul li {
+      height: 45px;
+
+      a {
+        height: 45px;
+        line-height: 16px;
+      }
+      span.toggleIcon {
+        line-height: 16px;
+      }
+    }
 }

@@ -1,18 +1,30 @@
-<!-- Chart of runs -->
-<section>
-  <p>Charts of your runs</p>
-  <div class="row">
-    <div l-chart>
-    </div>
+
+<section class="chart--dataselector inactive">
+  <!--  Menu item for chart data selector slide out   -->
+  <div data-ng-click="slideOutRuns()" class="chart--dataselector-label ng-scope pull-right">
+    <section class="content">
+      <div class="call-to-action">Select your runs &raquo;</div>
+      <div class="toggle-chart-data-list">
+        <span class="fa fa-lg fa-fw fa-plus toggleIcon"></span>
+      </div>
+    </section>
   </div>
+
+  <!--  chart data selector list  -->
+  <section class="chart--dataselector-list">
+      <chart-data-selector></chart-data-selector>
+  </section>
+
+  <!-- Chart of runs -->
+  <section>
+    <p>Charts of your runs</p>
+    <div class="row">
+      <div l-chart>
+      </div>
+    </div>
+  </section>
+
 </section>
 
-<!-- Chart data selection -->
-<div class="chart--dataselector-label">
-  <section class="content">
-    <button data-ng-click="slideOutRuns()">Select your runs</button>
-  </section>
-</div>
-<section class="chart--dataselector-list inactive">
-    <chart-data-selector></chart-data-selector>
-</section>
+
+

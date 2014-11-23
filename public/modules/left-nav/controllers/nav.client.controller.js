@@ -8,7 +8,7 @@
     $scope.authentication = Authentication;
 
     setHeight();
-    window.onresize = _.debounce(setHeight, 150)
+    window.onresize = _.debounce(setHeight, 150);
     window.addEventListener('orientationchange', setHeight);
 
     function setHeight() {
