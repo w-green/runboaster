@@ -4,11 +4,11 @@
 // Using a flyweight pattern to share the latestTen runs btw directives
 (function() {
 
-  var latestTen = function ($q, $resource) {
+  var latestTen = function ($q, $resource, Authentication) {
 
     var runs = { // resource object
       resource :
-                $resource('/my/runs/', {}, {
+                $resource('/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/summary/lastTen', {'user_id' : '@user_id'}, {
                   query: { method: 'GET', isArray: true },
                   create: { method: 'POST' }
                 }),
@@ -16,7 +16,7 @@
                   if (this.data !== null) {
                     return this.data;
                   }
-                  var promise = this.resource.query().$promise;
+                  var promise = this.resource.query({'user_id' : Authentication.user._id}).$promise;
 
                   var result = promise.then(function(d) {
                     return createDataOb(d, $q);
@@ -77,6 +77,6 @@
     return deferred.promise;
   } //createDataOb
 
-  angular.module('runs').factory('latestTen', ['$q', '$resource', latestTen]);
+  angular.module('runs').factory('latestTen', ['$q', '$resource', 'Authentication', latestTen]);
 
 }());

@@ -8,8 +8,9 @@ angular.module('runs').config(['$stateProvider',
     .state('tableRuns', {
       url : '/runs',
       resolve : {
-        runsSummaries : ['runsService', function(runsService) {
-          return runsService.getRuns().$promise;
+        runsSummaries : ['latestTen', function(latestTen) {
+          var res = latestTen.getRuns(); // returns a promise
+          return res;
         }]
       },
       templateUrl : 'modules/runs/views/run-table.client.view.html',

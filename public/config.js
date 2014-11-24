@@ -3,7 +3,8 @@
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
-	var applicationModuleName = 'runningApp';
+	var apiVersion = '1_0_0';
+  var applicationModuleName = 'runningApp';
 	var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils', 'uiGmapgoogle-maps'];
 
 	// Add a new vertical module
@@ -15,9 +16,21 @@ var ApplicationConfiguration = (function() {
 		angular.module(applicationModuleName).requires.push(moduleName);
 	};
 
-	return {
-		applicationModuleName: applicationModuleName,
-		applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-		registerModule: registerModule
-	};
+  var config = {
+    applicationModuleName: applicationModuleName,
+    applicationModuleVendorDependencies: applicationModuleVendorDependencies,
+    registerModule: registerModule
+  };
+
+  Object.defineProperty(config, 'apiVersion', {
+    value : apiVersion,
+    configurable : false,
+    enumerable : true,
+    writable : false
+  });
+
+  Object.freeze(config);
+
+  return config;
+
 })();

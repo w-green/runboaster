@@ -10,7 +10,6 @@
       restrict : 'E',
       link : function(scope, element, attrs) {
         var runs = scope.tableOfRuns.runs;
-
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
 
@@ -50,18 +49,10 @@
 
           return table;
 
+
           function getMarkerSize(runs, headings) {
 
-            // used for marker heading - to work out total no. of markers
-            // default = 0 incase it is not resolved (otherwise it runs to infinity)
-            var markers = [];
-
-            // create the headings
-            runs.forEach(function(run) {
-              // push to markers so we can get the max marker value
-              markers.push(run.markerItems.length);
-            });
-            var markerSize = _.max(markers);
+            var markerSize = _.max(runs.markerSize);
             headings.markers = markerSize;
 
           }
@@ -101,8 +92,8 @@
           function createTableData(runs, markersSize, $filter){
             var markerSize = markersSize;
             var container = document.createElement('tbody');
-            // var container = document.createDocumentFragment();
-            runs.forEach(function(run) {
+
+            runs.runs.forEach(function(run) {
               var tr = document.createElement('tr');
 
               var tdStartTime = document.createElement('td');
@@ -122,8 +113,8 @@
                 var markerTime;
                 var data;
 
-                if (run.markerItems[i]) {
-                  markerTime = run.markerItems[i].totalTime;
+                if (run.markers[i]) {
+                  markerTime = run.markers[i].time;
                   data = $filter('date')(markerTime, 'm:ss');
                 }
                 else {
@@ -134,7 +125,7 @@
               }
 
               var tdTotalDist = document.createElement('td');
-              var dist = +(run.totalDistanceKm).toFixed(2);
+              var dist = (run.totalDistance).toFixed(2);
               tdTotalDist.appendChild(document.createTextNode(dist));
               tr.appendChild(tdTotalDist);
 
