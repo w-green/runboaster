@@ -1,3 +1,13 @@
 table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
     content: " \25B4\25BE"
 }
+
+.table-striped > tbody > tr:nth-child(odd) {
+  background-color: $blue-light;
+}
+
+.table-striped > tbody > tr {
+  &:hover {
+    background-color: darken($blue-light, 20%);
+  }
+}

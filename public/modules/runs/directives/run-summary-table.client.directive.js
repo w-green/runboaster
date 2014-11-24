@@ -20,7 +20,7 @@
         function createTableOfRuns(runs) {
           var table = document.createElement('table');
           // note sortable class added for sorttable.js
-          table.className = 'table table-responsive table-hover sortable';
+          table.className = 'table table-striped table-responsive table-hover sortable';
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;
