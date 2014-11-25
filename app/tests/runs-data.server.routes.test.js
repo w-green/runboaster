@@ -7,7 +7,8 @@ var expect = require('chai').expect,
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
     runsData = mongoose.model('runsData'),
-    agent = request.agent(app);
+    agent = request.agent(app),
+    apiVersion = require('../../config/config.js').apiVersion;
 
 /**
  * Globals
@@ -51,7 +52,7 @@ describe('runsData model', function() {
                 .attach('file', './README.md')
                 .end(function (err, res) {
                   agent
-                    .get('/runs-data')
+                    .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
                     .end(function(error, res) {
                       expect(res.body[0]).to.be.undefined;
                       done();
@@ -85,7 +86,7 @@ describe('runsData model', function() {
               .expect(200)
               .end(function (err, res) {
                 agent
-                  .get('/runs-data')
+                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
                   .end(function(error, res) {
                     expect(res.body[0].user).to.equal(userId);
                     done();
@@ -109,7 +110,7 @@ describe('runsData model', function() {
               .attach('file', '')
               .end(function (err, res) {
                 agent
-                  .get('/runs-data')
+                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
                   .end(function(error, res) {
                     expect(res.body[0]).to.be.undefined;
                     done();
@@ -146,10 +147,17 @@ describe('runsData model', function() {
               .expect(200)
               .end(function (err, res) {
                 agent
-                  .get('/runs-data/' + userId)
+                  // get latest
+                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
                   .end(function(error, res) {
-                    (res.body.length).should.equal(1);
-                    done();
+                    var run_id = res.body[0]._id;
+                      agent
+                        .get('/api/v_' + apiVersion +'/:user_id/run/data/' + run_id)
+                        .end(function(error, res) {
+                          (res.body.length).should.equal(1);
+                          done();
+                        });
+
                   });
               });
         });

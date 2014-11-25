@@ -20,11 +20,13 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res, next) {
 
-  if (req.files.file === undefined) {console.error({'message' : 'file non existent'}); return res.status(400).send();}
+  if (req.files.file === undefined) {
+    console.error({'message' : 'file non existent'});
+    return res.status(400).send();
+  }
 
-  var filePath = req.files.file.path,
-    userId = req.user._id; // use the request ID
-    //runJson = Q.defer(); // converted file
+  var filePath = req.files.file.path;
+  var userId = req.user._id; // use the request ID
 
   convert(filePath) // convert file from gpx to GeoJson
     .then(function(data) {
@@ -47,10 +49,10 @@ exports.create = function(req, res, next) {
 /**
  * Get last run
  */
-exports.singleRun = function(req, res) {
-  var run_user_id = req.params.run_user_id;
+exports.getLatest = function(req, res) {
+  var userId = req.user._id;
   runsData
-    .find({'user' : new ObjectId(run_user_id)}, {})
+    .find({'user' : new ObjectId(userId)})
     .sort({'features.properties.time' : -1})
     .limit(1)
     .exec(function(err, runs) {
@@ -63,6 +65,29 @@ exports.singleRun = function(req, res) {
     }
   });
 };
+
+
+/**
+ * Get single run
+ */
+exports.getSingle = function(req, res) {
+  var userId = req.user._id;
+  var runId = req.run_id;
+  runsData
+    .find({'user' : new ObjectId(userId)})
+    .sort({'features.properties.time' : -1})
+    .limit(1)
+    .exec(function(err, runs) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(runs);
+    }
+  });
+};
+
 
 
 /**

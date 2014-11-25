@@ -35,7 +35,7 @@ describe('getting runs summaries', function() {
     summarData.user = user;
     var runsSummary = new summaryModel(summarData);
     runsSummary.save(function(err) {
-      if (err) {console.log('failed to save summary ' + err)}
+      if (err) {console.log('failed to save summary ' + err);}
     });
 
     // save a later run to check this is the one retrieved
@@ -44,7 +44,7 @@ describe('getting runs summaries', function() {
     summaryLatest.startTime = new Date();
     summaryLatest = new summaryModel(summaryLatest);
     summaryLatest.save(function(err) {
-      if (err) {console.log('failed to save summaryLatest ' + err)}
+      if (err) {console.log('failed to save summaryLatest ' + err);}
     });
 
 
@@ -58,7 +58,7 @@ describe('getting runs summaries', function() {
           .end(function(err, res){
             should(new Date(res.body[0].startTime)).eql(summaryLatest.startTime);
             done();
-          })
+          });
       });
 
   });

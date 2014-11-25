@@ -19,8 +19,8 @@ angular.module('runs').config(['$stateProvider',
     .state('mapRuns', {
         url : '/run',
         resolve : {
-          singleRunData : ['singleRun', function(singleRun) {
-            return singleRun.getSingleRun().$promise;
+          singleRunData : ['getLatestSingleData', function(getLatestSingleData) {
+            return getLatestSingleData.get().$promise;
           }],
           lastSummary : ['latestSummary', function(latestSummary) {
             return latestSummary.getLatestSum().$promise;

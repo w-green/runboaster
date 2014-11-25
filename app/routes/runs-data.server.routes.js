@@ -6,14 +6,16 @@
 var runsData = require('../../app/controllers/runs-data'),
   runsSummary = require('../../app/controllers/runs-summary'),
   multer = require('multer'),
-  users = require('../../app/controllers/users');
+  users = require('../../app/controllers/users'),
+  apiVersion = require('../../config/config.js').apiVersion;
 
 module.exports = function(app) {
-  app.route('/runs-data')
-    .get(runsData.list);
 
-  app.route('/runs-data/:run_user_id')
-    .get(runsData.singleRun);
+  app.route('/api/v_' + apiVersion +'/:user_id/run/data/latest')
+    .get(runsData.getLatest);
+
+  app.route('/api/v_' + apiVersion +'/:user_id/run/data/:run_id')
+    .get(runsData.getSingle);
 
   app.route('/upload')
     .post(
