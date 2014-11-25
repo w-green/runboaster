@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 /**
  * @description Reduces the mapped data down to return a distance for each lap.

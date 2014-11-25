@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 /**
  * @description Builds the summary data for each run / event - BUT IT DOES NOT INCLUDE PAUSES

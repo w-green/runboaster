@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 /**
  * Create the summary using a revealing module pattern

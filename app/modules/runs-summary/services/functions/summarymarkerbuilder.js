@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 var createSummaryList = require('./createsummarylist.js');
 var addSummaryPauses = require('./addsummarypauses.js');
 

@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 var latestSummary = function latestSummary($resource, Authentication) {
 
