@@ -4,15 +4,18 @@
 // returns latest run for a user
 (function() {
 
-  var singleRun = function ($q, $resource, Authentication) {
+  var getLatestSingleData = function ($q, $resource, Authentication) {
 
     var runs = {
       resource :
-                $resource('/runs-data/:run_user_id', {'run_user_id' : '@user_id'}, {
-                  query: { method: 'GET', isArray: true },
-                  create: { method: 'POST' }
-                }),
-      getSingleRun : function getRuns(){
+                $resource('/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/data/latest',
+                 {'user_id' : '@user_id'},
+                 {
+                    query: { method: 'GET', isArray: true },
+                    create: { method: 'POST' }
+                  }
+                ),
+      get : function get(){
                   var promise = this.resource.query({'user_id' : Authentication.user._id});
                   return promise;
                 }
@@ -22,6 +25,6 @@
   };
 
 
-  angular.module('runs').factory('singleRun', ['$q', '$resource', 'Authentication', singleRun]);
+  angular.module('runs').factory('getLatestSingleData', ['$q', '$resource', 'Authentication', getLatestSingleData]);
 
 }());
