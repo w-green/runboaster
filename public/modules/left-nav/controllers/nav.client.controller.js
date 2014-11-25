@@ -22,7 +22,7 @@
         topNav = document.getElementById('top-nav-js') || '';
         var timer = setTimeout(setTopNav, 10);
         if(topNav === ''){
-          timer;
+          timer();
         }
         else {
           clearTimeout(timer);

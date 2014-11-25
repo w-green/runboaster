@@ -1,6 +1,7 @@
 'use strict';
 
-(function() {
+(function(lodash) {
+  var _ = lodash;
 
   var chartsCtrl = function chartsCtrl($scope, runsSummaries) {
     $scope.runs = runsSummaries;
@@ -79,7 +80,7 @@
         dataSelectorList = document.querySelector('.chart--dataselector-list') || '';
         var timer = setTimeout(setDataSelList, 10);
         if(dataSelectorList === ''){
-          timer;
+          timer();
         }
         else {
           clearTimeout(timer);
@@ -102,4 +103,4 @@
 
   angular.module('charts').controller('chartsCtrl', ['$scope', 'runsSummaries', chartsCtrl]);
 
-}());
+}(window._));
