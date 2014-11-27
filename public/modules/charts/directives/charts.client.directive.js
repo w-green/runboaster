@@ -3,7 +3,7 @@
 (function(lodash) {
   var _ = lodash;
 
-  var lChart = function lChart($window, $filter) {
+  var lChart = function lChart($window, $filter, mediator) {
 
     return {
 
@@ -61,15 +61,25 @@
         }
 
 
-        window.onresize = _.debounce(function(){
-          setChartWidth();
-          // ----- Update range of scale with new width ----- //
-          xScale.range([50, chartWidth]);
+        var redrawChart =
+          function() {
+            setChartWidth();
+            // Update range of scale with new width
+            xScale.range([50, chartWidth]);
 
-          // svg.select('.x axis').call(xAxisGen);
-          redrawAxis();
-          redrawPaths();
-        }, 150);
+            redrawAxis();
+            redrawPaths();
+          };
+
+
+        var resizeEvent = mediator.subscribe('windowResize', redrawChart, this);
+
+
+
+        // ----- remove event listener when scope is destroyed ----- //
+        scope.$on('$destroy', function() {
+          mediator.unsubscribe(resizeEvent);
+        });
 
 
         markerCount = d3.max(markerSize);
@@ -298,6 +308,6 @@
 
   }; // lChart
 
-  angular.module('charts').directive('lChart', ['$window', '$filter', lChart]);
+  angular.module('charts').directive('lChart', ['$window', '$filter', 'mediator', lChart]);
 
 }(window._));

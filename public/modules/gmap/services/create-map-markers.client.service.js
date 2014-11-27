@@ -58,6 +58,7 @@ var setMapMarkers = function setMapMarkers() {
       };
 
       createMarkerItem(starter);
+      createMarkerItem(finish);
     }
 
 

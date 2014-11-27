@@ -60,6 +60,8 @@
 
 
     return function setMapPolylines(coords) {
+        paths.length = 0; // resetting
+        polylines.length = 0;
         createPaths(coords);
         createPolylines();
 

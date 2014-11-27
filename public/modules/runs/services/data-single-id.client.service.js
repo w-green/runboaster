@@ -17,7 +17,6 @@
                   }
                 ),
       get : function get(id){
-        console.log(id);
                   var promise = this.resource.query({'user_id' : Authentication.user._id, 'run_id' : id});
                   return promise;
                 }

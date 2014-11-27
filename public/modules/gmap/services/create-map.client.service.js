@@ -1,37 +1,39 @@
 'use strict';
 
-// runData is used for markers start and end and also for the polylines
+// activityData is used for markers start and end and also for the polylines
 // summary is used for markers
 var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
 
-  return function (runData, summaryMarkerItems) {
+  return function (activityData, summaryMarkerItems) {
     var polylines;
     var markers;
     var paths = []; // coords object used by both polylines and markers - for start, end
-    var runStart; // coords used for markers
-    var runEnd; // coords used for markers
+    var activityStartCoords; // coords used for markers
+    var activityEndCoords; // coords used for markers
     var center;
     var zoom = 14;
+    var getpolylines;
 
-    polylines = setMapPolylines(runData).polylines;
-    paths = setMapPolylines(runData).paths;
+    getpolylines = setMapPolylines(activityData);
+    polylines = getpolylines.polylines;
+    paths = getpolylines.paths;
 
 
     setStartnEnd(paths.length);
 
-    // sets runStart and runEnd
+    // sets activityStartCoords and activityEndCoords
     function setStartnEnd(numPaths) {
       var last;
       if(paths[0][0] !== 'undefined') {
-        runStart = paths[0][0];
+        activityStartCoords = paths[0][0];
         if(numPaths !== 'undefined') {
           last = paths[numPaths - 1].length - 1;
-          runEnd = paths[numPaths - 1][last];
+          activityEndCoords = paths[numPaths - 1][last];
         }
       }
     }
 
-    markers = setMapMarkers(runStart, runEnd, summaryMarkerItems);
+    markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
     center = {latitude: paths[0][0].latitude, longitude: paths[0][0].longitude};
 
     var gmap = {

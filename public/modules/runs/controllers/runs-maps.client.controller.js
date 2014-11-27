@@ -8,32 +8,38 @@
 
   // Maps controller
   // Used to display google map
-  function MyMapsCtrl(singleRunData, getDataById, lastSummary, createGmap) {
+  function MyMapsCtrl($scope, singleRunData, getDataById, lastSummary, getActivitySumLatestFiveRes, createGmap) {
     var run = singleRunData;
     var that = this;
     var mapData = [];
     that.gMap = null;
+    var summaries = getActivitySumLatestFiveRes;
+
 
     // ----- Create new map ----- //
-    // function createGmap(runData, summary)
-    mapData[1] = createGmap(run[0].features[0].geometry.coordinates, lastSummary[0].markerItems);
-    that.gMap = mapData[1];
+    // function createGmap(activityData, summaryMarkerItems)
+    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, lastSummary[0].markerItems);
+    that.gMap = mapData[0];
 
-    // Summary item - which is in the MapSummaryCtrl
-    var summaryItem = document.querySelector('div.mapSummaryItem');
-    var summaryItemId = summaryItem.getAttribute('data-activity-id');
-
-    summaryItem.addEventListener('click', function(e) {
-      var summaryItemId = this.getAttribute('data-activity-id') || '';
-      if (summaryItemId === '') {
-        return;
+    // on a broadcasted event from the summary directive
+    // we change the map to the selected activity
+    $scope.$on('summarySelected', function(event, info) {
+      if(typeof mapData[info.listOrder] === 'undefined') {
+        getDataById.get(info.activityId).$promise.then(function(newData){
+          mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
+          that.gMap = mapData[info.listOrder];
+        });
       }
-      var res = getDataById.get({'run_id' : summaryItemId});
+      else {
+        that.gMap = mapData[info.listOrder];
+        $scope.$apply();
+      }
+
     });
 
 
   }
 
-  angular.module('runs').controller('MyMapsCtrl', ['singleRunData', 'getDataById', 'lastSummary', 'createGmap', MyMapsCtrl]);
+  angular.module('runs').controller('MyMapsCtrl', ['$scope', 'singleRunData', 'getDataById', 'lastSummary', 'getActivitySumLatestFiveRes', 'createGmap', MyMapsCtrl]);
 
 }(window._, window.google));

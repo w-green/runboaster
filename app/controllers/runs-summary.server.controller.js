@@ -59,6 +59,27 @@ exports.getLatest = function getLatest(req, res) {
     });
 };
 
+/**
+ * Get users latest 5 runs
+ */
+
+exports.getLatestFive = function getLatestFive(req, res) {
+  var userId = req.params.user_id;
+  runsSummary
+    .find({'user' : new ObjectId(userId)}, {})
+    .sort({'startTime' : -1})
+    .limit(5)
+    .exec(function(err, result) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(result);
+      }
+    });
+};
+
 
 /**
  * This should list last 10 runs from user

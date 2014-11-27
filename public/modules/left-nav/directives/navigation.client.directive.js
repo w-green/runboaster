@@ -1,5 +1,7 @@
-(function() {
-  var navigation = function navigation($location) {
+(function(lodash) {
+
+  var _ = lodash;
+  var navigation = function navigation($location, setHeightAftrTopNav, mediator) {
     return {
       restrict : 'AE',
       transclude : true,
@@ -29,13 +31,31 @@
 
             });
 
-          }
-        };
-      },
-    };
-  };
+
+            // ----- set the height for scrolling ----- //
+            setHeightAftrTopNav(iElement[0].parentElement);
+
+            // ----- add event listener on window resize ----- //
+            var resetHeight = function resetHeight() {
+              var element = iElement[0].parentElement;
+              setHeightAftrTopNav(element);
+            };
+
+            var resizeEvent = mediator.subscribe('windowResize', resetHeight, this);
+
+            // ----- remove event listener when scope is destroyed ----- //
+            scope.$on('$destroy', function() {
+              mediator.unsubscribe(resizeEvent);
+            });
 
 
-  angular.module('left-nav').directive('navigation', ['$location', navigation]);
+          } // post
+        }; // returned object
+      }, // compile
+    }; // returned object
+  }; // navigation
 
-}());
+
+  angular.module('left-nav').directive('navigation', ['$location', 'setHeightAftrTopNav', 'mediator', navigation]);
+
+})(window._);

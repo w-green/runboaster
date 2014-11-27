@@ -24,6 +24,9 @@ angular.module('runs').config(['$stateProvider',
           }],
           lastSummary : ['latestSummary', function(latestSummary) {
             return latestSummary.getLatestSum().$promise;
+          }],
+          getActivitySumLatestFiveRes : ['getActivitySumLatestFive', function(getActivitySumLatestFive) {
+            return getActivitySumLatestFive.get().$promise;
           }]
         },
         views : {
@@ -40,7 +43,7 @@ angular.module('runs').config(['$stateProvider',
             },
 
             'columnTwo@mapRuns' : {
-                templateUrl : 'modules/runs/views/run-map.client.view.html',
+                templateUrl : 'modules/gmap/views/run-map.client.view.html',
                 controller : 'MyMapsCtrl as mapsCtrl'
             }
         }

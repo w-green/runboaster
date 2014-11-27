@@ -4,17 +4,27 @@
 
   var _ = lodash;
 
-  function MapSummaryCtrl(lastSummary, dateFilter) {
+  function MapSummaryCtrl(lastSummary, getActivitySumLatestFiveRes, dateFilter) {
     var that = this;
+    var latestFive = getActivitySumLatestFiveRes;
+    that.summaries = [];
 
-    that.activityId = lastSummary[0]._id;
-    that.date = dateFilter(lastSummary[0].startTime, 'medium');
-    that.totalTime = dateFilter(lastSummary[0].totalTime, "m 'minutes' : s 'seconds'");
-    that.totalDistanceKm = lastSummary[0].totalDistanceKm;
+    latestFive.forEach(function(summary, index) {
+
+      var summ = {
+        listOrder: index,
+        activityId : summary._id,
+        date : dateFilter(summary.startTime, 'medium'),
+        totalTime : dateFilter(summary.totalTime, "m 'minutes' : s 'seconds'"),
+        totalDistanceKm : summary.totalDistanceKm
+      };
+
+      that.summaries.push(summ);
+    });
 
   }
 
-  angular.module('runs').controller('MapSummaryCtrl', ['lastSummary', 'dateFilter', MapSummaryCtrl]);
+  angular.module('runs').controller('MapSummaryCtrl', ['lastSummary', 'getActivitySumLatestFiveRes', 'dateFilter', MapSummaryCtrl]);
 
 }(window._));
 
