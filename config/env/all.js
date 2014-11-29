@@ -18,9 +18,9 @@ module.exports = {
         'public/lib/c3-0.3.0/c3.css'
 			],
 			js: [
-				'public/lib/ng-file-upload/angular-file-upload-shim.min.js',
+				'public/lib/ng-file-upload/angular-file-upload-shim.js',
 				'public/lib/angular/angular.js',
-				'public/lib/ng-file-upload/angular-file-upload.min.js',
+				'public/lib/ng-file-upload/angular-file-upload.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-animate/angular-animate.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
