@@ -19,7 +19,7 @@
         htmlEl = document.querySelector('html');
         topNav = document.getElementById('top-nav-js');
         var htmlHeight = htmlEl.clientHeight;
-        var topNavHeight = topNav.clientHeight || 50; // default 50px
+        var topNavHeight = topNav.clientHeight ? topNav.clientHeight : 50; // default 50px
         var elNewHeight = htmlHeight - topNavHeight;
         elem.style.height = elNewHeight + 'px';
 
