@@ -21,8 +21,8 @@ var db = mongoose.connect(config.db, function(err) {
 });
 
 
-// Code to run if we're in the master process
-if (cluster.isMaster) {
+// Code to run if we're in the master process and if this is not a test env
+if (cluster.isMaster && process.env.NODE_ENV !== 'test') {
 
   // Count the machine's CPUs
   var cpuCount = require('os').cpus().length;
@@ -57,5 +57,8 @@ else {
   // Logging initialization
   console.log('MEAN.JS application started on port ' + config.port);
 
-  console.log('Worker ' + cluster.worker.id + ' running!');
+  if(process.env.NODE_ENV !== 'test') {
+     console.log('Worker ' + cluster.worker.id + ' running!');
+  }
+
 }
