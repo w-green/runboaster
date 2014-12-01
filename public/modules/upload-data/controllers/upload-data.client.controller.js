@@ -52,7 +52,7 @@ var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
           // file is uploaded successfully
           $scope
             .message
-            .push('<li class="bg-success">Successfully uploaded</li>');
+            .push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
         }
 
         uploadProgress = function uploadProgress(evt) {
