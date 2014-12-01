@@ -1,93 +1,31 @@
+(function() {
+
 'use strict';
 
 /*
  * Upload a file to the database
  * Params: upload data service
  */
-var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
 
-  $scope.message = [];
-  $scope.message.push('<p></p>');
+var UploadDataCtrl = function UploadDataCtrl($scope, upload) {
+
+  $scope.message = upload.resultsListItems;
   $scope.fileName = 'Choose file';
 
   $scope.onFileSelect = function($files) {
 
-    var uploadSuccess;
-    var uploadProgress;
-
     for (var i = 0; i < $files.length; i++) {
       var file = $files[i];
 
-      // We've added a decorator to check the suffix
-      // returns true if suffix is gpx
-      var isitGpx = $upload.checkSuffix('gpx', file.name);
+      upload.uploadFile(file);
 
-      if (isitGpx === false) {
-        $scope
-          .message
-          .push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
-        continue;
-      }
-
-      if (window.Worker instanceof Function) {
-
-        // Send them to the web worker
-        uploadSuccess = function uploadSuccess(message) {
-          // file is uploaded successfully
-          $scope
-            .message
-            .push('<li class="bg-success">Successfully uploaded: ' + message.data + '</li>');
-          $scope.$apply();
-        }
-
-        var worker = new Worker('/lib/custom/angular-file-upload-extra/web-worker.js');
-        worker.postMessage(file);
-        worker.onmessage = uploadSuccess;
-
-      }
-      else {
-
-        // ORIGINAL WAY OF USING ANGULAR FILE UPLOAD
-        uploadSuccess = function uploadSuccess(data, status, headers, config) {
-          // file is uploaded successfully
-          $scope
-            .message
-            .push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
-        }
-
-        uploadProgress = function uploadProgress(evt) {
-          console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-        }
-
-
-        $scope.upload =
-        $upload
-          .upload({
-              url: '/upload', //upload.php script, node.js route, or servlet url
-              method: 'POST',
-              //headers: {'header-key': 'header-value'},
-              //withCredentials: true,
-              //data: {myObj: $scope.myModelObj},
-              file: file, // or list of files ($files) for html5 only
-              //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-              // customize file formData name ('Content-Disposition'), server side file variable name.
-              //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
-              // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-              //formDataAppender: function(formData, key, val){}
-            })
-          .progress(uploadProgress)
-          .success(uploadSuccess);
-        //.error(...)
-        //.then(success, error, progress);
-        // access or attach event listeners to the underlying XMLHttpRequest.
-        //.xhr(function(xhr){xhr.upload.addEventListener(...)})
-      } // for loop
-
-    } // else
+    } // for loop
 
   }; // $scope.onFileSelect
 
 };
 
 
-angular.module('upload-data').controller('UploadDataCtrl' , ['$scope', '$upload', UploadDataCtrl]);
+angular.module('upload-data').controller('UploadDataCtrl' , ['$scope', 'upload', UploadDataCtrl]);
+
+})();

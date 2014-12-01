@@ -1,3 +1,4 @@
+<p>FILE UPLOAD</p>
 <form role="form">
   <div class="form-group">
     <label>You can upload multiple files. They must be GPX files.</label>
@@ -5,10 +6,10 @@
         <span>Upload</span>
         <!-- SINGLE FILE
         <input id="uploadBtn" upload-file-name class="upload" type="file" name="file" ng-file-select="onFileSelect($files)"> -->
-        <input id="uploadBtn" upload-file-name class="upload" type="file" ng-file-select="onFileSelect($files)" multiple>
+        <input id="uploadBtn" class="upload" type="file" ng-file-select="onFileSelect($files)" multiple>
     </div>
   </div>
 </form>
-<ul id="uploadResults" class="list-unstyled">
+<ul data-upload-results id="uploadResults" class="list-unstyled">
 
 </ul>

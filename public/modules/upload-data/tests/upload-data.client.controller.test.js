@@ -1,8 +1,5 @@
-/*
-Make sure checkSuffix gets called - stub it.
-Make sure it returns false if it is not a gpx file
-Make sure it returns true if it is a gpx file
-Once success is called the scope.message contains the latest file
+/**
+ * Unit test for upload data controller
  */
 
 describe('Controller: updload-data', function() {
@@ -13,14 +10,13 @@ describe('Controller: updload-data', function() {
 
     // Set a new global scope
     scope = $rootScope.$new();
-
     ctrl = $controller('UploadDataCtrl', {$scope: scope});
 
   }));
 
 
   it('should call the checkSuffix function ', inject(function($upload, $httpBackend){
-
+    var file;
     var config = {
       file : { name : 'file.gpx'}
     };
@@ -31,11 +27,9 @@ describe('Controller: updload-data', function() {
 
     spyOn($upload, 'checkSuffix');
 
-    var file = [{'name' : 'file.gpx'}];
+    file = [{'name' : 'file.gpx'}];
 
     scope.onFileSelect(file);
-
-    //$upload.checkSuffix('gpx', 'file.gpx');
 
     expect($upload.checkSuffix).toHaveBeenCalled();
 
@@ -51,12 +45,21 @@ describe('Controller: updload-data', function() {
     expect(result).toBe(true);
   }));
 
-  it('should add the success message to the scope.message array', function(){
+  it('should add an item to the list', inject(function($compile){
 
-  });
+    var resultsUl = '<ul upload-results id="uploadResults"></ul>';
+    var resultItem = '<li class="bg-success">Successfully uploaded</li>';
 
+    var el = $compile(resultsUl)(scope);
+    scope.$apply();
 
-
+    scope.message = [];
+    scope
+      .message
+      .push(resultItem);
+    scope.$apply();
+    expect(el.html()).toContain('Successfully uploaded');
+  }));
 
 
 });

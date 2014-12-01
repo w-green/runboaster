@@ -1,5 +1,12 @@
-// directiveFactory
-var uploadFileName = function uploadFileName($compile) {
+(function() {
+
+'use strict';
+
+/**
+ * @description Watches for new result items and adds them to the DOM
+ */
+
+var uploadResults = function uploadResults($compile) {
 
   return {
     restrict : 'A',
@@ -13,14 +20,15 @@ var uploadFileName = function uploadFileName($compile) {
 
         var num = scope.message.length - 1;
         var newEl = compileMe(scope.message[num]);
-        var resultsList = document.getElementById('uploadResults');
-        angular
-          .element(resultsList)
+        element
           .prepend(newEl);
+
       });
-    }
-  };
+    } // link
+  }; // return
 
-};
+}; // uploadFileName
 
-angular.module('upload-data').directive('uploadFileName', ['$compile', uploadFileName]);
+angular.module('upload-data').directive('uploadResults', ['$compile', uploadResults]);
+
+})();
