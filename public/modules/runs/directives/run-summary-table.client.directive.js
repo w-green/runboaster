@@ -10,6 +10,10 @@
       restrict : 'E',
       link : function(scope, element, attrs) {
         var runs = scope.tableOfRuns.runs;
+
+        // Makes sure the runs are sorted by date initially
+        var runsSorted = _.sortBy(runs.runs, 'startTime');
+        runs.runs = runsSorted;
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
 

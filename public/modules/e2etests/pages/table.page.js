@@ -1,5 +1,24 @@
 'use strict';
-var theads = element(by.css('runs-summary-table > table > thead > tr > th'));
+
+var theads = element.all(by.css('runs-summary-table > table > thead > tr > th'));
+var getTableCell = function getTableCell(row, cell, callback) {
+  return element(by.css('runs-summary-table > table > tbody > tr:nth-child(' + row + ') > td:nth-child(' + cell + ')')).getText();
+};
+var getDateByRow = function(num) {
+  return getTableCell(num, 1); // returns a promise
+};
+
+// for use with q like so
+//     Q.all(tp.getDateByRows([1, 3, 5])).done(function(rows){
+//       console.log(rows[0])
+//     });
+var getDateByRows = function(nums) {
+  var result = [];
+  nums.forEach(function(num) {
+    result.push(getDateByRow(num));
+  });
+  return result;
+};
 
 
 var tablePage = {
@@ -7,10 +26,13 @@ var tablePage = {
       browser.get('/#!/runs');
     },
   sortRuns : {
-    ByDate : function() {
-      console.log(theads);
+    byDate : function() {
+      return theads.get(0).click();
     }
-  }
+  },
+  getTableCell : getTableCell,
+  getDateByRow : getDateByRow,
+  getDateByRows : getDateByRows
 };
 
 module.exports = tablePage;
