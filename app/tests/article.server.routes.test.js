@@ -20,7 +20,7 @@ describe('Article CRUD tests', function () {
   beforeEach(function(done) {
     // saves a user to the test db.
     user = new User({
-      firstName: 'Full',
+      firstName: 'serverTests',
       lastName: 'Name',
       displayName: 'Full Name',
       email: 'test@test.com',
@@ -127,7 +127,7 @@ describe('Article CRUD tests', function () {
         });
   });
 
-  // ------------ READ operations ------------
+/*  // ------------ READ operations ------------
   it('should be able to get a list of articles if not signed in', function (done) {
     // Adding 10 articles to the db
     var numArticles = 10;
@@ -148,7 +148,7 @@ describe('Article CRUD tests', function () {
         done();
       });
 
-  });
+  });*/
 
 
   it('should be able to get a single article if not signed in', function (done) {
@@ -211,7 +211,7 @@ describe('Article CRUD tests', function () {
   });
 
   afterEach(function(done) {
-    User.remove().exec();
+    User.remove({firstName : 'serverTests'}).exec();
     Article.remove().exec();
     done();
   });

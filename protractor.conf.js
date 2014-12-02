@@ -4,7 +4,8 @@ exports.config = {
   // specs: ['./public/modules/*/tests/e2e/*.js'],
   specs: ['./public/modules/e2etests/**/*spec.js'],
   suites: {
-    uploadPage: './public/modules/e2etests/upload-page/**/*.spec.js',
+    uploadPage: './public/modules/e2etests/page-tests/upload-page/**/*.spec.js',
+    tablePage: './public/modules/e2etests/page-tests/table-page/**/*.spec.js',
     services: ['./public/modules/e2etests/services/**/*.spec.js']
   },
   capabilities: {

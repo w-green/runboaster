@@ -11,15 +11,13 @@ var request = require('supertest'),
     summarData = require('../../test-files/output/runs-summary-stub.js'),
     ObjectId = mongoose.Types.ObjectId;
 
-
-var user;
-
+var user, user__Id;
 
 describe('getting runs summaries', function() {
 
   beforeEach(function(done) {
       user = new User({
-          firstName: 'Full',
+          firstName: 'serverTests',
           lastName: 'Name',
           displayName: 'Full Name',
           email: 'test@test.com',
@@ -28,6 +26,7 @@ describe('getting runs summaries', function() {
           provider: 'local'
       });
       user.save();
+      user__Id = new ObjectId(user._id);
       done();
   });
 
@@ -57,6 +56,10 @@ describe('getting runs summaries', function() {
           .get('/api/v_1_0_0/' + userId + '/run/summary/latest')
           .end(function(err, res){
             should(new Date(res.body[0].startTime)).eql(summaryLatest.startTime);
+
+            // remove the summary after use
+            summaryModel.remove({'user' : user__Id}).exec();
+
             done();
           });
       });
@@ -84,8 +87,7 @@ describe('getting runs summaries', function() {
   });
 
   afterEach(function(done) {
-    summaryModel.remove().exec();
-    User.remove().exec();
+    User.remove({firstName : 'serverTests'}).exec();
     done();
   });
 

@@ -7,6 +7,8 @@ var expect = require('chai').expect,
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
     runsData = mongoose.model('runsData'),
+    summaryModel = mongoose.model('runsSummary'),
+    ObjectId = mongoose.Types.ObjectId,
     agent = request.agent(app),
     apiVersion = require('../../config/config.js').apiVersion;
 
@@ -18,7 +20,7 @@ var user;
 // ----- SET UP FUNCTION ----- //
 function saveUser(done) {
   user = new User({
-      firstName: 'Full',
+      firstName: 'serverTests',
       lastName: 'Name',
       displayName: 'Full Name',
       email: 'test@test.com',
@@ -89,6 +91,11 @@ describe('runsData model', function() {
                   .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
                   .end(function(error, res) {
                     expect(res.body[0].user).to.equal(userId);
+
+                    // removes data from db
+                    var user__Id = new ObjectId(user._id);
+                    runsData.remove({'user' : user__Id}).exec();
+                    summaryModel.remove({'user' : user__Id}).exec();
                     done();
                   });
               });
@@ -121,9 +128,8 @@ describe('runsData model', function() {
 
 
       afterEach(function(done) {
-          User.remove().exec();
-          runsData.remove().exec();
-          done();
+        User.remove({firstName : 'serverTests'}).exec();
+        done();
       });
 
   }); // describe
@@ -155,6 +161,11 @@ describe('runsData model', function() {
                         .get('/api/v_' + apiVersion +'/:user_id/run/data/' + run_id)
                         .end(function(error, res) {
                           (res.body.length).should.equal(1);
+
+                          // removes data from db
+                          var user__Id = new ObjectId(user._id);
+                          runsData.remove({'user' : user__Id}).exec();
+                          summaryModel.remove({'user' : user__Id}).exec();
                           done();
                         });
 
@@ -164,12 +175,11 @@ describe('runsData model', function() {
 
     }); // it
 
-
     afterEach(function(done) {
-      User.remove().exec();
-      runsData.remove().exec();
+      User.remove({firstName : 'serverTests'}).exec();
       done();
-   });
+    });
 
   }); // describe
+
 }); // describe

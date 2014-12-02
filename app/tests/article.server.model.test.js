@@ -19,12 +19,13 @@ var user, article;
 describe('Article Model Unit Tests:', function() {
 	beforeEach(function(done) {
 		user = new User({
-			firstName: 'Full',
+			firstName: 'serverTests',
 			lastName: 'Name',
 			displayName: 'Full Name',
 			email: 'test@test.com',
 			username: 'username',
-			password: 'password'
+			password: 'password',
+      provider: 'local'
 		});
 
 		user.save(function() {
@@ -57,8 +58,9 @@ describe('Article Model Unit Tests:', function() {
 	});
 
 	afterEach(function(done) {
+    User.remove({firstName : 'serverTests'}).exec();
 		Article.remove().exec();
-		User.remove().exec();
+		// User.remove().exec();
 		done();
 	});
 });

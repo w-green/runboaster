@@ -3,23 +3,23 @@
 var mongoose = require('mongoose'),
     User = mongoose.model('User'),
     summaryModel = mongoose.model('runsSummary'),
+    ObjectId = mongoose.Types.ObjectId,
     should = require('should'),
     summarData = require('../../test-files/output/runs-summary-stub.js');
 
-
-var user, runsSummary;
-
+var user, user__Id, runsSummary;
 
 describe('runs summary model tests', function() {
   beforeEach(function(done) {
 
     user = new User({
-      firstName: 'Full',
+      firstName: 'serverTests',
       lastName: 'Name',
       displayName: 'Full Name',
       email: 'test@test.com',
       username: 'username',
-      password: 'password'
+      password: 'password',
+      provider: 'local'
     });
     user.save(function() {
       summarData.user = user;
@@ -27,11 +27,13 @@ describe('runs summary model tests', function() {
       done();
     });
 
+    user__Id = new ObjectId(user._id);
   });
 
   it('should save a runs summary', function(done){
-    return runsSummary.save(function(err) {
+    runsSummary.save(function(err) {
       should.not.exist(err);
+      summaryModel.remove({'user' : user__Id}).exec();
       done();
     });
   });
@@ -46,8 +48,7 @@ describe('runs summary model tests', function() {
   });
 
   afterEach(function(done) {
-    summaryModel.remove().exec();
-    User.remove().exec();
+    User.remove({firstName : 'serverTests'}).exec();
     done();
   });
 

@@ -2,9 +2,9 @@
  * BDD for upload page
  */
 
-var login = require('../tasks/login.js');
-var logout = require('../tasks/logout.js');
-var uploadPage = require('../pages/upload.page.js');
+var login = require('../../tasks/login.js');
+var logout = require('../../tasks/logout.js');
+var uploadPage = require('../../pages/upload.page.js');
 
 
 describe('Upload Page: ', function() {
