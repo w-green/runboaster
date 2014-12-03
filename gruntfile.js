@@ -150,7 +150,22 @@ module.exports = function(grunt) {
 		karma: {
 			unit: {
 				configFile: 'karma.conf.js'
-			}
+			},
+    // coverage mode: use karma coverage (Istanbul)
+    coverage: {
+      configFile: 'karma.conf.js',
+      singleRun: true,
+      browsers: ['PhantomJS'],
+      preprocessors :  {
+        './public/modules/*[!e2etests]*/*.js' : 'coverage',
+        './public/modules/*[!e2etests]*/*[!tests]*/*.js' : 'coverage'
+      },
+      reporters : ['progress', 'coverage'],
+      coverageReporter : {
+        type : 'html',
+        dir : 'coverage/'
+      },
+    },
 		},
     sass: {
       dev: {
@@ -194,4 +209,7 @@ module.exports = function(grunt) {
 
 	// Test task.
 	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+
+  // coverage task - karma-coverage
+  grunt.registerTask('coverage', ['env:test', 'mochaTest', 'karma:coverage']);
 };
