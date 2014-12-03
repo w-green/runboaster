@@ -28,7 +28,6 @@ var uploadPage = {
     }
   }
 
-
-}
+};
 
 module.exports = uploadPage;

@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 describe('Feature: upload data... ', function() {
 
@@ -27,3 +27,4 @@ describe('Feature: upload data... ', function() {
   }));
 
 });
+*/

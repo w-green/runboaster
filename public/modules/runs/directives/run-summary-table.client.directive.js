@@ -7,9 +7,9 @@
 
     return {
 
-      restrict : 'E',
+      restrict : 'AE',
       link : function(scope, element, attrs) {
-        var runs = scope.tableOfRuns.runs;
+        var runs = scope.runs;
 
         // Makes sure the runs are sorted by date initially
         var runsSorted = _.sortBy(runs.runs, 'startTime');
@@ -149,8 +149,10 @@
         element.append(tableOfRuns);
 
         // add the sorttable.js initiation
-        var table = document.querySelector('table.sortable');
-        sorttable.makeSortable(table);
+        var table = document.querySelector('table.sortable') || '';
+        if(table !== ''){
+          sorttable.makeSortable(table);
+        }
       } // link
 
     };

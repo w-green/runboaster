@@ -14,7 +14,7 @@ angular.module('runs').config(['$stateProvider',
         }]
       },
       templateUrl : 'modules/runs/views/run-table.client.view.html',
-      controller : 'TableRunsCtrl as tableOfRuns'
+      controller : 'TableRunsCtrl'
     })
     .state('mapRuns', {
         url : '/run',

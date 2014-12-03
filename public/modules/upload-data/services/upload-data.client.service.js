@@ -9,7 +9,7 @@
  * @returns {Object} upload function and results items
  */
 
-var upload = function upload($upload, $rootScope) {
+var uploadData = function uploadData($upload, $rootScope) {
 
   var uploadSuccess;
   var uploadProgress;
@@ -29,7 +29,7 @@ var upload = function upload($upload, $rootScope) {
         resultsListItems
           .push('<li class="bg-success">Successfully uploaded: ' + message.data + '</li>');
         $rootScope.$apply();
-      }
+      };
 
       upload = function upload(file) {
         var worker = new Worker('/lib/custom/angular-file-upload-extra/web-worker.js');
@@ -45,11 +45,11 @@ var upload = function upload($upload, $rootScope) {
         // file is uploaded successfully
         resultsListItems
           .push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
-      }
+      };
 
       uploadProgress = function uploadProgress(evt) {
         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-      }
+      };
 
       upload = function upload(file) {
         // $scope.upload =
@@ -75,7 +75,7 @@ var upload = function upload($upload, $rootScope) {
         //.xhr(function(xhr){xhr.upload.addEventListener(...)})
       };
 
-    };
+    }
 
   }; // uploadDefineVars
 
@@ -103,6 +103,6 @@ var upload = function upload($upload, $rootScope) {
 
 };
 
-angular.module('upload-data').service('upload', ['$upload', '$rootScope', upload]);
+angular.module('upload-data').service('upload', ['$upload', '$rootScope', uploadData]);
 
 })();
