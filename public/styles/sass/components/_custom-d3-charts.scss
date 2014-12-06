@@ -184,6 +184,23 @@ ul.chartRuns {
       stroke-width: 0;
 }
 
+/* Lines for chart  */
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+/* Text Size for labels */
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+
+
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {

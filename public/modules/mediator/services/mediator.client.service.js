@@ -95,6 +95,16 @@
       return sub;
     };
 
+
+    var getSubscribers = function getSubscribers(topic) {
+      var subs = [];
+      if(topics[topic] instanceof Object) {
+        subs = topics[topic].subscribers;
+      }
+      return subs;
+    };
+
+
     var unsubscribe = function(sub) {
 
       if (topics[sub.topic] instanceof Object) {
@@ -111,6 +121,7 @@
     var actions = {
       subscribe : subscribe,
       unsubscribe : unsubscribe,
+      getSubscribers : getSubscribers
     };
 
     return actions;

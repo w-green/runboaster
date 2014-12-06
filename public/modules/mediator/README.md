@@ -26,6 +26,9 @@ scope.$on('$destroy', function() {
 });
 
 
+To get a list of subscribers you need to supply the topic.
 
+mediator.getSubscribers(resizeEvent);
+An array of subs is returned
 
 

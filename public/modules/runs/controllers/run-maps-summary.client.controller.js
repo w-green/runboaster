@@ -4,27 +4,34 @@
 
   var _ = lodash;
 
-  function MapSummaryCtrl(lastSummary, getActivitySumLatestFiveRes, dateFilter) {
-    var that = this;
+  function MapSummaryCtrl($scope, lastSummaryRes, getActivitySumLatestFiveRes, dateFilter) {
+
+    // have placed on the scope so we can test it
     var latestFive = getActivitySumLatestFiveRes;
-    that.summaries = [];
+    $scope.summaries = [];
+    $scope.setLatestSummaries = setLatestSummaries;
 
-    latestFive.forEach(function(summary, index) {
+    $scope.setLatestSummaries(latestFive);
+    // setLatestSummaries(latestFive);
 
-      var summ = {
-        listOrder: index,
-        activityId : summary._id,
-        date : dateFilter(summary.startTime, 'medium'),
-        totalTime : dateFilter(summary.totalTime, "m 'minutes' : s 'seconds'"),
-        totalDistanceKm : summary.totalDistanceKm
-      };
+    function setLatestSummaries(latestSumms) {
+      latestSumms.forEach(function(summary, index) {
 
-      that.summaries.push(summ);
-    });
+        var summ = {
+          listOrder: index,
+          activityId : summary._id,
+          date : dateFilter(summary.startTime, 'medium'),
+          totalTime : dateFilter(summary.totalTime, "m 'minutes' : s 'seconds'"),
+          totalDistanceKm : summary.totalDistanceKm
+        };
+
+        $scope.summaries.push(summ);
+      });
+    }
 
   }
 
-  angular.module('runs').controller('MapSummaryCtrl', ['lastSummary', 'getActivitySumLatestFiveRes', 'dateFilter', MapSummaryCtrl]);
+  angular.module('runs').controller('MapSummaryCtrl', ['$scope', 'lastSummaryRes', 'getActivitySumLatestFiveRes', 'dateFilter', MapSummaryCtrl]);
 
 }(window._));
 

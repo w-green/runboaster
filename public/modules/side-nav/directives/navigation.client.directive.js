@@ -1,13 +1,13 @@
 (function(lodash) {
 
   var _ = lodash;
-  var navigation = function navigation($location, setHeightAftrTopNav, mediator) {
+  var sideNav = function sideNav($location, setHeightAftrTopNav, mediator) {
     return {
       restrict : 'AE',
       transclude : true,
       replace : true,
       template: '<nav><ul data-ng-transclude=""></ul></nav>',
-      controller: 'NavController',
+      controller: 'SideNavController',
       compile : function compile(tElement, tAttrs, transclude) {
         return {
           // pre: function preLink(scope, iElement, iAttrs, controller) { ... },
@@ -22,7 +22,6 @@
                 }
 
               }
-
               // Add active class to li
               if (document.querySelector('[ui-sref="' + toState.name + '"]')) {
                 var newEl = document.querySelector('[ui-sref="' + toState.name + '"]').parentNode;
@@ -36,12 +35,13 @@
             setHeightAftrTopNav(iElement[0].parentElement);
 
             // ----- add event listener on window resize ----- //
-            var resetHeight = function resetHeight() {
+            // adding to scope for testability
+            scope.resetHeight = function resetHeight() {
               var element = iElement[0].parentElement;
               setHeightAftrTopNav(element);
             };
 
-            var resizeEvent = mediator.subscribe('windowResize', resetHeight, this);
+            var resizeEvent = mediator.subscribe('windowResize', scope.resetHeight, this);
 
             // ----- remove event listener when scope is destroyed ----- //
             scope.$on('$destroy', function() {
@@ -53,9 +53,9 @@
         }; // returned object
       }, // compile
     }; // returned object
-  }; // navigation
+  }; // sideNav
 
 
-  angular.module('left-nav').directive('navigation', ['$location', 'setHeightAftrTopNav', 'mediator', navigation]);
+  angular.module('left-nav').directive('sideNav', ['$location', 'setHeightAftrTopNav', 'mediator', sideNav]);
 
 })(window._);

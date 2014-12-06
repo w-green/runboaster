@@ -59,6 +59,7 @@ module.exports = {
       'http://d3js.org/d3.v3.min.js',
 			'public/lib/angular-mocks/angular-mocks.js',
       'test-files/output/runs-summary-mock-2.js',
+      'test-files/output/runs-summary-latest5.js',
 			'public/modules/*/tests/*.js'
 		]
 	}

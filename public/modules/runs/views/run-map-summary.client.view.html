@@ -1,6 +1,6 @@
 <section data-map-summaries>
   <p>Your run summaries:</p>
-  <div ng-repeat="sum in MapSummary.summaries" data-activity-id="{{sum.activityId}}" data-list-order="{{sum.listOrder}}" class="mapSummaryItem">
+  <div ng-repeat="sum in summaries" data-activity-id="{{sum.activityId}}" data-list-order="{{sum.listOrder}}" class="mapSummaryItem">
     <p>Date: {{sum.date}} </p>
     <p> Total time: {{sum.totalTime}}</p>
     <p>Total Distance: {{sum.totalDistanceKm}} km</p>

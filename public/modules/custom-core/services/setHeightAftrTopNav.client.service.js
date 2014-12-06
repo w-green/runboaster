@@ -17,9 +17,10 @@
       function setElHeight(elem) {
 
         htmlEl = document.querySelector('html');
-        topNav = document.getElementById('top-nav-js');
+        topNav = document.getElementById('top-nav-js') || '';
         var htmlHeight = htmlEl.clientHeight;
-        var topNavHeight = topNav.clientHeight ? topNav.clientHeight : 50; // default 50px
+
+        var topNavHeight = topNav === '' ? 50 : topNav.clientHeight; // default 50px
         var elNewHeight = htmlHeight - topNavHeight;
         elem.style.height = elNewHeight + 'px';
 

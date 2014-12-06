@@ -22,7 +22,7 @@ angular.module('runs').config(['$stateProvider',
           singleRunData : ['getLatestSingleData', function(getLatestSingleData) {
             return getLatestSingleData.get().$promise;
           }],
-          lastSummary : ['latestSummary', function(latestSummary) {
+          lastSummaryRes : ['latestSummary', function(latestSummary) {
             return latestSummary.getLatestSum().$promise;
           }],
           getActivitySumLatestFiveRes : ['getActivitySumLatestFive', function(getActivitySumLatestFive) {
@@ -39,12 +39,12 @@ angular.module('runs').config(['$stateProvider',
             // the child views will be defined here (absolutely named)
             'columnOne@mapRuns' : {
               templateUrl : 'modules/runs/views/run-map-summary.client.view.html',
-              controller : 'MapSummaryCtrl as MapSummary'
+              controller : 'MapSummaryCtrl'
             },
 
             'columnTwo@mapRuns' : {
                 templateUrl : 'modules/gmap/views/run-map.client.view.html',
-                controller : 'MyMapsCtrl as mapsCtrl'
+                controller : 'MyMapsCtrl'
             }
         }
 
