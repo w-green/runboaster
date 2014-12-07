@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
     summaryModel = mongoose.model('runsSummary'),
     ObjectId = mongoose.Types.ObjectId,
     should = require('should'),
-    summarData = require('../../test-files/output/runs-summary-stub.js');
+    summarData = require('../../test-files/output/runs-summary-mock.js');
 
 var user, user__Id, runsSummary;
 

@@ -60,21 +60,21 @@
 
 
     return function setMapPolylines(coords) {
-        paths.length = 0; // resetting
-        polylines.length = 0;
-        createPaths(coords);
-        createPolylines();
+      paths.length = 0; // resetting
+      polylines.length = 0;
+      createPaths(coords);
+      createPolylines();
 
-        return {
-          paths : paths,
-          polylines : polylines
-        };
+      return {
+        paths : paths,
+        polylines : polylines
+      };
     };
 
 
   };
 
 
-  angular.module('runs').factory('setMapPolylines', [setMapPolylines]);
+  angular.module('gmap').factory('setMapPolylines', [setMapPolylines]);
 
 })(window._);

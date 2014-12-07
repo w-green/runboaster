@@ -8,7 +8,7 @@ describe('runsSummaryTable directive : ', function() {
       table;
 
   // mockSummary contains the mock results we use for runsSummaries
-  beforeEach(module('mockSummary'));
+  beforeEach(module('mocks'));
 
   beforeEach(function() {
     module('runs');

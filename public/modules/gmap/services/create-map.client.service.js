@@ -48,4 +48,4 @@ var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
 
 };
 
-angular.module('runs').service('createGmap', ['setMapPolylines', 'setMapMarkers', createGmap]);
+angular.module('gmap').service('createGmap', ['setMapPolylines', 'setMapMarkers', createGmap]);

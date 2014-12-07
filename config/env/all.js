@@ -58,6 +58,9 @@ module.exports = {
 			'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry',
       'http://d3js.org/d3.v3.min.js',
 			'public/lib/angular-mocks/angular-mocks.js',
+      'test-files/output/mocks.module.js',
+      'test-files/output/run-data-single-mock.js',
+      'test-files/output/runs-summary-mock-angular-test.js',
       'test-files/output/runs-summary-mock-2.js',
       'test-files/output/runs-summary-latest5.js',
 			'public/modules/*/tests/*.js'

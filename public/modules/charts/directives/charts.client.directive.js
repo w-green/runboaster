@@ -14,11 +14,11 @@
 
         //  ----- Our Data ----- //
         var runs = scope.runs;
-        var data = scope.runs.runs;
+        var data = runs.runs;
         var markerSize = runs.markerSize;
         var longestMarkerTime = runs.longestMarkerTime;
         var shortestMarkerTime = runs.shortestMarkerTime;
-        //  ----- / Our Data ----- //
+        //  ----- END Our Data ----- //
 
 
         // ----- Chart specific ----- //
@@ -33,7 +33,7 @@
         var margin = 20; // pads the chart inside of the svg
         var chartWidth;
         var chartHeight = 360 - margin*2;
-        // ----- / Chart specific ----- //
+        // ----- END Chart specific ----- //
 
 
         // ----- set chart height and width ----- //

@@ -577,6 +577,6 @@ var mockLatest5Summaries =
   }
 ];
 
-angular.module('mockSumsLatest5', [])
+angular.module('mocks')
   .value('mockSumsLatest5Service', mockLatest5Summaries);
 

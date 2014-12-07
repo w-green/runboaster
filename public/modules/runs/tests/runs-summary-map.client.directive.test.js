@@ -4,7 +4,7 @@ describe('Gmap directive for click events :', function() {
   var mockSumsLatest5Service, scope, ctrl, summariesEl;
 
   beforeEach(function() {
-    module('mockSumsLatest5'); // our Mock data
+    module('mocks'); // our Mock data
     module('runs');
     // stubs for resolved functions.
     // otherwise an error is thrown as they have no providers

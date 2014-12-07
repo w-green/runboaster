@@ -339,7 +339,7 @@ var mockSummary =
 };
 
 
-angular.module('mockSummary', [])
+angular.module('mocks')
   .value('mockSummaryJSON', mockSummary);
 
 

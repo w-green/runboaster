@@ -91,4 +91,4 @@ var setMapMarkers = function setMapMarkers() {
 
 
 
-angular.module('runs').factory('setMapMarkers', [setMapMarkers]);
+angular.module('gmap').factory('setMapMarkers', [setMapMarkers]);

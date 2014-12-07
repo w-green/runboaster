@@ -8,7 +8,7 @@ var request = require('supertest'),
     User = mongoose.model('User'),
     summaryModel = mongoose.model('runsSummary'),
     agent = request.agent(app),
-    summarData = require('../../test-files/output/runs-summary-stub.js'),
+    summarData = require('../../test-files/output/runs-summary-mock.js'),
     ObjectId = mongoose.Types.ObjectId;
 
 var user, user__Id;
