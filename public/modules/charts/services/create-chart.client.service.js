@@ -2,7 +2,7 @@
 
 var createChart = function($window) {
 
-  return function(runs, elem, rawSvg) {
+  return function(runs, elem, rawSvg, chartHeight) {
 
     var d3 = $window.d3;
     var data = runs.runs;
@@ -19,12 +19,29 @@ var createChart = function($window) {
       }
       return lowestYAxisPoint;
     };
-
+    var margin = 20; // pads the chart inside of the svg
+    var lineColors = [
+      '#B65020', // brown
+      '#000', // blue
+      '#ec6b60', // turquoise
+      '#563D7C', // purple
+      '#F4FD1F', // yellow
+      '#EE5FF1', // violet pink
+      '#F28483', // red
+      '#6AF0D4', // violet green / blue
+      '#2C4F53', // dark green
+      '#3A4F56', // dark dark green
+    ];
+    var yAxisHeight = chartHeight - margin * 2;
     var svg = d3.select(rawSvg[0]);
     var runGroup = []; // used to group run path and circles (tool tips)
     var pathClass = 'path';
     var xScale, yScale, xAxisGen, yAxisGen, lineFun; // vars for paths generation
-    var margin = 20; // pads the chart inside of the svg
+    var drawPaths;
+    var resizeChart;
+    var init;
+
+    var chartContainerHeight;
 
     // ----- CHART WIDTH - RESPONSIVE ----- //
     var chartContainerWidth = 0;
@@ -36,129 +53,151 @@ var createChart = function($window) {
       chartContainerWidth = parseInt(wrapper.offsetWidth);
     };
     getChartContainerWidth = function getChartContainerWidth() {
-      console.log('YES');
       if(chartContainerWidth === 0) {
         setChartContainerWidth(elem);
       }
       return chartContainerWidth;
     };
 
+    var getChartWidth = function getChartWidth() {
+      var containerWidth = getChartContainerWidth();
+      return containerWidth - margin * 2;
+    };
+
     setChartContainerWidth(elem);
 
     // ----- END CHART WIDTH - RESPONSIVE ----- //
+
 
     var chart = {
       margin : 20,
       axis : {
         y : {
-          height : 360, // default height
+          height : yAxisHeight, // default height
           lowest : getLowestYAxis()
         },
         x : {
           width : {
-           get : function() {
-            var containerWidth = getChartContainerWidth();
-            return containerWidth - margin * 2;
-           }
+           get : getChartWidth
           },
-          // width : 300,
           ticks : {
-            count : markerCount
-          }
+            count : markerCount,
+            type : d3.time,
+            interval : {
+              measure : 'seconds',
+              lapse : 30
+            },
+            format : '%Mm %Ss'
+          },
+          orient : 'bottom'
         }
       },
+      xScale : {
+        type : d3.scale.linear(),
+        domain : [1, markerCount],
+        range : [50, getChartWidth()]
+      },
+      yScale : {
+        type : d3.time.scale(),
+        domain : [getLowestYAxis(), longestMarkerTime],
+        range : [yAxisHeight, 0]
+      },
+      scatterplot : {
+        circles : {
+          radius : 3
+        }
+      }
+    };
 
+    init = function init() {
+      setChartParameters();
+      drawAxis();
+    }();
 
+    resizeChart =
+    function resizeChart() {
+      setChartContainerWidth(elem);
+      svg.attr('width', getChartContainerWidth());
+
+      // Update range of scale with new width
+      xScale.range([50, chart.axis.x.width.get()]);
+
+      redrawAxis();
+      redrawPaths();
     };
 
 
-    var chartContainerHeight = chart.axis.y.height + margin * 2;
+    drawPaths = function drawPaths(data) {
+      data.forEach(function(d, index, array) {
+        // container for each path in line chart
+        runGroup[index] = svg.append('g');
+        runGroup[index]
+          .attr('class', 'runLine vis-hidden run-' + index);
+          console.log(lineColors[index]);
+        // Draws the line
+        runGroup[index]
+          .append('svg:path')
+          .attr({
+            d: lineFun(d.markers),
+            // 'stroke': getRandomColor(),
+            'stroke': lineColors[index],
+            'stroke-width': 2,
+            'fill': 'none',
+            'class': pathClass + ' path' + index
+          });
 
-
-    // ----- set chart container height and width ----- //
-    svg.attr('height', chartContainerHeight);
-    svg.attr('width', getChartContainerWidth());
-
-
-    setChartParameters();
-    drawAxis();
-
-
-    var resizeChart =
-      function resizeChart() {
-        setChartContainerWidth(elem);
-        svg.attr('width', getChartContainerWidth());
-
-        // Update range of scale with new width
-        xScale.range([50, chart.axis.x.width.get()]);
-
-        redrawAxis();
-        redrawPaths();
-      };
-
-
-    data.forEach(function(d, index, array) {
-
-      runGroup[index] = svg.append('g');
-      runGroup[index].attr('class', 'runLine vis-hidden run-' + index);
-
-      runGroup[index].append('svg:path')
-         .attr({
-             d: lineFun(d.markers),
-             'stroke': getRandomColor(),
-             'stroke-width': 2,
-             'fill': 'none',
-             'class': pathClass + ' path' + index
-         });
-
-
-      // Add the scatterplot
-      runGroup[index].selectAll('dot')
+        // Add the scatterplot
+        runGroup[index]
+          .selectAll('dot')
           .data(d.markers)
-      .enter().append('circle')
-          .attr('r', 5)
-          .attr('cx', function(d) { return xScale(d.km); })
-          .attr('cy', function(d) { return yScale(d.time); });
-          // .on('mouseover', tip.show)
-          // .on('mouseout', tip.hide);
+            .enter()
+            .append('circle')
+              .attr('r', chart.scatterplot.circles.radius)
+              .attr('cx', function(d) { return xScale(d.km); })
+              .attr('cy', function(d) { return yScale(d.time); });
+              // .on('mouseover', tip.show)
+              // .on('mouseout', tip.hide);
+      }); // data.forEach
 
-
-    }); // data.forEach
-
-
-
-
-
+    }(data); // drawPaths
 
 
     // setting the values of the vars declared earlier
     function setChartParameters() {
 
-      // if (shortestMarkerTime !== 0) {
-      //   xAxis_base = shortestMarkerTime / 1.1;
-      // }
+      chartContainerHeight = chart.axis.y.height + margin * 2;
 
-      xScale = d3.scale.linear()
-        .domain([1, chart.axis.x.ticks.count])
-        .range([50, chart.axis.x.width.get()]);
+      // ----- set chart container height and width ----- //
+      svg.attr('height', chartContainerHeight);
+      svg.attr('width', getChartContainerWidth());
 
-      yScale = d3.time.scale()
-        .domain([chart.axis.y.lowest, longestMarkerTime])
-        .range([chart.axis.y.height, 0]);
+      xScale =
+      chart.xScale.type
+        .domain(chart.xScale.domain)
+        .range(chart.xScale.range);
 
-      xAxisGen = d3.svg.axis()
+      yScale =
+      chart.yScale.type
+        .domain(chart.yScale.domain)
+        .range(chart.yScale.range);
+
+      xAxisGen =
+      d3.svg.axis()
         .scale(xScale)
-        .orient('bottom')
+        .orient(chart.axis.x.orient)
         .tickSize(-chart.axis.y.height, 0, 0)
         .ticks(chart.axis.x.ticks.count);
 
-      yAxisGen = d3.svg.axis()
+      yAxisGen =
+      d3.svg.axis()
         .scale(yScale)
         .orient('left')
         .tickSize(-chart.axis.x.width.get(), 0, 0)
-        .ticks(d3.time.seconds, 30)
-        .tickFormat(d3.time.format('%Mm %Ss'));
-        // .ticks(5);
+        .ticks(
+          chart.axis.x.ticks.type[chart.axis.x.ticks.interval.measure],
+          chart.axis.x.ticks.interval.lapse
+        )
+        .tickFormat(chart.axis.x.ticks.type.format(chart.axis.x.ticks.format));
 
       lineFun = d3.svg.line()
         .x(function (d) {
@@ -170,6 +209,7 @@ var createChart = function($window) {
         .interpolate('linear');
     } // setChartParameters
 
+
     // utility function for generating path colours
     function getRandomColor() {
         var letters = '0123456789ABCDEF'.split('');
@@ -180,11 +220,11 @@ var createChart = function($window) {
         return color;
     } // getRandomColor
 
+
     function drawAxis() {
 
       svg.append('svg:g')
          .attr('class', 'xAxis axis grid')
-         // .attr('transform', 'translate(0,' + chartHeight + ')')
          .attr('transform', 'translate(0,' + chart.axis.y.height + ')')
          .call(xAxisGen);
 
@@ -213,6 +253,7 @@ var createChart = function($window) {
       y.call(yAxisGen);
     } // redrawAxis
 
+
     // ----- redraw the paths on window resize ----- //
 
     function redrawPaths() {
@@ -221,10 +262,17 @@ var createChart = function($window) {
         runPath.attr({
              'd': lineFun(d.markers)
          });
+
+        // Add the scatterplot
+        var runGroup = svg.select('g.run-' + index);
+        var circle = runGroup.selectAll('circle');
+        circle
+          .attr('r', chart.scatterplot.circles.radius)
+          .attr('cx', function(d) { return xScale(d.km); })
+          .attr('cy', function(d) { return yScale(d.time); });
       });
-    }
 
-
+    } // redrawPaths
 
     return {
       resizeChart : resizeChart

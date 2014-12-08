@@ -15,7 +15,8 @@
         //  ----- Our Data ----- //
         var runs = scope.runs;
         var rawSvg = elem.find('svg');
-        var chart = createChart(runs, elem[0], rawSvg); // returns an object
+        var chartHeight = 360; // in px
+        var chart = createChart(runs, elem[0], rawSvg, chartHeight); // returns an object
 
         var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
 
