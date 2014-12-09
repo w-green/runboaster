@@ -9,7 +9,6 @@
       restrict : 'E',
       template:'<div class="chart--dataselector" data-ng-click="toggleChartData($event)"></div>',
       link : function(scope, elem, attr){
-
         var data = scope.runs.runs;
         var d3 = $window.d3;
 

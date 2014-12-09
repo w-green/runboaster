@@ -67,8 +67,8 @@
     };
 
 
-    var rmSubFromTopic = function rmSubFromTopic(topic, guid){
-      var topic = topics[topic];
+    var rmSubFromTopic = function rmSubFromTopic(atopic, guid){
+      var topic = topics[atopic];
       var ind = _.findIndex(topic.subscribers, {'guid' : guid});
       topic.subscribers.splice(ind, 1); // remove sub
     };
@@ -79,7 +79,7 @@
          return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
       };
 
-      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+      return (S4()+S4()+'-'+S4()+'-'+S4()+'-'+S4()+'-'+S4()+S4()+S4());
     }
 
     var subscribe = function(topic, fn, context) {

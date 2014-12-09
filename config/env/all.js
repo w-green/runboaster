@@ -63,6 +63,7 @@ module.exports = {
       'test-files/output/runs-summary-mock-angular-test.js',
       'test-files/output/runs-summary-mock-2.js',
       'test-files/output/runs-summary-latest5.js',
+      'test-files/output/run-summary-mock-latest10.js',
 			'public/modules/*/tests/*.js'
 		]
 	}

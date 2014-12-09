@@ -7,7 +7,7 @@ angular.module('charts').config(['$stateProvider',
       state('charts', {
         url: '/my/runs/charts',
         resolve : {
-          runsSummaries : ['latestTen', function(latestTen) {
+          runsSummariesRes : ['latestTen', function(latestTen) {
             var res = latestTen.getRuns();
             return res;
           }]

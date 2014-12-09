@@ -14,14 +14,14 @@ describe('Create map markers : ', function() {
     //
     runStart =
       {
-        "latitude": 51.45974,
-        "longitude": -0.222839
+        'latitude': 51.45974,
+        'longitude': -0.222839
       };
 
     runEnd =
       {
-        "latitude": 51.459758,
-        "longitude": -0.222963
+        'latitude': 51.459758,
+        'longitude': -0.222963
       };
 
     summaryMarkerItems = runsSummaryMockService.markerItems;

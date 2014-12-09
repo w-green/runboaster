@@ -109,10 +109,10 @@ var createChart = function($window) {
       }
     };
 
-    init = function init() {
+    init = (function init() {
       setChartParameters();
       drawAxis();
-    }();
+    }());
 
     resizeChart =
     function resizeChart() {
@@ -127,13 +127,13 @@ var createChart = function($window) {
     };
 
 
-    drawPaths = function drawPaths(data) {
+    drawPaths = (function drawPaths(data) {
       data.forEach(function(d, index, array) {
         // container for each path in line chart
         runGroup[index] = svg.append('g');
         runGroup[index]
           .attr('class', 'runLine vis-hidden run-' + index);
-          console.log(lineColors[index]);
+
         // Draws the line
         runGroup[index]
           .append('svg:path')
@@ -159,7 +159,7 @@ var createChart = function($window) {
               // .on('mouseout', tip.hide);
       }); // data.forEach
 
-    }(data); // drawPaths
+    }(data)); // drawPaths
 
 
     // setting the values of the vars declared earlier
@@ -210,15 +210,15 @@ var createChart = function($window) {
     } // setChartParameters
 
 
-    // utility function for generating path colours
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF'.split('');
-        var color = '#';
-        for (var i = 0; i < 6; i++ ) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    } // getRandomColor
+    // // utility function for generating path colours
+    // function getRandomColor() {
+    //     var letters = '0123456789ABCDEF'.split('');
+    //     var color = '#';
+    //     for (var i = 0; i < 6; i++ ) {
+    //         color += letters[Math.floor(Math.random() * 16)];
+    //     }
+    //     return color;
+    // } // getRandomColor
 
 
     function drawAxis() {
@@ -275,6 +275,7 @@ var createChart = function($window) {
     } // redrawPaths
 
     return {
+      svg : svg,
       resizeChart : resizeChart
     };
 

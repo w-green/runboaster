@@ -3,8 +3,8 @@
 (function(lodash) {
   var _ = lodash;
 
-  var chartsCtrl = function chartsCtrl($scope, runsSummaries) {
-    $scope.runs = runsSummaries;
+  var chartsCtrl = function chartsCtrl($scope, runsSummariesRes) {
+    $scope.runs = runsSummariesRes;
     var allRunsSelect = false;
 
     $scope.slideOutRuns = function slideOutRuns() {
@@ -65,6 +65,6 @@
 
   };
 
-  angular.module('charts').controller('chartsCtrl', ['$scope', 'runsSummaries', chartsCtrl]);
+  angular.module('charts').controller('chartsCtrl', ['$scope', 'runsSummariesRes', chartsCtrl]);
 
 }(window._));
