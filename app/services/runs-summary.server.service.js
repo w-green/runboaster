@@ -6,109 +6,116 @@ var createSummary = require('../modules/runs-summary/services/functions/createsu
 var totalDistanceCounter = require('../modules/runs-summary/services/functions/totaldistancecounter.js');
 var factory = require('../../lib/custom/utils/object/factory.js');
 
+var kmSummaryFactory;
+var summaryList;
+var summary;
+
+// Used by calculate() to map data to a longitude and latitude
+// format consistent with geolib
+// output [[ { longitude: -0.220693, latitude: 51.459465 }, { time: Tue Jun 24 2014 13:46:23 GMT+0100 (BST) } ]]
+var mapData = function mapData(data) {
+  return data.map(function(currentValue, index, array) {
+    var result = [];
+    result.push(
+        { longitude: currentValue[0], latitude: currentValue[1] },
+        { time: currentValue[3] }
+    );
+    return result;
+  });
+}; // mapData
+
+// record the start of each lap
+var startOfEachLap = function startOfEachLap(startOfLap, kmMarker) {
+  return {
+    meters : kmMarker,
+    data : startOfLap,
+  };
+}; // startOfEachLap
+
+// increments the kmMarker
+var setKmMarker = function setKmMarker(totalDistance) {
+  // checking if number is int - if so we use Math.ceil()
+  // to push the number up to the next integer
+  var isInt = function isInt(n) {
+     return n % 1 === 0;
+  };
+  var km = totalDistance / 1000;
+  var result = isInt(km) ? km + 1 : Math.ceil(km);
+  return result * 1000;
+};
+
+// records the end of lap
+var endOfEachLap = function endOfEachLap(endOfLap, kmMarker) {
+  return {
+    meters : kmMarker,
+    data : endOfLap,
+    rest : true
+  };
+};
+
 
 exports.calculate =
   function calculate(runData) {
-    var runCoords = runData.features[0].geometry.coordinates; // The run which contains an array of laps which each have an array of coordinates
-    var totalDistance = 0; // keeps track of total distance (km) for all laps = the runs total distance
-    var kmMarkers = []; // Marker points used for map
-    var kmMarker = 1000; // used below in reduceData() to mark kms
 
-    // these are used for calculating our pauses
-    // it tells us what kmMarker the pauses were in
-    var lapStart = [];
-    var lapEnd = [];
+    var run = {
+      totalDistance : 0, // keeps track of total distance (km) for all laps = the runs total distance
+      kmMarkers : [], // Marker points used for map
+      lapStart : [], // these are used for calculating our pauses
+      lapEnd : [] // it tells us what kmMarker the pauses were in
+    };
 
+    var kmMarker = 1000; // records count of kms as run is processed
+    var mappedData;
+    var startOfLap;
+    var endOfLap;
 
-    // loops over every lap. Each lap which contains an array of objects
-    // that has coordinates and time
-    // This creates the data for our summaries
-    // (it outputs total distance, total times including pauses)
-    runCoords.forEach(function(data) {
+    if(Array.isArray(runData.features)) {
+      runData.features.forEach(function(feature) {
+        var runCoords = feature.geometry.coordinates;
 
-      // We're resaving the data into a format suitable with geolib so
-      // that we can run calculations for distance
-      var mappedData;
-      var startOfLap;
-      var endOfLap;
+        // loops over every lap. Each lap which contains an array of objects
+        // that has coordinates and time
+        // This creates the data for our summaries
+        // (it outputs total distance, total times including pauses)
+        runCoords.forEach(function(data) {
 
-      // output [[ { longitude: -0.220693, latitude: 51.459465 }, { time: Tue Jun 24 2014 13:46:23 GMT+0100 (BST) } ]]
-      mappedData = mapData(data);
+          mappedData = mapData(data);
 
+          // ----- get the start of each lap ----- //
+          // allows us to calculate pauses
+          startOfLap = mappedData[0];
 
-      // ----- get the start of each lap ------ //
-      // allows us to calculate pauses
-      startOfLap = mappedData[0];
-      var startOfEachLap = function startOfEachLap(start, marker) {
-        return {
-          meters : kmMarker,
-          data : startOfLap,
-        };
-      };
-      lapStart.push(startOfEachLap(startOfLap, kmMarker));
+          run.lapStart.push(startOfEachLap(startOfLap, kmMarker));
 
+          // Reduces the mapped data down to return a total distance for each lap
+          // Then adds this to the total distance in the parent scope
+          // which counts the total distance for the run
+          run.totalDistance = totalDistanceCounter(mappedData, run.totalDistance, kmMarker, run.kmMarkers);
 
-      // Reduces the mapped data down to return a total distance for each lap
-      // Then adds this to the total distance in the parent scope
-      // which counts the total distance for the run
-      var revisedTotalDistance = totalDistanceCounter(mappedData, totalDistance, kmMarker, kmMarkers);
-      totalDistance = revisedTotalDistance;
+          // ----- Updates the km marker ----- //
+          // with output from totalDistanceCounter()
+          kmMarker = setKmMarker(run.totalDistance);
 
-      // console.log(JSON.stringify(kmMarkers, null, 2));
+          // ----- get the end of each lap ------ //
+          // allows us to calculate pauses
+          endOfLap = mappedData[mappedData.length -1];
+          run.lapEnd.push(endOfEachLap(endOfLap, kmMarker));
 
-      // ----- Updates the km marker ----- //
-      // with output from totalDistanceCounter()
-      kmMarker = setKmMarker(totalDistance);
-      function setKmMarker(totalDistance) {
-        var km = totalDistance / 1000;
-        var result = isInt(km) ? km + 1 : Math.ceil(km);
-        return result * 1000;
-      }
-      // checking if number is int - if so we use Math.ceil()
-      // to push the number up to the next integer
-      function isInt(n) {
-         return n % 1 === 0;
-      }
+        }); // runCoords.forEach
 
-
-      // ----- get the end of each lap ------ //
-      // allows us to calculate pauses
-      endOfLap = mappedData[mappedData.length -1];
-      var endOfEachLap = function endOfEachLap(endOfLap, kmMarker) {
-        return {
-          meters : kmMarker,
-          data : endOfLap,
-          rest : true
-        };
-      };
-      lapEnd.push(endOfEachLap(endOfLap, kmMarker));
-
-
-      function mapData(data) {
-       return data.map(function(currentValue, index, array) {
-          var result = [];
-          result.push(
-              { longitude: currentValue[0], latitude: currentValue[1] },
-              { time: currentValue[3] }
-          );
-          return result;
-        });
-      } // mapData
-
-    }); // forEach
-
+      }); //runData.features.forEach
+    }
 
     // Factory used to create new km summaries
-    var kmSummaryFactory = function(props) {
+    kmSummaryFactory = function(props) {
       return factory(summarymarkerPrototype, props);
     };
 
     // create summaries - with pauses
-    var summaryList = summaryMarkerBuilder(kmMarkers, lapStart, lapEnd, kmSummaryFactory, totalDistance);
-    // console.log(JSON.stringify(summaryList, null, 2));
+    summaryList = summaryMarkerBuilder(run.kmMarkers, run.lapStart, run.lapEnd, kmSummaryFactory, run.totalDistance);
 
     // create summary
-    var summary = createSummary(summaryList, totalDistance);
+    summary = createSummary(summaryList, run.totalDistance);
 
     return summary;
   }; // calculate
