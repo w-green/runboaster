@@ -64,6 +64,7 @@ module.exports = {
       'test-files/output/runs-summary-mock-2.js',
       'test-files/output/runs-summary-latest5.js',
       'test-files/output/run-summary-mock-latest10.js',
+      'test-files/output/run-summary-mock-latest10-unformatted.js',
 			'public/modules/*/tests/*.js'
 		]
 	}

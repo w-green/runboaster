@@ -1,5 +1,5 @@
 'use strict';
-// used in testing custom chart tests
+// used in testing custom chart tests, and runs services tests
 
 var mockLatest10Summaries =
 {
