@@ -41,7 +41,6 @@ describe('runsData model', function() {
       saveUser(done);
     });
 
-
       it('should not be able to upload a file with diff extension than gpx', function (done) {
         agent
           .post('/auth/signin')
@@ -53,12 +52,8 @@ describe('runsData model', function() {
                 .type('form')
                 .attach('file', './README.md')
                 .end(function (err, res) {
-                  agent
-                    .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
-                    .end(function(error, res) {
-                      expect(res.body[0]).to.be.undefined;
-                      done();
-                    });
+                  expect(res.body.runId).to.be.undefined;
+                  done();
                 });
           });
       });
@@ -87,17 +82,14 @@ describe('runsData model', function() {
               .attach('file', './test-files/2014-06-24-1145.gpx')
               .expect(200)
               .end(function (err, res) {
-                agent
-                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
-                  .end(function(error, res) {
-                    expect(res.body[0].user).to.equal(userId);
+                expect(res.body.runId).to.be.defined;
+                expect(res.body.summaryId).to.be.defined;
 
-                    // removes data from db
-                    var user__Id = new ObjectId(user._id);
-                    runsData.remove({'user' : user__Id}).exec();
-                    summaryModel.remove({'user' : user__Id}).exec();
-                    done();
-                  });
+                // removes data from db
+                var user__Id = new ObjectId(user._id);
+                runsData.remove({'user' : user__Id}).exec();
+                summaryModel.remove({'user' : user__Id}).exec();
+                done();
               });
           });
       });
@@ -117,7 +109,7 @@ describe('runsData model', function() {
               .attach('file', '')
               .end(function (err, res) {
                 agent
-                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
+                  .get('/api/v_' + apiVersion +'/:user_id/run/data?limit=1')
                   .end(function(error, res) {
                     expect(res.body[0]).to.be.undefined;
                     done();
@@ -140,37 +132,125 @@ describe('runsData model', function() {
       saveUser(done);
     });
 
-    it('should return a single run', function (done) {
+
+    it('should return the latest 2 runs. Checking limit', function (done) {
+      var userId;
       agent
         .post('/auth/signin')
         .send(user)
         .end(function (err, res){
-          var userId = res.body._id;
+          userId = res.body._id;
           agent
-              .post('/upload')
-              .type('form')
-              .attach('file', './test-files/2014-06-24-1145.gpx')
-              .expect(200)
-              .end(function (err, res) {
-                agent
-                  // get latest
-                  .get('/api/v_' + apiVersion +'/:user_id/run/data/latest')
-                  .end(function(error, res) {
-                    var run_id = res.body[0]._id;
-                      agent
-                        .get('/api/v_' + apiVersion +'/:user_id/run/data/' + run_id)
-                        .end(function(error, res) {
-                          (res.body.length).should.equal(1);
+            .post('/upload')
+            .type('form')
+            .attach('file', './test-files/2014-06-24-1145.gpx')
+            .expect(200)
+            .end(function (err, res) {
+              agent
+                .post('/upload')
+                  .type('form')
+                  .attach('file', './test-files/2014-07-21-1334.gpx')
+                  .expect(200)
+                  .end(function (err, res) {
+                    agent
+                      // check limit is working
+                      .get('/api/v_' + apiVersion +'/:user_id/run/data?limit=2')
+                      .end(function(error, res) {
+                        (res.body.length).should.equal(2);
 
-                          // removes data from db
-                          var user__Id = new ObjectId(user._id);
-                          runsData.remove({'user' : user__Id}).exec();
-                          summaryModel.remove({'user' : user__Id}).exec();
-                          done();
-                        });
-
+                        // removes data from db
+                        var user__Id = new ObjectId(user._id);
+                        runsData.remove({'user' : user__Id}).exec();
+                        summaryModel.remove({'user' : user__Id}).exec();
+                        done();
+                      });
                   });
-              });
+            });
+        });
+
+    }); // it
+
+
+    it('should return a run offset by one', function (done) {
+      var userId, run_id, run_id_2;
+
+      agent
+        .post('/auth/signin')
+        .send(user)
+        .end(function (err, res){
+          userId = res.body._id;
+          agent
+            .post('/upload')
+            .type('form')
+            .attach('file', './test-files/2014-06-24-1145.gpx')
+            .expect(200)
+            .end(function (err, res) {
+              run_id = res.body.runId;
+              agent
+                .post('/upload')
+                .type('form')
+                .attach('file', './test-files/2014-07-21-1334.gpx')
+                .expect(200)
+                .end(function (err, res) {
+                  run_id_2 = res.body.runId;
+                  agent
+                    // check offset is working
+                    .get('/api/v_' + apiVersion +'/:user_id/run/data?limit=1&offset=1')
+                    .end(function(error, res) {
+                      (res.body[0]._id).should.match(run_id); // should match the first run
+
+                      // removes data from db
+                      var user__Id = new ObjectId(user._id);
+                      runsData.remove({'user' : user__Id}).exec();
+                      summaryModel.remove({'user' : user__Id}).exec();
+                      done();
+                    });
+
+                });
+            });
+        });
+
+    }); // it
+
+
+
+    it('should return a run by id', function (done) {
+      var userId, run_id, run_id_2;
+      agent
+        .post('/auth/signin')
+        .send(user)
+        .end(function (err, res){
+          userId = res.body._id;
+          agent
+            .post('/upload')
+            .type('form')
+            .attach('file', './test-files/2014-06-24-1145.gpx')
+            .expect(200)
+            .end(function (err, res) {
+              run_id = res.body.runId;
+              agent
+                .post('/upload')
+                .type('form')
+                .attach('file', './test-files/2014-07-21-1334.gpx')
+                .expect(200)
+                .end(function (err, res) {
+                  run_id_2 = res.body.runId;
+                  (run_id_2).should.not.match(run_id);
+                  agent
+                    // check getById is working
+                    .get('/api/v_' + apiVersion +'/:user_id/run/data/' + run_id)
+                    .end(function(error, res) {
+                      (res.body.length).should.equal(1);
+                      (res.body[0]._id).should.match(run_id);
+
+                      // removes data from db
+                      var user__Id = new ObjectId(user._id);
+                      runsData.remove({'user' : user__Id}).exec();
+                      summaryModel.remove({'user' : user__Id}).exec();
+                      done();
+                    });
+                });
+            });
         });
 
     }); // it

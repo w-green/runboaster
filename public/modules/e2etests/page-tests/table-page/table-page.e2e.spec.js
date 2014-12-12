@@ -27,8 +27,8 @@ describe('Table Page: ', function() {
       var thirdRow = data[1];
       var fifthRow = data[2];
 
-      expect(firstRow).toBeLessThan(thirdRow);
-      expect(fifthRow).not.toBeLessThan(thirdRow);
+      expect(thirdRow).toBeLessThan(firstRow);
+      expect(fifthRow).toBeLessThan(thirdRow);
     });
 
   });
@@ -43,18 +43,21 @@ describe('Table Page: ', function() {
 
       tp.sortRuns.byDate()
         .then(function(){
-          tp.sortRuns.byDate()
-            .then(function(){
-              Q.all(tp.getDateByRows([1, 10])).done(function(rows){
-                var newFirstRow = rows[0];
-                var newLastRow = rows[1];
-                expect(firstRow).toMatch(newLastRow);
-                expect(lastRow).toMatch(newFirstRow);
-              });
-            }); // then
+          Q.all(tp.getDateByRows([1, 10])).done(function(rows){
+            var newFirstRow = rows[0];
+            var newLastRow = rows[1];
+            expect(firstRow).toMatch(newLastRow);
+            expect(lastRow).toMatch(newFirstRow);
+          });
         }); // then
+
     }); // Q
 
   }); // it
+
+  // ----- TEAR DOWN ----- //
+  it('tear down for tests', function(){
+    logout();
+  });
 
 });

@@ -3,14 +3,13 @@
 (function() {
 
   // table of runs
-  function TableRunsCtrl(runsSummaries, $scope) {
-    // var that = this;
+  function TableRunsCtrl(runsSummariesRes, $scope) {
 
-    $scope.runs = runsSummaries;
+    $scope.runs = runsSummariesRes;
 
   }
 
-  angular.module('runs').controller('TableRunsCtrl', [ 'runsSummaries', '$scope', TableRunsCtrl ]);
+  angular.module('runs').controller('TableRunsCtrl', [ 'runsSummariesRes', '$scope', TableRunsCtrl ]);
 
 }());
 

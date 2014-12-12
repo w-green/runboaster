@@ -7,7 +7,9 @@ exports.config = {
     navigation: './public/modules/e2etests/page-tests/navigation/**/*.spec.js',
     uploadPage: './public/modules/e2etests/page-tests/upload-page/**/*.spec.js',
     tablePage: './public/modules/e2etests/page-tests/table-page/**/*.spec.js',
-    services: ['./public/modules/e2etests/services/**/*.spec.js']
+    services: ['./public/modules/e2etests/services/**/*.spec.js'],
+    servicesGetRun: './public/modules/e2etests/services/get-runs-by-id/**/*.spec.js',
+    servicesGetSummaries: './public/modules/e2etests/services/get-summaries/**/*.spec.js'
   },
   capabilities: {
     browserName: 'chrome',

@@ -45,16 +45,18 @@ exports.create = function(req, res, next) {
 
 };
 
-
 /**
- * Get last run
+ * Get runs
  */
-exports.getLatest = function(req, res) {
+exports.get = function(req, res) {
   var userId = req.user._id;
+  var limit = req.query.limit;
+  var offset = req.query.offset || 0;
   runsData
     .find({'user' : new ObjectId(userId)})
     .sort({'features.properties.time' : -1})
-    .limit(1)
+    .skip(offset)
+    .limit(limit)
     .exec(function(err, runs) {
       if (err) {
         return res.status(400).send({
@@ -70,11 +72,12 @@ exports.getLatest = function(req, res) {
 /**
  * Get single run
  */
-exports.getSingle = function(req, res) {
-  var userId = req.user._id;
-  var runId = req.run_id;
+exports.getById = function(req, res) {
+  var runId = req.params.run_id;
   runsData
-    .find({'user' : new ObjectId(userId)})
+    .find({
+      '_id' : new ObjectId(runId)
+    })
     .sort({'features.properties.time' : -1})
     .limit(1)
     .exec(function(err, runs) {
@@ -87,25 +90,6 @@ exports.getSingle = function(req, res) {
     }
   });
 };
-
-
-
-/**
- * list all runs data
- */
- exports.list = function(req, res) {
-  var query = runsData.find();
-  query.exec(function(err, runs) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.status(200).jsonp(runs);
-    }
-  });
- };
-
 
 // Remove all runs
  exports.deleteAll = function(req, res) {

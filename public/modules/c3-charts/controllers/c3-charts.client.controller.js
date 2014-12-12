@@ -2,8 +2,8 @@
 
 (function(d3, c3) {
 
-  var C3ChartsCtrl = function c3ChartsCtrl($scope, runsSummaries) {
-    $scope.runs = runsSummaries;
+  var C3ChartsCtrl = function c3ChartsCtrl($scope, runsSummariesRes) {
+    $scope.runs = runsSummariesRes;
     var runs = [];
     var allRuns = $scope.runs.runs;
 
@@ -62,6 +62,6 @@
 
       };
 
-  angular.module('c3-charts').controller('C3ChartsCtrl', ['$scope', 'runsSummaries', C3ChartsCtrl]);
+  angular.module('c3-charts').controller('C3ChartsCtrl', ['$scope', 'runsSummariesRes', C3ChartsCtrl]);
 
 }(window.d3, window.c3));

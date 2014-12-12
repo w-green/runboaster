@@ -26,17 +26,61 @@ exports.create = function(req, res) {
   result.promise
     .then(calculate)
     .then(function(data) {
-     saveToDb(data, req.user._id);
+      var deferred = Q.defer();
+      var savedSummary;
+
+      save();
+      function save() {
+        var saveSum = saveToDb(data, req.user._id, req.runsDataId);
+        deferred.resolve(saveSum);
+      }
+
+      savedSummary = deferred.promise.then(function(data) {
+        return data;
+      });
+      return(savedSummary);
     })
     .fail(function(err) {
       console.error(err + err.stack);
       return res.status(400).end();
     })
     .done(function(data) {
-      return res.status(200).end();
+      var runIdNSumId = {};
+      if(data) {
+        runIdNSumId.runId = data.runId ? data.runId : 0;
+        runIdNSumId.SummaryId = data._id ? data._id : 0;
+      }
+      return res.status(200).send(runIdNSumId).end();
     });
 
 };
+
+
+/**
+ * Get users latest run
+ */
+
+exports.get = function get(req, res) {
+  var userId = req.params.user_id;
+  var limit  = req.query.limit || 1;
+  var skip = req.query.offset || 0;
+  runsSummary
+    .find({'user' : new ObjectId(userId)}, {})
+    .sort({'startTime' : -1})
+    .skip(skip)
+    .limit(limit)
+    .exec(function(err, result) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(result);
+      }
+    });
+};
+
+
 
 /**
  * Get users latest run

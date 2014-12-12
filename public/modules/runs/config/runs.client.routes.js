@@ -8,9 +8,19 @@ angular.module('runs').config(['$stateProvider',
     .state('tableRuns', {
       url : '/runs',
       resolve : {
-        runsSummaries : ['latestTen', function(latestTen) {
-          var res = latestTen.getRuns(); // returns a promise
-          return res;
+        runsSummariesRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
+          var queryOptions = {
+            limit : 10
+          };
+          // format the summs for the table directive
+          // - directive needs to know number of markers etc
+          var formattedSumms =
+            getSummaries
+              .get(queryOptions)
+              .then(function(d) {
+                return formatSummaries(d);
+              });
+          return formattedSumms;
         }]
       },
       templateUrl : 'modules/runs/views/run-table.client.view.html',
@@ -22,11 +32,11 @@ angular.module('runs').config(['$stateProvider',
           singleRunData : ['getLatestSingleData', function(getLatestSingleData) {
             return getLatestSingleData.get().$promise;
           }],
-          lastSummaryRes : ['latestSummary', function(latestSummary) {
-            return latestSummary.getLatestSum().$promise;
-          }],
-          getActivitySumLatestFiveRes : ['getActivitySumLatestFive', function(getActivitySumLatestFive) {
-            return getActivitySumLatestFive.get().$promise;
+          getActivitySumLatestFiveRes : ['getSummaries', function(getSummaries) {
+            var queryOptions = {
+              limit : 5
+            };
+            return getSummaries.get(queryOptions);
           }]
         },
         views : {

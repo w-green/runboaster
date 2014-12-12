@@ -1,8 +1,8 @@
 'use strict';
 
-var theads = element.all(by.css('runs-summary-table > table > thead > tr > th'));
+var theads = element.all(by.css('div[data-runs-summary-table] > table > thead > tr > th'));
 var getTableCell = function getTableCell(row, cell, callback) {
-  return element(by.css('runs-summary-table > table > tbody > tr:nth-child(' + row + ') > td:nth-child(' + cell + ')')).getText();
+  return element(by.css('div[data-runs-summary-table] > table > tbody > tr:nth-child(' + row + ') > td:nth-child(' + cell + ')')).getText();
 };
 var getDateByRow = function(num) {
   return getTableCell(num, 1); // returns a promise

@@ -8,7 +8,7 @@
 
     var runs = {
       resource :
-                $resource('/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/data/latest',
+                $resource('/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/data?limit=1',
                  {'user_id' : '@user_id'},
                  {
                     query: { method: 'GET', isArray: true },

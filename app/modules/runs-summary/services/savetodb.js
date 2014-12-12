@@ -3,21 +3,24 @@
 /**
  * Module dependencies.
  */
+
 var mongoose = require('mongoose'),
   runsSummary = mongoose.model('runsSummary'),
   Q = require('q');
 
-var saveToDb = function(data, userId) {
+var saveToDb = function(data, userId, runId) {
   var result = Q.defer();
   var summary;
   data.user = userId;
+  data.runId = runId;
+
   summary = new runsSummary(data);
-  summary.save(function (err) {
+  summary.save(function (err, savedItem) {
     if (err) {
       console.log('error ' + err);
     }
       else {
-          result.resolve(summary);
+        result.resolve(savedItem);
       }
   });
   return result.promise;

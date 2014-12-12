@@ -17,6 +17,10 @@ var runsSummarySchema = new Schema({
     type: Schema.ObjectId,
     ref: 'User'
   },
+  runId: {
+    type: Schema.ObjectId,
+    ref: 'runsData'
+  },
   totalDistanceKm: {
     type: Number,
     required: 'Distance cannot be blank'

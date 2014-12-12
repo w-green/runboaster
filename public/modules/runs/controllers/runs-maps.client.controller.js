@@ -8,7 +8,7 @@
 
   // Maps controller
   // Used to display google map
-  function MyMapsCtrl($scope, singleRunData, getDataById, lastSummaryRes, getActivitySumLatestFiveRes, createGmap) {
+  function MyMapsCtrl($scope, singleRunData, getRunById, getActivitySumLatestFiveRes, createGmap) {
     var run = singleRunData;
     var mapData = [];
     $scope.gMap = null;
@@ -17,12 +17,13 @@
 
     // ----- Create new map ----- //
     // function createGmap(activityData, summaryMarkerItems)
-    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, lastSummaryRes[0].markerItems);
+    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
     $scope.gMap = mapData[0];
 
     var recreateGmap = function recreateGmap(event, info) {
       if(typeof mapData[info.listOrder] === 'undefined') {
-        getDataById.get(info.activityId).$promise.then(function(newData){
+        // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
+        getRunById.get(info.activityId).then(function(newData){
           mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
           $scope.gMap = mapData[info.listOrder];
         });
@@ -40,6 +41,6 @@
 
   }
 
-  angular.module('runs').controller('MyMapsCtrl', ['$scope', 'singleRunData', 'getDataById', 'lastSummaryRes', 'getActivitySumLatestFiveRes', 'createGmap', MyMapsCtrl]);
+  angular.module('runs').controller('MyMapsCtrl', ['$scope', 'singleRunData', 'getRunById', 'getActivitySumLatestFiveRes', 'createGmap', MyMapsCtrl]);
 
 }(window._, window.google));

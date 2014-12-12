@@ -11,11 +11,11 @@ var runsData = require('../../app/controllers/runs-data'),
 
 module.exports = function(app) {
 
-  app.route('/api/v_' + apiVersion +'/:user_id/run/data/latest')
-    .get(runsData.getLatest);
-
   app.route('/api/v_' + apiVersion +'/:user_id/run/data/:run_id')
-    .get(runsData.getSingle);
+    .get(runsData.getById);
+
+  app.route('/api/v_' + apiVersion +'/:user_id/run/data')
+    .get(runsData.get);
 
   app.route('/upload')
     .post(

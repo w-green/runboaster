@@ -12,7 +12,7 @@
         var runs = scope.runs;
 
         // Makes sure the runs are sorted by date initially
-        var runsSorted = _.sortBy(runs.runs, 'startTime');
+        var runsSorted = _.sortBy(runs.runs, 'startTime').reverse();
         runs.runs = runsSorted;
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
