@@ -5,7 +5,7 @@ angular.module('c3-charts').config(['$stateProvider',
   function($stateProvider) {
     $stateProvider.
       state('c3-charts', {
-        url: '/my/runs/charts/c3',
+        url: '/runs/charts/c3',
         resolve : {
           runsSummariesRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
             var queryOptions = {

@@ -4,7 +4,7 @@ angular.module('charts').config(['$stateProvider',
   function($stateProvider) {
     $stateProvider.
       state('charts', {
-        url: '/my/runs/charts',
+        url: '/runs/charts/custom',
         resolve : {
           getSummariesTenRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
             var queryOptions = {

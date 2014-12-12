@@ -6,7 +6,7 @@ angular.module('runs').config(['$stateProvider',
     // Runs state routing
     $stateProvider
     .state('tableRuns', {
-      url : '/runs',
+      url : '/runs/table',
       resolve : {
         getSummariesTenRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
           var queryOptions = {
@@ -27,7 +27,7 @@ angular.module('runs').config(['$stateProvider',
       controller : 'TableRunsCtrl'
     })
     .state('mapRuns', {
-        url : '/run',
+        url : '/runs/map',
         resolve : {
           getRunRes : ['getRuns', function(getRuns) {
             return getRuns.get();

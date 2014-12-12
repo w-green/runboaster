@@ -6,7 +6,7 @@ angular.module('upload-data').config(['$stateProvider',
     // Runs state routing
     $stateProvider
     .state('upload', {
-      url: '/my/upload/gpx',
+      url: '/upload/gpx',
       templateUrl: 'modules/upload-data/views/upload-data.client.view.html',
       controller: 'UploadDataCtrl'
     });
