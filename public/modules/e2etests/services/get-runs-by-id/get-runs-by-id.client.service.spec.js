@@ -1,3 +1,5 @@
+'use strict';
+
 var login = require('../../tasks/login');
 var logout = require('../../tasks/logout');
 var api = require('./get-runs-by-id.client.service.helper.js');

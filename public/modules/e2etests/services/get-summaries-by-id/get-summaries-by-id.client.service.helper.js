@@ -1,50 +1,33 @@
 'use strict';
 
 module.exports = {
-
-  get : function get(options) {
-
-    // set default options
-    var query = {
-      limit : 1,
-      offset : 0
-    };
-
-    if(options){
-      query = {
-        limit : options.limit ? options.limit : 1,
-        offset : options.offset ? options.offset : 0
-      };
-    }
+  get : function get(id) {
 
     return browser.executeAsyncScript(function() {
       var callback = arguments[arguments.length - 1];
       var angDoc = angular.element(document);
       var Authentication = angDoc.injector('users').get('Authentication');
-      var api = angDoc.injector('runs').get('getSummaries');
-
+      var api = angDoc.injector('runs').get('getSummariesById');
       api.get(arguments[0]).then(function(data) {
         callback(data);
       });
+    }, id); // return
+    // return result;
 
-    }, query); // return
+  }, // getById
 
-  }, // get
-
-  getUsingResource : function get(limit) {
+  getUsingResource : function get(id) {
 
     return browser.executeAsyncScript(function() {
       var callback = arguments[arguments.length - 1];
       var angDoc = angular.element(document);
       var Authentication = angDoc.injector('users').get('Authentication');
-      var api = angDoc.injector('runs').get('getSummaries');
-
-      api.resource.query({'user_id' : Authentication.user._id, 'limit' : arguments[0]}, function(data) {
+      var api = angDoc.injector('runs').get('getSummariesById');
+      api.resource.query({'user_id' : Authentication.user._id, 'summary_id' : arguments[0]}, function(data) {
         callback(data);
       });
-
-    }, limit); // return
+    }, id); // return
 
   } // getUsingResource
 
-}; // exports
+};

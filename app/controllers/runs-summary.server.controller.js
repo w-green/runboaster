@@ -80,66 +80,24 @@ exports.get = function get(req, res) {
     });
 };
 
-
-
 /**
- * Get users latest run
+ * Get single summary
  */
-
-exports.getLatest = function getLatest(req, res) {
-  var userId = req.params.user_id;
+exports.getById = function(req, res) {
+  var summId = req.params.summary_id;
   runsSummary
-    .find({'user' : new ObjectId(userId)}, {})
+    .find({
+      '_id' : new ObjectId(summId)
+    })
     .sort({'startTime' : -1})
     .limit(1)
-    .exec(function(err, result) {
+    .exec(function(err, runs) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        res.status(200).jsonp(result);
-      }
-    });
-};
-
-/**
- * Get users latest 5 runs
- */
-
-exports.getLatestFive = function getLatestFive(req, res) {
-  var userId = req.params.user_id;
-  runsSummary
-    .find({'user' : new ObjectId(userId)}, {})
-    .sort({'startTime' : -1})
-    .limit(5)
-    .exec(function(err, result) {
-      if (err) {
-        return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
-        });
-      } else {
-        res.status(200).jsonp(result);
-      }
-    });
-};
-
-
-/**
- * This should list last 10 runs from user
- */
- exports.listUserRuns = function(req, res) {
-  var userId = req.user._id;
-  runsSummary
-    .find({'user' : new ObjectId(userId)})
-    .limit(10)
-    .exec(function(err, result) {
-      if (err) {
-        return res.status(400).send({
-          message: errorHandler.getErrorMessage(err)
-        });
-      } else {
-        res.status(200).jsonp(result);
-      }
-    });
+        res.status(200).jsonp(runs);
+    }
+  });
 };
