@@ -7,7 +7,7 @@ describe('Charts data selector directive : ', function() {
     module('charts');
     module('mocks');
     module(function($provide) {
-      $provide.value('runsSummariesRes', {});
+      $provide.value('getSummariesTenRes', {});
     });
   });
 

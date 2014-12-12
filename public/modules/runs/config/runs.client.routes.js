@@ -8,7 +8,7 @@ angular.module('runs').config(['$stateProvider',
     .state('tableRuns', {
       url : '/runs',
       resolve : {
-        runsSummariesRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
+        getSummariesTenRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
           var queryOptions = {
             limit : 10
           };
@@ -29,10 +29,10 @@ angular.module('runs').config(['$stateProvider',
     .state('mapRuns', {
         url : '/run',
         resolve : {
-          singleRunData : ['getLatestSingleData', function(getLatestSingleData) {
-            return getLatestSingleData.get().$promise;
+          getRunRes : ['getRuns', function(getRuns) {
+            return getRuns.get();
           }],
-          getActivitySumLatestFiveRes : ['getSummaries', function(getSummaries) {
+          getSummariesFiveRes : ['getSummaries', function(getSummaries) {
             var queryOptions = {
               limit : 5
             };

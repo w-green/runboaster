@@ -46,16 +46,16 @@ exports.create = function(req, res, next) {
 };
 
 /**
- * Get runs
+ * Get users runs
  */
-exports.get = function(req, res) {
+exports.get = function get(req, res) {
   var userId = req.user._id;
-  var limit = req.query.limit;
-  var offset = req.query.offset || 0;
+  var limit  = req.query.limit || 1;
+  var skip = req.query.offset || 0;
   runsData
     .find({'user' : new ObjectId(userId)})
     .sort({'features.properties.time' : -1})
-    .skip(offset)
+    .skip(skip)
     .limit(limit)
     .exec(function(err, runs) {
       if (err) {

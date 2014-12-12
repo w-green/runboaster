@@ -4,10 +4,10 @@
 
   var _ = lodash;
 
-  function MapSummaryCtrl($scope, getActivitySumLatestFiveRes, dateFilter) {
+  function MapSummaryCtrl($scope, getSummariesFiveRes, dateFilter) {
 
     // have placed on the scope so we can test it
-    var latestFive = getActivitySumLatestFiveRes;
+    var latestFive = getSummariesFiveRes;
 
     $scope.summaries = [];
     $scope.setLatestSummaries = setLatestSummaries;
@@ -32,7 +32,7 @@
 
   }
 
-  angular.module('runs').controller('MapSummaryCtrl', ['$scope', 'getActivitySumLatestFiveRes', 'dateFilter', MapSummaryCtrl]);
+  angular.module('runs').controller('MapSummaryCtrl', ['$scope', 'getSummariesFiveRes', 'dateFilter', MapSummaryCtrl]);
 
 }(window._));
 

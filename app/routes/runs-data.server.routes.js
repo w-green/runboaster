@@ -12,10 +12,16 @@ var runsData = require('../../app/controllers/runs-data'),
 module.exports = function(app) {
 
   app.route('/api/v_' + apiVersion +'/:user_id/run/data/:run_id')
-    .get(runsData.getById);
+    .get(
+      users.requiresLogin,
+      runsData.getById
+    );
 
   app.route('/api/v_' + apiVersion +'/:user_id/run/data')
-    .get(runsData.get);
+    .get(
+      users.requiresLogin,
+      runsData.get
+    );
 
   app.route('/upload')
     .post(

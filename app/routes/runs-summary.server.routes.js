@@ -14,14 +14,4 @@ module.exports = function(app) {
       users.requiresLogin,
       runsSummary.get
     );
-
-  app.route('/api/v_' + apiVersion +'/:user_id/run/summary/lastTen')
-    .get(runsSummary.listUserRuns);
-
-  app.route('/api/v_' + apiVersion +'/:user_id/run/summary/latest/five')
-    .get(runsSummary.getLatestFive);
-
-  app.route('/api/v_' + apiVersion +'/:user_id/run/summary/latest')
-    .get(runsSummary.getLatest);
-
 };

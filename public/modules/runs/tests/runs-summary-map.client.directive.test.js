@@ -10,7 +10,7 @@ describe('Gmap directive for click events :', function() {
     // otherwise an error is thrown as they have no providers
     module(function($provide) {
       $provide.value('lastSummaryRes', {});
-      $provide.value('getActivitySumLatestFiveRes', []);
+      $provide.value('getSummariesFiveRes', []);
     });
   });
 

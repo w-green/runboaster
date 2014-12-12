@@ -8,7 +8,8 @@ exports.config = {
     uploadPage: './public/modules/e2etests/page-tests/upload-page/**/*.spec.js',
     tablePage: './public/modules/e2etests/page-tests/table-page/**/*.spec.js',
     services: ['./public/modules/e2etests/services/**/*.spec.js'],
-    servicesGetRun: './public/modules/e2etests/services/get-runs-by-id/**/*.spec.js',
+    servicesGetRunById: './public/modules/e2etests/services/get-runs-by-id/**/*.spec.js',
+    servicesGetRuns: './public/modules/e2etests/services/get-runs/**/*.spec.js',
     servicesGetSummaries: './public/modules/e2etests/services/get-summaries/**/*.spec.js'
   },
   capabilities: {

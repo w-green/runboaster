@@ -8,11 +8,11 @@
 
   // Maps controller
   // Used to display google map
-  function MyMapsCtrl($scope, singleRunData, getRunById, getActivitySumLatestFiveRes, createGmap) {
-    var run = singleRunData;
+  function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
+    var run = getRunRes;
     var mapData = [];
     $scope.gMap = null;
-    var summaries = getActivitySumLatestFiveRes;
+    var summaries = getSummariesFiveRes;
 
 
     // ----- Create new map ----- //
@@ -41,6 +41,6 @@
 
   }
 
-  angular.module('runs').controller('MyMapsCtrl', ['$scope', 'singleRunData', 'getRunById', 'getActivitySumLatestFiveRes', 'createGmap', MyMapsCtrl]);
+  angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', 'createGmap', MyMapsCtrl]);
 
 }(window._, window.google));

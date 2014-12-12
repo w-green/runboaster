@@ -3,17 +3,17 @@
 describe('runsSummaryTable directive : ', function() {
   var scope,
       ctrl,
-      runsSummaries, // service
-      mockRunsSummaries = {}, // mock service
+      getSummariesTenRes, // service
+      mockgetSummariesTenRes = {}, // mock service
       table;
 
-  // mockSummary contains the mock results we use for runsSummaries
+  // mockSummary contains the mock results we use for getSummariesTenRes
   beforeEach(module('mocks'));
 
   beforeEach(function() {
     module('runs');
     module(function($provide) {
-      $provide.value('runsSummaries', mockRunsSummaries);
+      $provide.value('getSummariesTenRes', mockgetSummariesTenRes);
     });
   });
 

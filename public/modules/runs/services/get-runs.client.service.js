@@ -2,12 +2,12 @@
 
 (function() {
 
-  var getSummaries = function getSummaries($resource, Authentication) {
+  var getRuns = function getRuns($resource, Authentication) {
 
-    var summary = {
+    var run = {
       resource :
         $resource(
-          '/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/summaries',
+          '/api/v_' + ApplicationConfiguration.apiVersion +'/:user_id/run/data',
           {
             'user_id' : '@user_id'
           }
@@ -49,11 +49,11 @@
         data : null
     };
 
-    return summary;
+    return run;
 
   };
 
 
-  angular.module('runs').service('getSummaries', ['$resource', 'Authentication', getSummaries]);
+  angular.module('runs').service('getRuns', ['$resource', 'Authentication', 'formatSummaries', getRuns]);
 
 })();

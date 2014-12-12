@@ -6,9 +6,9 @@ angular.module('charts').config(['$stateProvider',
       state('charts', {
         url: '/my/runs/charts',
         resolve : {
-          runsSummariesRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
+          getSummariesTenRes : ['getSummaries', 'formatSummaries', function(getSummaries, formatSummaries) {
             var queryOptions = {
-              limit : 5
+              limit : 10
             };
             // format the summs for d3
             var formattedSumms =

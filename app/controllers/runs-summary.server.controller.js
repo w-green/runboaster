@@ -57,7 +57,7 @@ exports.create = function(req, res) {
 
 
 /**
- * Get users latest run
+ * Get users summaries
  */
 
 exports.get = function get(req, res) {
