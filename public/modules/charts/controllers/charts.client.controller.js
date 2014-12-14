@@ -4,19 +4,19 @@
   var _ = lodash;
 
   var chartsCtrl = function chartsCtrl($scope, getSummariesTenRes) {
+
+    var toggleElement;
+
     $scope.runs = getSummariesTenRes;
     var allRunsSelect = false;
 
-    $scope.slideOutRuns = function slideOutRuns() {
-      var el = document.querySelector('section.chart--dataselector');
-      var angEl = angular.element(el);
-      angEl.toggleClass('inactive');
-    };
-
     $scope.toggleChartData = function toggleChartData($event) {
       var e = $event;
-      var el = angular.element(e.target);
+      var el = angular.element(e.target.parentNode);
+      toggleElement = el[0];
+
       var runNum = el.attr('class');
+      runNum = runNum.split(' ')[0];
 
       e.preventDefault();
       e.stopPropagation();
@@ -25,6 +25,7 @@
         toggleAllRuns();
       }
       else {
+        el.toggleClass('inactive');
         var runClass = 'g.' + runNum;
         var chartRun = document.querySelector(runClass);
         toggleVis(chartRun);
@@ -40,27 +41,58 @@
     // Add event listener to the runs list
     function toggleAllRuns() {
       var allRunsNodeList = document.querySelectorAll('.runLine');
+      var toggleAClass;
       allRunsSelect = !allRunsSelect;
 
-      var allRunsArray = (function() {
-        var result = [];
-        for (var i = 0; i < allRunsNodeList.length; i++) {
-          result[i] = allRunsNodeList[i];
-        }
-        return result;
-      })();
+      if (allRunsSelect === false) {
+        toggleAClass = function(element, classNm) {
+          element.addClass(classNm);
+        };
+      }
+      else {
+        toggleAClass = function(element, classNm) {
+          element.removeClass(classNm);
+        };
+      }
+      toggleGraphRuns();
+      toggleAllSelectorItems();
 
-      allRunsArray.forEach(function(run, index, array) {
-        var aRun = angular.element(run);
-        if (allRunsSelect === false) {
-          aRun.addClass('vis-hidden');
-        }
-        else {
-          aRun.removeClass('vis-hidden');
-        }
-      });
+      function toggleGraphRuns() {
+        var allRunsArray = (function() {
+          var result = [];
+          for (var i = 0; i < allRunsNodeList.length; i++) {
+            result[i] = allRunsNodeList[i];
+          }
+          return result;
+        })();
 
-    } // toggleAllRuns
+        allRunsArray.forEach(function(run, index, array) {
+          var aRun = angular.element(run);
+          toggleAClass(aRun, 'vis-hidden');
+        });
+      } // toggleGraphRuns
+
+      function toggleAllSelectorItems(){
+        var selectorListItems = document.querySelectorAll('.chart--dataselector li');
+        var allSelectorsArray = (function() {
+          var result = [];
+          for (var i = 0; i < selectorListItems.length; i++) {
+            result[i] = selectorListItems[i];
+          }
+          return result;
+        })();
+
+        allSelectorsArray.forEach(function(listItem, index, array) {
+          var aListItem = angular.element(listItem);
+          toggleAClass(aListItem, 'inactive');
+        });
+
+      } // toggleAllSelectorItems
+
+    } //
+
+
+
 
 
   };

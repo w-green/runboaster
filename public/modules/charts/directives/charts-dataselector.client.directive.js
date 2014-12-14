@@ -2,62 +2,48 @@
 
 (function() {
 
-  var chartDataSelector = function chartDataSelector($window, $filter, setHeightAftrTopNav, mediator) {
+  var chartDataSelector = function chartDataSelector($window, $filter, addListItem, setHeightAftrTopNav, mediator) {
 
     return {
-
       restrict : 'E',
-      template:'<div class="chart--dataselector" data-ng-click="toggleChartData($event)"></div>',
+      replace: 'true',
+      template:'<div class="dataselector" data-ng-click="toggleChartData($event)"></div>',
       link : function(scope, elem, attr){
         var data = scope.runs.runs;
         var d3 = $window.d3;
 
-        // Chart data selectors
-        var chartDataSelectors = (function(){
-          var el = document.querySelector('div.chart--dataselector');
-          return angular.element(el);
-        })();
         // The list of runs from which you can select to show on chart
         var chartDataSelectorList  = document.createElement('ul');
 
-        addSelectAll();
+        // add Select All item
+        var listItemSelectAll = {
+          parentListElement : chartDataSelectorList,
+          anchorElement : {
+            textContent : 'All runs'
+          },
+          classNm : 'run-all'
+        };
 
-        function addSelectAll() {
-          var li = document.createElement('li');
-          var anchor = document.createElement('a');
-          anchor.textContent = 'All runs';
-          anchor.className = 'run-all';
+        addListItem(listItemSelectAll);
 
-          li.appendChild(anchor);
-          chartDataSelectorList.appendChild(li);
-        }
-
-
+        // Add all of the data selector list items to chartDataSelectorList
         data.forEach(function(d, index, array) {
 
-          createSelectorList();
+          var startDate = d3.time.format('%a %b %e %Y')(new Date(d.startTime));
+          var selectorListItem = {
+            parentListElement : chartDataSelectorList,
+            anchorElement : {
+              textContent : startDate
+            },
+            classNm : 'run-' + index + ' inactive'
 
-          // creates the list of runs to the right of the chart
-          // which you select to show on the charts
-          function createSelectorList () {
-
-            var li = document.createElement('li');
-            li.className = '';
-            var anchor = document.createElement('a');
-            anchor.className = 'run-' + index;
-
-            var startDate = d3.time.format('%a %b %e %Y')(new Date(d.startTime));
-            anchor.textContent = startDate;
-
-            li.appendChild(anchor);
-            chartDataSelectorList.appendChild(li);
-          } // createSelectorList
+          };
+          addListItem(selectorListItem);
 
         });
 
-        chartDataSelectors.append(chartDataSelectorList);
 
-
+        elem.append(chartDataSelectorList);
 
         // ----- set the height for scrolling ----- //
         setHeightAftrTopNav(elem[0]);
@@ -81,6 +67,6 @@
 
   }; // chartDataSelector
 
-  angular.module('charts').directive('chartDataSelector', ['$window', '$filter', 'setHeightAftrTopNav', 'mediator', chartDataSelector]);
+  angular.module('charts').directive('chartDataSelector', ['$window', '$filter', 'addListItem', 'setHeightAftrTopNav', 'mediator', chartDataSelector]);
 
 }());

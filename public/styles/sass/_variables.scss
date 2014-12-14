@@ -2,6 +2,7 @@
 
 $blue: #00008B;
 $blue-light: #ADD8E6;
+$blue-mediterranean: #0FF;
 $blue-dark: #273135;
 $turqoise: #FA7252;
 $green-ultraviolet: #0FF;
@@ -24,4 +25,16 @@ $vertical-list-spacing---height--gt-mobile: 45px;
 
 
 // ----- Custom Chart ----- //
-$chart__dataselector__list---width: 220px;
+$dataselector-list---width: 300px;
+$chart_colors: (
+  #B65020, // brown
+  #000, // blue
+  #ec6b60, // turquoise
+  #563D7C, // purple
+  #F4FD1F, // yellow
+  #EE5FF1, // violet pink
+  #F28483, // red
+  #6AF0D4, // violet green / blue
+  #2C4F53, // dark green
+  #3A4F56, // dark dark green
+);

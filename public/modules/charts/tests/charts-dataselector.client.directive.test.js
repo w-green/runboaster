@@ -26,7 +26,7 @@ describe('Charts data selector directive : ', function() {
 
 
   it('should render a list of the runs', function() {
-    expect(elem.children(0).hasClass('chart--dataselector')).toBe(true);
+    expect(elem.hasClass('dataselector')).toBe(true);
   });
 
 

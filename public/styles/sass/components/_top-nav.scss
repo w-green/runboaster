@@ -21,6 +21,7 @@ $top-nav-border: 3px solid $main-content-bg---color;
     padding: 13px;
     cursor: pointer;
     border-left: $top-nav-border;
+    float: left;
     user-select: none; // disables double click selection of element.
   }
   .fa-bars {
@@ -44,6 +45,22 @@ $top-nav-border: 3px solid $main-content-bg---color;
 
 
 
+// EXTRA MENU ITEMS
 
+// ----- Charts data selector toggle ----- //
+.top-nav__menu-icon_toggle-data {
+  display: none;
+
+  &.active {
+    display: block;
+    background-color: #0FF;
+  }
+
+  &.open span.toggleIcon {
+    transform: rotate(45deg);
+  }
+}
+
+// -----  Map selector togggle ----- //
 
 

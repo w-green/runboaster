@@ -1,115 +1,72 @@
 
 
-/* Chart Data selector slide out menu */
-
-.chart--dataselector-label {
-  position: absolute;
-  top: 0;
-  right: 0;
-  user-select: none; // disables double click selection of element
-
-  span.toggleIcon {
-    transform: rotate(45deg);
-
-    &:before {
-      padding: 6px;
-      margin: 0;
-      position: relative;
-      line-height: 10px;
-    }
-  }
-
-  div {
-    display: inline-block;
-  }
-
-  .call-to-action {
-    margin-right: 50px;
-    padding: 13px;
-  }
-
-  .toggle-chart-data-list {
-    background-color: darkblue;
-    height: 50px;
-    width: 50px;
-    color: white;
-    padding: 13px;
-    position: absolute;
-    right: 0;
-    top: 50px;
-    border-top: 3px solid $main-content-bg---color;
-  }
-}
-
-// section.chart__dataselector__list
-section.chart--dataselector-list {
-  width: $chart__dataselector__list---width;
+// ----- Container for data selector ----- //
+.dataselector-list {
+  width: $dataselector-list---width;
   height: 100%;
   position: fixed;
-  top: 100px;
+  top: $top-nav-height;
   left: 100%;
-  /*left: 50%;*/
-  background-color: $blue-dark;
   overflow-y: auto;
-  /*transition-duration: 0.3s;*/
-
-  // -webkit-transform: translateX(-$chart__dataselector__list---width);
-  // -ms-transform: translateX(-$chart__dataselector__list---width);
-  transform: translateX(-$chart__dataselector__list---width);
-  // -webkit-transform: translate3d(-$chart__dataselector__list---width, 0, 0);
-  transform: translate3d(-$chart__dataselector__list---width, 0, 0);
+  transform: translateX(-$dataselector-list---width);
+  transform: translate3d(-$dataselector-list---width, 0, 0);
   transition: 300ms ease all;
   padding-bottom: 55px;
-  border-top: 4px solid $blue;
-  border-left: 4px solid $blue;
   z-index: 2; // one above left-nav
 
+  .dataselector {
+    background-color: 4px solid $blue-mediterranean;
+  }
+
 }
 
-section.chart--dataselector.inactive {
-  .chart--dataselector-list {
-    left: 100%;
-    -webkit-transform: translateX(0);
-        -ms-transform: translateX(0);
-            transform: translateX(0);
-    -webkit-transform: translate3d(0, 0, 0);
-            transform: translate3d(0, 0, 0);
-    transition: 300ms ease all;
-    -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-  }
-  span.toggleIcon {
-    transform: rotate(0deg);
-  }
+.dataselector-list.inactive {
+  left: 100%;
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+  transition: 300ms ease all;
+  backface-visibility: hidden;
 }
 
-section.chart--dataselector-list ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.dataselector-list ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 
-    // li:not(:first-of-type) {
-    //     // border-bottom: solid 1px #3184a1;
-    //     // border-top: solid 1px #b5dbe9;
-    // }
-    li {
-        display: block;
-        text-align: center;
-        height: $vertical-list-spacing---height--mobile;
+  // li:not(:first-of-type) {
+  //     // border-bottom: solid 1px #3184a1;
+  //     // border-top: solid 1px #b5dbe9;
+  // }
+  li {
+    display: block;
+    text-align: center;
+    height: $vertical-list-spacing---height--mobile;
+    background-color: #0FF;
 
-        a {
-          cursor: pointer;
-          line-height: 15px;
-          font-size: 15px;
-          padding: 15px 10px;
-          display: block;
-        }
-        &:hover a{
-          background-color: darken($blue-dark, 5%);
-          text-decoration: none;
-        }
+    &.inactive {
+      background-color: $blue-mediterranean !important;
+    }
+    a {
+      cursor: pointer;
+      line-height: 20px;
+      font-size: 20px;
+      padding: 10px 10px;
+      display: block;
+      font-weight: bold;
+      color: #FFF;
     }
 
+    &:hover a {
+      text-decoration: none;
+    }
+
+  }
+
+  @for $i from 1 through length($chart_colors) {
+    li:nth-child(#{$i + 1}) {
+        background-color: nth($chart_colors, $i);
+    }
+  }
 
 }
 
@@ -204,15 +161,21 @@ ul.chartRuns {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
-  section.chart--dataselector-list {
+  section.dataselector-list {
     // left: 85%;
-    right: $chart__dataselector__list---width;
+    right: $dataselector-list---width;
   }
-  section.chart--dataselector-list ul li {
+  section.dataselector-list ul li {
     height: $vertical-list-spacing---height--gt-mobile;
 
     a {
       height: $vertical-list-spacing---height--gt-mobile;
     }
+  }
+}
+
+@media (min-width: 1200px) {
+  section.dataselector-list ul li:hover a{
+    background-color: darken($blue-dark, 5%);
   }
 }
