@@ -1,4 +1,10 @@
-<section data-map-summaries>
+<!--  data selector list  -->
+<section class="dataselector-list dataselector-list--map" id="dataselector-list-js">
+    <div data-map-data-selector></div>
+</section>
+
+
+<section data-map-summaries class="visible-lg-block">
   <p>Your run summaries:</p>
   <div ng-repeat="sum in summaries" data-activity-id="{{sum.activityId}}" data-list-order="{{sum.listOrder}}" class="mapSummaryItem">
     <p>Date: {{sum.date}} </p>

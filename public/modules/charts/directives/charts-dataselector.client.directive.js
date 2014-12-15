@@ -2,12 +2,12 @@
 
 (function() {
 
-  var chartDataSelector = function chartDataSelector($window, $filter, addListItem, setHeightAftrTopNav, mediator) {
+  var chartDataSelector = function chartDataSelector($window, $filter, addListItem, toggleData, setHeightAftrTopNav, mediator) {
 
     return {
-      restrict : 'E',
+      restrict : 'AE',
       replace: 'true',
-      template:'<div class="dataselector" data-ng-click="toggleChartData($event)"></div>',
+      template:'<div class="dataselector"></div>',
       link : function(scope, elem, attr){
         var data = scope.runs.runs;
         var d3 = $window.d3;
@@ -42,12 +42,12 @@
 
         });
 
-
         elem.append(chartDataSelectorList);
 
         // ----- set the height for scrolling ----- //
         setHeightAftrTopNav(elem[0]);
 
+        elem.on('click', toggleData);
 
         // ----- add event listener on window resize ----- //
         var resetHeight = function resetHeight() {
@@ -67,6 +67,6 @@
 
   }; // chartDataSelector
 
-  angular.module('charts').directive('chartDataSelector', ['$window', '$filter', 'addListItem', 'setHeightAftrTopNav', 'mediator', chartDataSelector]);
+  angular.module('charts').directive('chartDataSelector', ['$window', '$filter', 'addListItem', 'toggleData', 'setHeightAftrTopNav', 'mediator', chartDataSelector]);
 
 }());

@@ -12,6 +12,7 @@
         textContent : null,
         className : null,
         parentListElement : null,
+        attributes : null
       };
 
       if(options) {
@@ -19,6 +20,7 @@
         listItem.textContent = options.textContent ? options.textContent : null;
         listItem.classNm = options.classNm ? options.classNm : null;
         listItem.parentListElement = options.parentListElement ? options.parentListElement : null;
+        listItem.attributes = options.attributes ? options.attributes : null;
       }
 
 
@@ -29,6 +31,12 @@
       }
 
       if(listItem.classNm) { li.className = listItem.classNm; }
+      if(listItem.attributes) {
+        //test if array
+        listItem.attributes.forEach(function(attr) {
+          li.setAttribute(attr.name, attr.value);
+        });
+      }
 
       listItem.parentListElement.appendChild(li);
 

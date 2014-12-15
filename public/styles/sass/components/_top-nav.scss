@@ -55,10 +55,17 @@ $top-nav-border: 3px solid $main-content-bg---color;
     display: block;
     background-color: #0FF;
   }
+}
 
-  &.open span.toggleIcon {
-    transform: rotate(45deg);
-  }
+
+body.dataselector-list-chart--open
+.top-nav__menu-icon_toggle-data--chart
+span.toggleIcon,
+body.dataselector-list-map--open
+.top-nav__menu-icon_toggle-data--map
+span.toggleIcon,
+ {
+  transform: rotate(45deg);
 }
 
 // -----  Map selector togggle ----- //

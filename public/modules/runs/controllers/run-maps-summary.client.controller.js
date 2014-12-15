@@ -6,14 +6,15 @@
 
   function MapSummaryCtrl($scope, getSummariesFiveRes, dateFilter) {
 
-    // have placed on the scope so we can test it
+    // adding for map dataselector directive
+    $scope.summs = getSummariesFiveRes;
+
     var latestFive = getSummariesFiveRes;
 
     $scope.summaries = [];
     $scope.setLatestSummaries = setLatestSummaries;
 
     $scope.setLatestSummaries(latestFive);
-    // setLatestSummaries(latestFive);
 
     function setLatestSummaries(latestSumms) {
       latestSumms.forEach(function(summary, index) {

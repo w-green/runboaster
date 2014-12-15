@@ -7,7 +7,11 @@
 
   <div class="pull-right">
 
-    <div ui-sref-active="active" data-top-nav-toggle-chart-data class="menu-icon top-nav__menu-icon_toggle-data open">
+    <div ui-sref-active="active" data-top-nav-toggle-chart-data data-data-selector="map" class="hidden-lg menu-icon top-nav__menu-icon_toggle-data top-nav__menu-icon_toggle-data--map">
+      <span ui-sref="mapRuns" class="fa fa-lg fa-fw fa-plus toggleIcon"></span>
+    </div>
+
+    <div ui-sref-active="active" data-top-nav-toggle-chart-data data-data-selector="chart" class="menu-icon top-nav__menu-icon_toggle-data top-nav__menu-icon_toggle-data--chart">
       <span ui-sref="charts" class="fa fa-lg fa-fw fa-plus toggleIcon"></span>
     </div>
 
