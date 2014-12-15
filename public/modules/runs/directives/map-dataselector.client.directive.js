@@ -55,8 +55,8 @@
           var activityId = '';
           var listOrder = 0;
 
-          getVals(targetEl);
-          function getVals(targetEl) {
+          toggleVals(targetEl);
+          function toggleVals(targetEl) {
             if(targetEl.nodeName.toLowerCase() !== 'li') {
               getVals(targetEl.parentNode);
             }
@@ -72,7 +72,6 @@
             }
 
             prevTargetEl.classList.toggle('inactive');
-            console.log(prevTargetEl);
             prevTargetEl = targetEl;
 
             }

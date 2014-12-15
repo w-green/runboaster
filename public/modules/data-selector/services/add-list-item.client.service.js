@@ -23,7 +23,6 @@
         listItem.attributes = options.attributes ? options.attributes : null;
       }
 
-
       if(listItem.anchorElement) {
         anchor = document.createElement('a');
         listItem.anchorElement.textContent ? anchor.textContent = listItem.anchorElement.textContent : '';
@@ -44,6 +43,6 @@
 
   }; // var addListItem
 
-  angular.module('charts').factory('addListItem', [addListItem]);
+  angular.module('data-selector').factory('addListItem', [addListItem]);
 
 })();

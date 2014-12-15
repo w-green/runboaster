@@ -1,105 +1,43 @@
 
-
-// ----- Data selector ----- //
-
-.dataselector-list {
-  width: $dataselector-list---width;
-  height: 100%;
-  position: fixed;
-  top: $top-nav-height;
-  left: 100%;
-  overflow-y: auto;
-  padding-bottom: 55px;
-  z-index: 2; // one above left-nav
-  left: 100%;
-  transform: translateX(0);
-  transform: translate3d(0, 0, 0);
-  transition: 300ms ease all;
-  backface-visibility: hidden;
-
-  .dataselector {
-    background-color: 4px solid $blue-mediterranean;
-  }
-
-}
-
-body.dataselector-list-chart--open .dataselector-list--chart,
-body.dataselector-list-map--open .dataselector-list--map{
-  transform: translateX(-$dataselector-list---width);
-  transform: translate3d(-$dataselector-list---width, 0, 0);
-  transition: 300ms ease all;
-}
-
-.dataselector-list ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-
-  // li:not(:first-of-type) {
-  //     // border-bottom: solid 1px #3184a1;
-  //     // border-top: solid 1px #b5dbe9;
-  // }
-  li {
-    display: block;
-    text-align: center;
-    // height: $vertical-list-spacing---height--mobile;
-    height: $vertical-list-spacing---height--gt-mobile;
-    background-color: #0FF;
-
-    &.inactive {
-      background-color: $blue-mediterranean !important;
-    }
-    a {
-      height: $vertical-list-spacing---height--gt-mobile;
-      cursor: pointer;
-      line-height: 20px;
-      font-size: 20px;
-      padding: 10px 10px;
-      display: block;
-      font-weight: bold;
-      color: #FFF;
-    }
-
-    &:hover a {
-      text-decoration: none;
-    }
-
-  }
-
-  @for $i from 1 through length($chart_colors) {
-    li:nth-child(#{$i + 1}) {
-        background-color: nth($chart_colors, $i);
-    }
-  }
-
-}
-
-
-
-/* END Chart Data selector slide out menu */
-
-
-/* CHART */
+// ----- CHART ----- //
 
 .svgChart {
   padding : 10px;
 }
 
-/*.svgContainer {
-    height: 0;
+// hides the run lines until selected
+.vis-hidden {
+  visibility: hidden;
 }
 
-.svgChart {
-    position: absolute;
-    top: 0;
-    left: 0;
-}*/
 
-/* END CHART */
+// -----  Grid for chart  ----- //
+.grid .tick line {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+      stroke-width: 0;
+}
+
+// ----- Lines for chart  ----- //
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+// ----- Text Size for labels ----- //
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+// ----- END CHART ----- //
 
 
-
-/* TOOLTIP */
+// ----- TOOLTIP ----- //
 .d3-tip {
   padding: 12px;
   border-radius: 2px;
@@ -109,7 +47,7 @@ body.dataselector-list-map--open .dataselector-list--map{
   font-weight: bold;
 }
 
-/* Creates a small triangle extender for the tooltip */
+// ----- Creates a small triangle extender for the tooltip ----- //
 .d3-tip:after {
   box-sizing: border-box;
   width: 100%;
@@ -123,63 +61,5 @@ body.dataselector-list-map--open .dataselector-list--map{
   content: "\25BC";
 }
 
-/* END TOOLTIP */
+// ----- END TOOLTIP ----- //
 
-
-.vis-hidden {
-  visibility: hidden;
-}
-
-ul.chartRuns {
-  width: 10%;
-  float: left;
-}
-
-
-/*  Grid for chart  */
-.grid .tick line {
-    stroke: lightgrey;
-    opacity: 0.7;
-}
-.grid path {
-      stroke-width: 0;
-}
-
-/* Lines for chart  */
-.axis path,
-.axis line {
-    fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
-}
-
-/* Text Size for labels */
-
-.axis text {
-    font-family: sans-serif;
-    font-size: 11px;
-}
-
-
-
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-  section.dataselector-list {
-    // left: 85%;
-    right: $dataselector-list---width;
-  }
-  section.dataselector-list ul li {
-    height: $vertical-list-spacing---height--gt-mobile;
-
-    a {
-      height: $vertical-list-spacing---height--gt-mobile;
-    }
-  }
-}
-
-@media (min-width: 1200px) {
-  .dataselector-list ul li:hover a{
-    background-color: darken($blue-mediterranean, 10%);
-  }
-}

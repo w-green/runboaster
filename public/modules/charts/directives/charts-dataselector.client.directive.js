@@ -8,7 +8,7 @@
       restrict : 'AE',
       replace: 'true',
       template:'<div class="dataselector"></div>',
-      link : function(scope, elem, attr){
+      link : function(scope, elem, attr) {
         var data = scope.runs.runs;
         var d3 = $window.d3;
 

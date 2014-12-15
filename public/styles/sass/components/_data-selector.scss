@@ -1,0 +1,97 @@
+
+// ----- Data selector slide out ----- //
+
+.dataselector-list {
+  width: $dataselector-list---width;
+  height: 100%;
+  position: fixed;
+  top: $top-nav-height;
+  left: 100%;
+  overflow-y: auto;
+  padding-bottom: 55px;
+  z-index: 2; // one above left-nav
+  left: 100%;
+  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+  transition: 300ms ease all;
+  backface-visibility: hidden;
+
+  .dataselector {
+    background-color: 4px solid $blue-mediterranean;
+  }
+
+}
+
+body.dataselector-list-chart--open .dataselector-list--chart,
+body.dataselector-list-map--open .dataselector-list--map{
+  transform: translateX(-$dataselector-list---width);
+  transform: translate3d(-$dataselector-list---width, 0, 0);
+  transition: 300ms ease all;
+}
+
+.dataselector-list ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  // li:not(:first-of-type) {
+  //     // border-bottom: solid 1px #3184a1;
+  //     // border-top: solid 1px #b5dbe9;
+  // }
+  li {
+    display: block;
+    text-align: center;
+    // height: $vertical-list-spacing---height--mobile;
+    height: $vertical-list-spacing---height--gt-mobile;
+    background-color: #0FF;
+
+    &.inactive {
+      background-color: $blue-mediterranean !important;
+    }
+    a {
+      height: $vertical-list-spacing---height--gt-mobile;
+      cursor: pointer;
+      line-height: 20px;
+      font-size: 20px;
+      padding: 10px 10px;
+      display: block;
+      font-weight: bold;
+      color: #FFF;
+    }
+
+    &:hover a {
+      text-decoration: none;
+    }
+
+  }
+
+  @for $i from 1 through length($chart_colors) {
+    li:nth-child(#{$i + 1}) {
+        background-color: nth($chart_colors, $i);
+    }
+  }
+
+}
+
+
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  section.dataselector-list {
+    // left: 85%;
+    right: $dataselector-list---width;
+  }
+  section.dataselector-list ul li {
+    height: $vertical-list-spacing---height--gt-mobile;
+
+    a {
+      height: $vertical-list-spacing---height--gt-mobile;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .dataselector-list ul li:hover a{
+    background-color: darken($blue-mediterranean, 10%);
+  }
+}
