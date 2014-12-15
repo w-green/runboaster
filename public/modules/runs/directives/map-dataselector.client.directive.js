@@ -58,7 +58,7 @@
           toggleVals(targetEl);
           function toggleVals(targetEl) {
             if(targetEl.nodeName.toLowerCase() !== 'li') {
-              getVals(targetEl.parentNode);
+              toggleVals(targetEl.parentNode);
             }
             else {
             activityId = targetEl.getAttribute('data-activity-id') || '';

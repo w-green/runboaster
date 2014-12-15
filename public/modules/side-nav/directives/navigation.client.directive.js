@@ -12,6 +12,9 @@
         return {
           // pre: function preLink(scope, iElement, iAttrs, controller) { ... },
           post: function postLink(scope, iElement, iAttrs, controller) {
+            var mediaQuery = window.matchMedia('(max-width: 768px)');
+            var bod = document.querySelector('body');
+
             scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
               if (fromState.name !== '') {
 
@@ -27,6 +30,11 @@
                 var newEl = document.querySelector('[ui-sref="' + toState.name + '"]').parentNode;
                 newEl.classList.add('active');
               }
+
+              if (mediaQuery.matches) {
+                bod.classList.toggle('leftNav--toggle');
+              }
+
 
             });
 
