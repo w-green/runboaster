@@ -5,8 +5,9 @@ var mapSummaries = function($rootScope) {
   return {
     restrict : 'A',
     link : function postLink(scope, el, attr) {
+      var prevTargetEl;
+
       el.on('click', function(e) {
-        // var activityId = e.target.getAttribute('activity-id');
         var divEl = e.target;
         var activityId = '';
         var listOrder = 0;
@@ -21,6 +22,16 @@ var mapSummaries = function($rootScope) {
           else {
            activityId = divEl.getAttribute('data-activity-id') || '';
            listOrder = divEl.getAttribute('data-list-order');
+
+           if(!prevTargetEl) {
+            var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
+            prevTargetEl = firstSumm;
+           }
+           prevTargetEl.classList.remove('active');
+           prevTargetEl = divEl;
+
+           divEl.classList.add('active');
+
           }
         } // getAttr
 

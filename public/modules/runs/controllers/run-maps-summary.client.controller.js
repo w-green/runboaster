@@ -22,8 +22,8 @@
         var summ = {
           listOrder: index,
           activityId : summary.runId,
-          date : dateFilter(summary.startTime, 'medium'),
-          totalTime : dateFilter(summary.totalTime, "m 'minutes' : s 'seconds'"),
+          date : dateFilter(summary.startTime, 'MMM d, y h:mm a'),
+          totalTime : dateFilter(summary.totalTime, "m 'mins' s 'secs'"),
           totalDistanceKm : summary.totalDistanceKm
         };
 

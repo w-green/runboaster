@@ -19,7 +19,7 @@
         var listItemSelectRun = {
           parentListElement : dataSelectorList,
           anchorElement : {
-            textContent : 'Select run'
+            textContent : 'Select a run'
           },
           classNm : 'select-run'
         };
