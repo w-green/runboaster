@@ -28,8 +28,7 @@
 
         // Add all of the data selector list items to chartDataSelectorList
         data.forEach(function(d, index, array) {
-          var inactiveClass = index === 0 ? '' : 'inactive'
-
+          var inactiveClass = index === 0 ? '' : 'inactive';
           var selectorListItem = {
             parentListElement : dataSelectorList,
             anchorElement : {

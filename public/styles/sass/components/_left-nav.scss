@@ -13,14 +13,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom:55px;
-
   position: fixed;
   top: 50px;
   left:0px;
   transform: translateX(-$left-nav-width);
   display: block;
   z-index: 1;
-  background-color: $blue-dark;
   transition: 250ms cubic-bezier(0.1,.57,.1,1)
 }
 
@@ -76,55 +74,59 @@ body.leftNav--toggle {
   padding-left: 0;
   list-style: none;
 }
+.left-nav nav > ul {
+  background-color: $theme-bg---color;
+  border-right: 2px solid #FFF;
 
-.left-nav nav > ul li {
-  height: 55px;
-  cursor: pointer;
-  outline: 0;
-  overflow: hidden;
-  position: relative;
-
-  a {
-    padding: 15px 25px;
-    line-height: 25px;
-    font-size: 16px;
+  li {
     height: 55px;
-    display: block;
-  }
-
-  &:hover a{
-    background-color: darken($blue-dark, 5%);
-    text-decoration: none;
-  }
-
-  span.toggleIcon {
-    position: absolute;
-    right: 15px;
-    line-height: 25px;
-  }
-
-  &.open {
-    height: 100%;
-
-    span.toggleIcon {
-      transform: rotate(-90deg);
-    }
-  }
-
-  &.active {
-    border-left: 5px solid green;
-    background-color: darken($blue-dark, 10%);
+    cursor: pointer;
+    outline: 0;
+    overflow: hidden;
+    position: relative;
 
     a {
-        padding-left: 20px;
+      padding: 15px 25px;
+      line-height: 25px;
+      font-size: 16px;
+      height: 55px;
+      display: block;
     }
-  }
 
+    &:hover a{
+      // background-color: darken($blue-dark, 5%);
+      text-decoration: none;
+    }
+
+    span.toggleIcon {
+      position: absolute;
+      right: 15px;
+      line-height: 25px;
+    }
+
+    &.open {
+      height: 100%;
+
+      span.toggleIcon {
+        transform: rotate(-90deg);
+      }
+    }
+
+    &.active {
+      border-left: 5px solid #FFF;
+      // background-color: darken($blue-dark, 10%);
+
+      a {
+          padding-left: 20px;
+      }
+    }
+
+  }
 }
 
 .left-nav nav ul li.hasChildren ul {
   margin-left: 25px;
-  border-left: 2px solid #336;
+  border-left: 2px solid #FFF;
 
   li:before {
     width: 15px;
@@ -133,7 +135,7 @@ body.leftNav--toggle {
     top: 22px;
     content: '';
     display: inline-block;
-    border: 1px solid #336;
+    border: 1px solid #FFF;
   }
 
   li.active:before {
@@ -194,6 +196,11 @@ body.leftNav--toggle {
 
 @media (min-width: $screen-md-min) {
     // resize nav smaller for non mobile
+
+    .left-nav {
+      border-right: 0;
+      border-top:  0;
+    }
     .left-nav nav > ul li {
       height: 45px;
 
@@ -205,4 +212,10 @@ body.leftNav--toggle {
         line-height: 16px;
       }
     }
+}
+
+@media(min-width: $screen-lg-min) {
+  .left-nav nav > ul {
+    border-right: 0px;
+  }
 }

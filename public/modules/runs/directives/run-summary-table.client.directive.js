@@ -23,7 +23,7 @@
         function createTableOfRuns(runs) {
           var table = document.createElement('table');
           // note sortable class added for sorttable.js
-          table.className = 'table table-striped table-responsive table-hover sortable';
+          table.className = 'table table-responsive sortable';
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;
@@ -33,8 +33,8 @@
           var headings = {
             date : 'Date',
             markers : 0, // to be overridden after we know no. of total markers
-            totalDistance : 'Total Distance',
-            totalTime : 'Total Time'
+            totalDistance : 'Distance',
+            totalTime : 'Time'
           };
 
           // amends headings.markers to get highest number of markers
@@ -103,7 +103,7 @@
               var tdStartTime = document.createElement('td');
 
               // use filter to change timestamp to time
-              var sTime = $filter('date')(run.startTime, 'EEEE MMM d, y h:mm:ss a');
+              var sTime = $filter('date')(run.startTime, 'EEE MMM d, y h:mma');
               tdStartTime.appendChild(document.createTextNode(sTime));
 
               // use sortable custom key attribute for sorttable.js

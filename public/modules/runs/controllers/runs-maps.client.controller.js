@@ -1,8 +1,6 @@
 'use strict';
 
-(function(lodash, google) {
-
-  var _ = lodash;
+(function(google) {
 
   if (google === 'undefined') {return;} // google maps is not found
 
@@ -18,6 +16,7 @@
     // ----- Create new map ----- //
     // function createGmap(activityData, summaryMarkerItems)
     mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
+    console.log(summaries[0].markerItems);
     $scope.gMap = mapData[0];
 
     var recreateGmap = function recreateGmap(event, info) {
@@ -30,7 +29,7 @@
       }
       else {
         $scope.gMap = mapData[info.listOrder];
-        $scope.$apply();
+        $scope.$digest();
       }
     };
 
@@ -43,4 +42,4 @@
 
   angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', 'createGmap', MyMapsCtrl]);
 
-}(window._, window.google));
+}(window.google));

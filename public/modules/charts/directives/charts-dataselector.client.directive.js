@@ -16,15 +16,24 @@
         var chartDataSelectorList  = document.createElement('ul');
 
         // add Select All item
+        var listItemSelectRun = {
+          parentListElement : chartDataSelectorList,
+          anchorElement : {
+            textContent : 'Select your run'
+          },
+          classNm : 'select-run'
+        };
+
+        // add Select All item
         var listItemSelectAll = {
           parentListElement : chartDataSelectorList,
           anchorElement : {
             textContent : 'All runs'
           },
-          classNm : 'run-all'
+          classNm : 'run-all inactive'
         };
 
-        addListItem(listItemSelectAll);
+        addListItem(listItemSelectRun);
 
         // Add all of the data selector list items to chartDataSelectorList
         data.forEach(function(d, index, array) {
@@ -41,6 +50,8 @@
           addListItem(selectorListItem);
 
         });
+
+        addListItem(listItemSelectAll);
 
         elem.append(chartDataSelectorList);
 

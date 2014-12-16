@@ -3,11 +3,10 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 
 .table-striped > tbody > tr:nth-child(odd) {
-  background-color: $blue-mediterranean;
+  background-color: #FFF;
 }
 
-.table-striped > tbody > tr {
-  &:hover {
-    background-color: darken($blue-light, 20%);
-  }
+table th{
+  font-weight: normal;
+  color: #FFF;
 }

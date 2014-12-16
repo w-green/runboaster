@@ -1,3 +1,39 @@
+// @font-face {
+//   font-family: 'League Gothic';
+//   src: url('/styles/fonts/league-gothic/leaguegothic-regular-webfont.eot'); /* IE9 Compat Modes */
+//   src: url('/styles/fonts/league-gothic/leaguegothic-regular-webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+//        url('/styles/fonts/league-gothic/leaguegothic-regular-webfont.woff') format('woff'), /* Pretty Modern Browsers */
+//        url('/styles/fonts/league-gothic/leaguegothic-regular-webfont.ttf')  format('truetype'), /* Safari, Android, iOS */
+//        url('/styles/fonts/league-gothic/leaguegothic-regular-webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+// }
+
+@font-face {
+    font-family: 'dosisregular';
+    src: url('/styles/fonts/dosisregular/dosis-regular-webfont.eot');
+    src: url('/styles/fonts/dosisregular/dosis-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/styles/fonts/dosisregular/dosis-regular-webfont.woff2') format('woff2'),
+         url('/styles/fonts/dosisregular/dosis-regular-webfont.woff') format('woff'),
+         url('/styles/fonts/dosisregular/dosis-regular-webfont.ttf') format('truetype'),
+         url('/styles/fonts/dosisregular/dosis-regular-webfont.svg#dosisregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
 body {
-  font-size: 16px;
+  font-size: 22px;
+  line-height: 32px;
+  font-family: 'dosisregular';
+  text-transform: uppercase;
+  color: $green-pale;
+}
+
+nav {
+  a {
+    color: #FFF;
+  }
+  li:hover a {
+    color: #FFF;
+  }
 }

@@ -2,6 +2,7 @@
 
 $green: #2AB21B;
 $green-ultraviolet: #0FF;
+$green-pale: #B9D43C;
 $blue: #00008B;
 $blue-light: #ADD8E6;
 $blue-mediterranean: #0FF;
@@ -9,10 +10,16 @@ $blue-dark: #273135;
 $terracotta: #FA7252;
 $honeydew: #F0FFF0;
 $yellow : #FFF40C;
+$grey: #374140;
+$grey-light: lighten($grey, 20%);
+$blackish: #1C1B1C;
 
 
 // ----- Theme colours ----- //
 $main-content-bg---color: $honeydew;
+
+$theme-bg---color: $grey;
+
 
 
 // ----- Top Nav ----- //

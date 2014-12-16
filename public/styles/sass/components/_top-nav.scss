@@ -4,12 +4,12 @@ $top-nav-border: 3px solid $main-content-bg---color;
 
 .top-nav {
   height: $top-nav-height;
-  background-color: $blue-dark;
+  // background-color: $blue-dark;
 
   &>:first-child {
     width: $left-nav-width;
     height: $top-nav-height;
-    background-color: $yellow;
+    // background-color: $yellow;
     margin-top: 0;
   }
   &>div {
@@ -20,7 +20,6 @@ $top-nav-border: 3px solid $main-content-bg---color;
     height: $top-nav-height;
     padding: 13px;
     cursor: pointer;
-    border-left: $top-nav-border;
     float: left;
     user-select: none; // disables double click selection of element.
   }
@@ -38,7 +37,7 @@ $top-nav-border: 3px solid $main-content-bg---color;
 @media (min-width: $screen-lg-min) {
   .menu-icon {
     &:hover {
-      background-color: $green-ultraviolet;
+      // background-color: $green-ultraviolet;
     }
   }
 }
@@ -53,7 +52,7 @@ $top-nav-border: 3px solid $main-content-bg---color;
 
   &.active {
     display: block;
-    background-color: #0FF;
+    // background-color: #0FF;
   }
 }
 

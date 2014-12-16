@@ -11,7 +11,7 @@ var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
     var activityStartCoords; // coords used for markers
     var activityEndCoords; // coords used for markers
     var center;
-    var zoom = 15;
+    var zoom = 13;
     var getpolylines;
 
     getpolylines = setMapPolylines(activityData);

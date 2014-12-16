@@ -1,6 +1,5 @@
-(function(lodash) {
+(function() {
 
-  var _ = lodash;
   var sideNav = function sideNav($location, setHeightAftrTopNav, mediator) {
     return {
       restrict : 'AE',
@@ -66,4 +65,4 @@
 
   angular.module('left-nav').directive('sideNav', ['$location', 'setHeightAftrTopNav', 'mediator', sideNav]);
 
-})(window._);
+})();

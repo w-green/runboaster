@@ -21,13 +21,13 @@
         }
 
         var toggleDataSelector =
-        (function(dataSelector) {
-          var dataSelector = dataSelector;
+        (function(dataSelectorId) {
+          var dataSelector = dataSelectorId;
 
           return function toggleDataSelector(event) {
-          event.preventDefault();
-          bod.classList.toggle('dataselector-list-' + dataSelector + '--open');
-        }
+            event.preventDefault();
+            bod.classList.toggle('dataselector-list-' + dataSelector + '--open');
+          };
         })(dataSelector);
 
 

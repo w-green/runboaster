@@ -1,8 +1,6 @@
 'use strict';
 
-(function(lodash) {
-
-  var _ = lodash;
+(function() {
 
   function MapSummaryCtrl($scope, getSummariesFiveRes, dateFilter) {
 
@@ -35,7 +33,7 @@
 
   angular.module('runs').controller('MapSummaryCtrl', ['$scope', 'getSummariesFiveRes', 'dateFilter', MapSummaryCtrl]);
 
-}(window._));
+}());
 
 
 
