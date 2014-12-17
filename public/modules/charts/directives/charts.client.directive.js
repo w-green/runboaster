@@ -9,7 +9,7 @@
 
       restrict : 'AE',
       replace: true,
-      template:'<div class="svgContainer col-xs-10"><svg id="lChart" class="svgChart"></svg></div>',
+      template:'<div class="svgContainer col-lg-11"><svg id="lChart" class="svgChart"></svg></div>',
       link : function(scope, elem, attr){
 
         //  ----- Our Data ----- //

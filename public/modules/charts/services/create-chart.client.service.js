@@ -47,10 +47,12 @@ var createChart = function($window) {
     var chartContainerWidth = 0;
     var getChartContainerWidth;
     var setChartContainerWidth;
+    // this is from using bootstrap cols - they use 15px padding either side
+    var chartContainerPadding = 30;
     var chartXAxisWidth;
 
     setChartContainerWidth = function setChartContainerWidth(wrapper) {
-      chartContainerWidth = parseInt(wrapper.offsetWidth);
+      chartContainerWidth = parseInt(wrapper.offsetWidth) - chartContainerPadding;
     };
     getChartContainerWidth = function getChartContainerWidth() {
       if(chartContainerWidth === 0) {
