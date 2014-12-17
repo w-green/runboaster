@@ -21,7 +21,8 @@
         visible: true,
         geodesic: true,
         editable: false,
-        draggable: false
+        draggable: false,
+        static: true
       };
 
     // requires paths array - check var declaration for description

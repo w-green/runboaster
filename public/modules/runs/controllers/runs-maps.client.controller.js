@@ -16,7 +16,6 @@
     // ----- Create new map ----- //
     // function createGmap(activityData, summaryMarkerItems)
     mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
-    console.log(summaries[0].markerItems);
     $scope.gMap = mapData[0];
 
     var recreateGmap = function recreateGmap(event, info) {
