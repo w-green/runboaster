@@ -22,8 +22,8 @@ describe('Gmap directive for click events :', function() {
       '<p>Your run summaries:</p>' +
       '<div ng-repeat="sum in summaries" data-activity-id="{{sum.activityId}}" data-list-order="{{sum.listOrder}}" class="mapSummaryItem">' +
         '<p>Date: {{sum.date}} </p>' +
-        '<p> Total time: {{sum.totalTime}}</p>' +
-        '<p>Total Distance: {{sum.totalDistanceKm}} km</p>' +
+        '<p>Time: {{sum.totalTime}}</p>' +
+        '<p>Distance: {{sum.totalDistanceKm}} km</p>' +
       '</div>' +
     '</section>';
 

@@ -21,8 +21,8 @@
           listOrder: index,
           activityId : summary.runId,
           date : dateFilter(summary.startTime, 'MMM d, y h:mm a'),
-          totalTime : dateFilter(summary.totalTime, "m 'mins' s 'secs'"),
-          totalDistanceKm : summary.totalDistanceKm
+          totalTime : dateFilter(summary.totalTime, 'H:m:s'),
+          totalDistanceKm : summary.totalDistanceKm.toFixed(2)
         };
 
         $scope.summaries.push(summ);

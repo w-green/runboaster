@@ -27,7 +27,7 @@ var uploadData = function uploadData($upload, $rootScope) {
       uploadSuccess = function uploadSuccess(message) {
         // file is uploaded successfully
         resultsListItems
-          .push('<li class="bg-success">Successfully uploaded: ' + message.data + '</li>');
+          .push('<li>Successfully uploaded: ' + message.data + '</li>');
         $rootScope.$apply();
       };
 
@@ -44,7 +44,7 @@ var uploadData = function uploadData($upload, $rootScope) {
       uploadSuccess = function uploadSuccess(data, status, headers, config) {
         // file is uploaded successfully
         resultsListItems
-          .push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
+          .push('<li">Successfully uploaded: ' + config.file.name + '</li>');
       };
 
       uploadProgress = function uploadProgress(evt) {
@@ -88,7 +88,7 @@ var uploadData = function uploadData($upload, $rootScope) {
     var isitGpx = $upload.checkSuffix('gpx', file.name);
     if (isitGpx === false) {
       return  resultsListItems
-        .push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
+        .push('<li class="upload-file__message--fail">The file needs to be a gpx : ' + file.name + '</li>');
     }
 
     upload(file);

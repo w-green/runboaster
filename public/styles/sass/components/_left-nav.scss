@@ -113,11 +113,10 @@ body.leftNav--toggle {
     }
 
     &.active {
-      border-left: 5px solid #FFF;
       // background-color: darken($blue-dark, 10%);
 
       a {
-          padding-left: 20px;
+        color: $green-pale;
       }
     }
 

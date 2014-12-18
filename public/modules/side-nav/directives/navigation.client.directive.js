@@ -25,8 +25,8 @@
 
               }
               // Add active class to li
-              if (document.querySelector('[ui-sref="' + toState.name + '"]')) {
-                var newEl = document.querySelector('[ui-sref="' + toState.name + '"]').parentNode;
+              if (document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]')) {
+                var newEl = document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]').parentNode;
                 newEl.classList.add('active');
               }
 

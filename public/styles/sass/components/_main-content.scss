@@ -3,21 +3,3 @@
   overflow-y: auto !important;
   // background-color: $main-content-bg---color;
 }
-
-.mapSummaryItem {
-  // background-color: lighten($green, 20%);
-  color: #FFF;
-  font-weight: bold;
-  text-align: center;
-  padding: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-
-  &:hover {
-    // background-color: $green;
-  }
-
-  &.active {
-    // background-color: darken($green, 10%);
-  }
-}

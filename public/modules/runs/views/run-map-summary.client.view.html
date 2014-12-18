@@ -7,8 +7,9 @@
 <section data-map-summaries class="visible-lg-block">
   <p>Select a run:</p>
   <div ng-repeat="sum in summaries" data-activity-id="{{sum.activityId}}" data-list-order="{{sum.listOrder}}" class="mapSummaryItem" ng-class="{active: $index==0}">
-    <p>Date: {{sum.date}} </p>
-    <p> Total time: {{sum.totalTime}}</p>
-    <p>Total Distance: {{sum.totalDistanceKm}} km</p>
+    <p><span class="label">Date:</span> {{sum.date}} </p>
+    <span class="icon fa fa-lg fa-fw fa-angle-right"></span>
+    <p><span class="label">Time:</span> {{sum.totalTime}}</p>
+    <p><span class="label">Distance:</span> {{sum.totalDistanceKm}} km</p>
   </div>
 </section>

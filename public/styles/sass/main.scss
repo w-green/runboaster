@@ -5,6 +5,8 @@ body {
 
 @import "lib/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 
+@import "_overrides.scss";
+
 @import "_variables.scss";
 
 // ----- Font awesome version 4.2.0----- //
@@ -12,12 +14,19 @@ body {
 
 // ----- components ----- //
 @import "components/_typography.scss";
+@import "components/_theme.scss";
+
 @import "components/_main-content.scss";
 @import "components/_top-nav.scss";
 @import "components/_left-nav.scss";
+
+@import "components/_dashboard.scss";
 @import "components/_googlemaps.scss";
 @import "components/_table.scss";
+@import "components/_charts-c3.scss";
 @import "components/_custom-d3-charts.scss";
 @import "components/_custom-charts-pie.scss";
 @import "components/_data-selector.scss";
-@import "components/_theme.scss";
+@import "components/_upload-data.scss";
+@import "components/_signin.scss";
+
