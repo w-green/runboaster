@@ -37,16 +37,12 @@ var config = function($stateProvider) {
           controller : 'DashboardChartlineCtrl'
         },
         'summary@dashboard' : {
-          templateUrl : 'modules/dashboard/views/dashboardSumm.client.view.html',
+          templateUrl : 'modules/runs/views/run-table.client.view.html',
           controller : 'DashboardSummCtrl'
         },
         'map@dashboard' : {
           templateUrl : 'modules/gmap/views/run-map.client.view.html',
           controller : 'DashboardMapCtrl'
-        },
-        'pie@dashboard' : {
-          templateUrl : 'modules/runs/views/run-table.client.view.html',
-          controller : 'DashboardChartPieCtrl'
         }
       }
     });
