@@ -2,16 +2,14 @@
 
 (function() {
 
-  function DashboardSummCtrl($scope, getSummariesOneRes, dateFilter) {
+  function DashboardSummCtrl($scope, getSummariesFormattedOneRes) {
 
-    $scope.summ = getSummariesOneRes[0];
-    $scope.summ.startTime = dateFilter($scope.summ.startTime, 'MMM d, y h:mm a');
-    $scope.summ.totalTime = dateFilter($scope.summ.totalTime, 'H:m:s');
-
+    $scope.tableSortable = false;
+    $scope.runs = getSummariesFormattedOneRes;
 
   }
 
-  angular.module('dashboard').controller('DashboardSummCtrl', ['$scope', 'getSummariesOneRes', 'dateFilter', DashboardSummCtrl]);
+  angular.module('dashboard').controller('DashboardSummCtrl', ['$scope', 'getSummariesFormattedOneRes', DashboardSummCtrl]);
 
 })();
 
