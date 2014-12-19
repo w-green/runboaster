@@ -217,24 +217,24 @@ var createChart = function($window) {
         .attr('class', 'xAxis axis grid')
         .attr('transform', 'translate(0,' + chart.axis.y.height + ')')
         .call(xAxisGen)
-        .append("text")
+        .append('text')
           .attr('class', 'xAxis__label')
-          .attr("y", 20)
+          .attr('y', 20)
           .attr('x', getChartWidth() / 2)
-          .attr("dy", "1em")
-          .style("text-anchor", "end")
-          .text("Distance (km)");
+          .attr('dy', '1em')
+          .style('text-anchor', 'end')
+          .text('Distance (km)');
 
       svg.append('svg:g')
         .attr('class', 'yAxis axis grid')
         .attr('transform', 'translate(50, 0)')
         .call(yAxisGen)
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Time");
+        .append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 6)
+          .attr('dy', '.71em')
+          .style('text-anchor', 'end')
+          .text('Time');
     } // drawAxis
 
 
@@ -243,11 +243,11 @@ var createChart = function($window) {
       var x = svg.select('.xAxis');
       x.call(xAxisGen)
         .select('.xAxis__label')
-          .attr("y", 20)
+          .attr('y', 20)
           .attr('x', getChartWidth() / 2)
-          .attr("dy", "1em")
-          .style("text-anchor", "end")
-          .text("Distance (km)");
+          .attr('dy', '1em')
+          .style('text-anchor', 'end')
+          .text('Distance (km)');
 
       yAxisGen = d3.svg.axis()
         .scale(yScale)

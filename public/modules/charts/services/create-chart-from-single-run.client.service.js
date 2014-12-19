@@ -28,7 +28,7 @@
 
       getChartContainerWidth = function getChartContainerWidth() {
         if(chartContainerWidth === 0) {
-          setChartContainerWidth(elem);
+          setChartContainerWidth(rawElem);
         }
         return chartContainerWidth;
       };
@@ -54,7 +54,7 @@
 
       var xAxis = d3.svg.axis()
           .scale(x)
-          .orient("bottom")
+          .orient('bottom')
           .ticks(
             d3.time.minute,
             2
@@ -63,7 +63,7 @@
 
       var yAxis = d3.svg.axis()
           .scale(y)
-          .orient("left");
+          .orient('left');
 
 
       var line = d3.svg.line()
@@ -72,16 +72,16 @@
 
       chartContainerHeight = chartHeight + margin.top + margin.bottom;
 
-      // var svg = d3.select("body").append("svg")
+      // var svg = d3.select('body').append('svg')
       var svg = d3.select(rawSvg)
-        // .attr("width", getChartWidth() + margin.left + margin.right)
-        .attr("width",  getChartContainerWidth())
-        .attr("height", chartContainerHeight);
+        // .attr('width', getChartWidth() + margin.left + margin.right)
+        .attr('width',  getChartContainerWidth())
+        .attr('height', chartContainerHeight);
 
       var svgAxis =
       svg
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       var startTime = new Date(run[0][0][3]);
 
@@ -113,31 +113,31 @@
       x.domain(d3.extent(data, function(d) { return d.time; }));
       y.domain(d3.extent(data, function(d) { return d.altitude; }));
 
-      svgAxis.append("g")
-          .attr("class", "xAxis axis")
-          .attr("transform", "translate(0," + yAxisHeight + ")")
+      svgAxis.append('g')
+          .attr('class', 'xAxis axis')
+          .attr('transform', 'translate(0,' + yAxisHeight + ')')
           .call(xAxis)
-        .append("text")
-          .attr("y", 20)
+        .append('text')
+          .attr('y', 20)
           .attr('x', getChartWidth() / 2)
-          .attr("dy", "1em")
-          .style("text-anchor", "end")
-          .text("Time (mins)");
+          .attr('dy', '1em')
+          .style('text-anchor', 'end')
+          .text('Time (mins)');
 
-      svgAxis.append("g")
-          .attr("class", "yAxis axis")
+      svgAxis.append('g')
+          .attr('class', 'yAxis axis')
           .call(yAxis)
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Altitude");
+        .append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 6)
+          .attr('dy', '.71em')
+          .style('text-anchor', 'end')
+          .text('Altitude');
 
-      svgAxis.append("path")
+      svgAxis.append('path')
           .datum(data)
-          .attr("class", "line")
-          .attr("d", line)
+          .attr('class', 'line')
+          .attr('d', line)
           .attr('stroke', 'blue')
           .attr('stroke-width', 2)
           .attr('fill', 'none');
