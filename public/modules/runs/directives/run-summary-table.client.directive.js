@@ -10,20 +10,25 @@
       restrict : 'AE',
       link : function(scope, element, attrs) {
         var runs = scope.runs;
-
+        var sortable = (scope.tableSortable !== undefined) ? scope.tableSortable : true;
         // Makes sure the runs are sorted by date initially
         var runsSorted = _.sortBy(runs.runs, 'startTime').reverse();
         runs.runs = runsSorted;
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
 
-        var tableOfRuns = createTableOfRuns(runs);
+        var tableOfRuns = createTableOfRuns(runs, sortable);
 
         // layout our table.
-        function createTableOfRuns(runs) {
+        function createTableOfRuns(runs, sortable) {
           var table = document.createElement('table');
           // note sortable class added for sorttable.js
-          table.className = 'table table-responsive sortable';
+          if (sortable) {
+            table.className = 'table table-responsive sortable';
+          }
+          else {
+            table.className = 'table table-responsive';
+          }
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;

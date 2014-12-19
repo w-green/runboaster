@@ -23,9 +23,6 @@
       var resizeChart;
 
       setChartContainerWidth = function setChartContainerWidth(wrapper) {
-        console.log(wrapper);
-        console.log(wrapper.offsetWidth);
-
         chartContainerWidth = parseInt(wrapper.offsetWidth);
       };
 

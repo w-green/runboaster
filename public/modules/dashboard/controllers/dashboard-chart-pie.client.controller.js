@@ -4,11 +4,8 @@
 
   function DashboardChartPieCtrl($scope, getSummariesOneRes, getSummariesFormattedOneRes, createChartPie) {
 
-    // var pie = createChartPie(getSummariesOneRes[0].markerItems);
-    // var key;
-    // getSummariesFormattedTenRes
+    $scope.tableSortable = false;
     $scope.runs = getSummariesFormattedOneRes;
-
 
   }
 
