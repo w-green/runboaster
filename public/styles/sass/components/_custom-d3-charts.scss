@@ -1,9 +1,15 @@
+@media(max-width: $screen-lg) {
+  .svgContainer {
+    margin-top: 10px;
+  }
+}
 
 // ----- CHART ----- //
 
 .svgChart {
   padding : 10px;
   background-color: #FFF;
+  border: 4px solid #000;
 }
 
 // hides the run lines until selected

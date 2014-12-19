@@ -2,7 +2,7 @@
 
 var createChart = function($window) {
 
-  return function(runs, elem, rawSvg, chartHeight) {
+  return function(runs, rawElem, rawSvg, chartHeight) {
 
     var d3 = $window.d3;
     var data = runs.runs;
@@ -19,7 +19,7 @@ var createChart = function($window) {
       }
       return lowestYAxisPoint;
     };
-    var margin = 20; // pads the chart inside of the svg
+    var margin = 30; // pads the chart inside of the svg
     var lineColors = [
       '#B65020', // brown
       '#000', // blue
@@ -50,23 +50,24 @@ var createChart = function($window) {
     // this is from using bootstrap cols - they use 15px padding either side
     var chartContainerPadding = 30;
     var chartXAxisWidth;
+    var getChartWidth;
 
     setChartContainerWidth = function setChartContainerWidth(wrapper) {
       chartContainerWidth = parseInt(wrapper.offsetWidth) - chartContainerPadding;
     };
     getChartContainerWidth = function getChartContainerWidth() {
       if(chartContainerWidth === 0) {
-        setChartContainerWidth(elem);
+        setChartContainerWidth(rawElem);
       }
       return chartContainerWidth;
     };
 
-    var getChartWidth = function getChartWidth() {
+    getChartWidth = function getChartWidth() {
       var containerWidth = getChartContainerWidth();
       return containerWidth - margin * 2;
     };
 
-    setChartContainerWidth(elem);
+    setChartContainerWidth(rawElem);
 
     // ----- END CHART WIDTH - RESPONSIVE ----- //
 
@@ -89,7 +90,7 @@ var createChart = function($window) {
               measure : 'seconds',
               lapse : 30
             },
-            format : '%Mm %Ss'
+            format : '%M:%S'
           },
           orient : 'bottom'
         }
@@ -118,7 +119,7 @@ var createChart = function($window) {
 
     resizeChart =
     function resizeChart() {
-      setChartContainerWidth(elem);
+      setChartContainerWidth(rawElem);
       svg.attr('width', getChartContainerWidth());
 
       // Update range of scale with new width
@@ -141,7 +142,6 @@ var createChart = function($window) {
           .append('svg:path')
           .attr({
             d: lineFun(d.markers),
-            // 'stroke': getRandomColor(),
             'stroke': lineColors[index],
             'stroke-width': 2,
             'fill': 'none',
@@ -211,36 +211,43 @@ var createChart = function($window) {
         .interpolate('linear');
     } // setChartParameters
 
-
-    // // utility function for generating path colours
-    // function getRandomColor() {
-    //     var letters = '0123456789ABCDEF'.split('');
-    //     var color = '#';
-    //     for (var i = 0; i < 6; i++ ) {
-    //         color += letters[Math.floor(Math.random() * 16)];
-    //     }
-    //     return color;
-    // } // getRandomColor
-
-
     function drawAxis() {
 
       svg.append('svg:g')
-         .attr('class', 'xAxis axis grid')
-         .attr('transform', 'translate(0,' + chart.axis.y.height + ')')
-         .call(xAxisGen);
+        .attr('class', 'xAxis axis grid')
+        .attr('transform', 'translate(0,' + chart.axis.y.height + ')')
+        .call(xAxisGen)
+        .append("text")
+          .attr('class', 'xAxis__label')
+          .attr("y", 20)
+          .attr('x', getChartWidth() / 2)
+          .attr("dy", "1em")
+          .style("text-anchor", "end")
+          .text("Distance (km)");
 
       svg.append('svg:g')
-         .attr('class', 'yAxis axis grid')
-         .attr('transform', 'translate(50, 0)')
-         .call(yAxisGen);
+        .attr('class', 'yAxis axis grid')
+        .attr('transform', 'translate(50, 0)')
+        .call(yAxisGen)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Time");
     } // drawAxis
 
 
     // ----- Redraw axis on window resize ----- //
     function redrawAxis() {
       var x = svg.select('.xAxis');
-      x.call(xAxisGen);
+      x.call(xAxisGen)
+        .select('.xAxis__label')
+          .attr("y", 20)
+          .attr('x', getChartWidth() / 2)
+          .attr("dy", "1em")
+          .style("text-anchor", "end")
+          .text("Distance (km)");
 
       yAxisGen = d3.svg.axis()
         .scale(yScale)
