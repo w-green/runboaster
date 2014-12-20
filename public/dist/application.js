@@ -2,6 +2,7 @@
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = function () {
     // Init module configuration options
+    var apiVersion = '1_0_0';
     var applicationModuleName = 'runningApp';
     var applicationModuleVendorDependencies = [
         'ngResource',
@@ -9,7 +10,7 @@ var ApplicationConfiguration = function () {
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
-        'google-maps'
+        'uiGmapgoogle-maps'
       ];
     // Add a new vertical module
     var registerModule = function (moduleName, dependencies) {
@@ -18,11 +19,19 @@ var ApplicationConfiguration = function () {
       // Add the module to the AngularJS configuration file
       angular.module(applicationModuleName).requires.push(moduleName);
     };
-    return {
-      applicationModuleName: applicationModuleName,
-      applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-      registerModule: registerModule
-    };
+    var config = {
+        applicationModuleName: applicationModuleName,
+        applicationModuleVendorDependencies: applicationModuleVendorDependencies,
+        registerModule: registerModule
+      };
+    Object.defineProperty(config, 'apiVersion', {
+      value: apiVersion,
+      configurable: false,
+      enumerable: true,
+      writable: false
+    });
+    Object.freeze(config);
+    return config;
   }();'use strict';
 //Start by defining the main module and adding the module dependencies
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
@@ -44,15 +53,49 @@ angular.element(document).ready(function () {
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('articles');'use strict';
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('charts', ['runs']);'use strict';
+ApplicationConfiguration.registerModule('c3-charts', ['runs']);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('charts', [
+  'runs',
+  'customCore',
+  'mediator',
+  'data-selector'
+]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');'use strict';
+ApplicationConfiguration.registerModule('customCore', ['mediator']);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('dashboard', [
+  'ngResource',
+  'runs',
+  'ui.router',
+  'uiGmapgoogle-maps',
+  'gmap',
+  'users',
+  'charts',
+  'mediator'
+]);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('data-selector');'use strict';
+ApplicationConfiguration.registerModule('gmap');'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('mediator');'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('runs', [
   'ngResource',
   'ui.router',
-  'google-maps'
+  'uiGmapgoogle-maps',
+  'gmap',
+  'users',
+  'charts'
 ]);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('left-nav', [
+  'customCore',
+  'mediator'
+]);'use strict';
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('top-nav');'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('upload-data', [
   'angularFileUpload',
@@ -61,8 +104,6 @@ ApplicationConfiguration.registerModule('upload-data', [
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');'use strict';
-// Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('visualisations');'use strict';
 // Configuring the Articles module
 angular.module('articles').run([
   'Menus',
@@ -152,16 +193,98 @@ angular.module('articles').factory('Articles', [
   }
 ]);'use strict';
 // Setting up route
+angular.module('c3-charts').config([
+  '$stateProvider',
+  function ($stateProvider) {
+    $stateProvider.state('c3-charts', {
+      url: '/runs/charts/c3',
+      resolve: {
+        runsSummariesRes: [
+          'getSummaries',
+          'formatSummaries',
+          function (getSummaries, formatSummaries) {
+            var queryOptions = { limit: 10 };
+            // format the summs for the charts
+            var formattedSumms = getSummaries.get(queryOptions).then(function (d) {
+                return formatSummaries(d);
+              });
+            return formattedSumms;
+          }
+        ]
+      },
+      templateUrl: 'modules/c3-charts/views/c3-line-chart.client.view.html',
+      controller: 'C3ChartsCtrl'
+    });
+  }
+]);'use strict';
+(function (d3, c3) {
+  var C3ChartsCtrl = function c3ChartsCtrl($scope, runsSummariesRes) {
+    $scope.runs = runsSummariesRes;
+    var runs = [];
+    var allRuns = $scope.runs.runs;
+    allRuns.forEach(function (run, index, array) {
+      var aRun = [];
+      aRun.push(run.startTime);
+      run.markers.forEach(function (marker) {
+        var timeAsString = marker.time;
+        var time = d3.time.format('%M.%S')(new Date(timeAsString));
+        aRun.push(timeAsString);
+      });
+      runs.push(aRun);
+    });
+    var chart = c3.generate({
+        bindto: '#c3-chart',
+        data: { columns: runs },
+        grid: {
+          x: { show: true },
+          y: { show: true }
+        },
+        tooltip: {
+          format: {
+            value: function (value) {
+              var x;
+              x = d3.time.format('%M:%S')(new Date(value));
+              return x;
+            }
+          }
+        },
+        axis: {
+          y: {
+            show: true,
+            type: 'timeseries',
+            ticks: {
+              time: {
+                value: 'seconds',
+                interval: 30
+              }
+            },
+            tick: { format: d3.time.format('%Mm %Ss') }
+          }
+        }
+      });
+  };
+  angular.module('c3-charts').controller('C3ChartsCtrl', [
+    '$scope',
+    'runsSummariesRes',
+    C3ChartsCtrl
+  ]);
+}(window.d3, window.c3));'use strict';
 angular.module('charts').config([
   '$stateProvider',
   function ($stateProvider) {
     $stateProvider.state('charts', {
-      url: '/my/runs/charts',
+      url: '/runs/charts/custom',
       resolve: {
-        runsSummaries: [
-          'runsService',
-          function (runsService) {
-            return runsService.getRuns().$promise;
+        getSummariesTenRes: [
+          'getSummaries',
+          'formatSummaries',
+          function (getSummaries, formatSummaries) {
+            var queryOptions = { limit: 10 };
+            // format the summs for d3
+            var formattedSumms = getSummaries.get(queryOptions).then(function (d) {
+                return formatSummaries(d);
+              });
+            return formattedSumms;
           }
         ]
       },
@@ -171,193 +294,595 @@ angular.module('charts').config([
   }
 ]);'use strict';
 (function () {
-  var chartsCtrl = function chartsCtrl($scope, runsSummaries) {
-    $scope.runs = runsSummaries;  // console.log(runs);
+  var chartsCtrl = function chartsCtrl($scope, getSummariesTenRes) {
+    $scope.runs = getSummariesTenRes;
   };
   angular.module('charts').controller('chartsCtrl', [
     '$scope',
-    'runsSummaries',
+    'getSummariesTenRes',
     chartsCtrl
   ]);
-}());'use strict';
+}(window._));'use strict';
 (function () {
-  var lChart = function lChart($window, $filter) {
+  var chartDataSelector = function chartDataSelector($window, $filter, addListItem, toggleData, setHeightAftrTopNav, mediator) {
     return {
-      restrict: 'E',
-      template: '<svg width="800" height="500"></svg>',
+      restrict: 'AE',
+      replace: 'true',
+      template: '<div class="dataselector"></div>',
       link: function (scope, elem, attr) {
-        var runs = scope.runs;
-        var pathClass = 'path';
-        var xScale, yScale, xAxisGen, yAxisGen, lineFun;
-        var getScreenWidth;
+        var data = scope.runs.runs;
         var d3 = $window.d3;
-        var rawSvg = elem.find('svg');
-        var svg = d3.select(rawSvg[0]);
-        var padding = 20;
-        // pads the chart inside of the svg
-        var chartWidth = rawSvg.attr('width') - padding;
-        var chartHeight = rawSvg.attr('height') - padding;
-        var data = [];
-        var markerSize = [];
-        var longestMarkerTime = 0;
-        var shortestMarkerTime = 0;
-        var xAxis_base;
-        var markerCount;
-        // Define the div for the tooltip
-        var div = d3.select('body').append('div').attr('class', 'tooltip').style('opacity', 0);
-        createDataOb();
-        markerCount = d3.max(markerSize);
-        drawAxis();
-        var tip = d3.tip().attr('class', 'd3-tip').offset([
-            -10,
-            0
-          ]).html(function (d) {
-            return 'KM: ' + d.km + '<br/>' + 'time: ' + d3.time.format('%M:%S')(new Date(d.time));  // return div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) );
-                                                                                                    // return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-          });
-        svg.call(tip);
-        data.forEach(function (d) {
-          drawLines(d);
-          // Add the scatterplot
-          svg.selectAll('dot').data(d.markers).enter().append('circle').attr('r', 5).attr('cx', function (d) {
-            return xScale(d.km);
-          }).attr('cy', function (d) {
-            return yScale(d.time);
-          }).on('mouseover', tip.show).on('mouseout', tip.hide);
+        // The list of runs from which you can select to show on chart
+        var chartDataSelectorList = document.createElement('ul');
+        // add Select All item
+        var listItemSelectRun = {
+            parentListElement: chartDataSelectorList,
+            anchorElement: { textContent: 'Select your run' },
+            classNm: 'select-run'
+          };
+        // add Select All item
+        var listItemSelectAll = {
+            parentListElement: chartDataSelectorList,
+            anchorElement: { textContent: 'All runs' },
+            classNm: 'run-all inactive'
+          };
+        addListItem(listItemSelectRun);
+        // Add all of the data selector list items to chartDataSelectorList
+        data.forEach(function (d, index, array) {
+          var startDate = d3.time.format('%a %b %e %Y')(new Date(d.startTime));
+          var selectorListItem = {
+              parentListElement: chartDataSelectorList,
+              anchorElement: { textContent: startDate },
+              classNm: 'run-' + index + ' inactive'
+            };
+          addListItem(selectorListItem);
         });
-        /*          // Add the scatterplot
-          svg.selectAll("dot")
-              .data(d.markers)
-          .enter().append("circle")
-              .attr("r", 5)
-              .attr("cx", function(d) { return xScale(d.km); })
-              .attr("cy", function(d) { return yScale(d.time); })
-              .on("mouseover", function(d) {
-                  div.transition()
-                      .duration(200)
-                      .style("opacity", .9);
-                  // div.html(formatTime(d.time) + "<br/>"  + d.km)
-                  div.html('KM: ' + d.km + "<br/>" + 'time: ' + d3.time.format("%M:%S")(new Date(d.time)) )
-                      .style("left", (d3.event.pageX) + "px")
-                      .style("top", (d3.event.pageY - 28) + "px");
-                  })
-              .on("mouseout", function(d) {
-                  div.transition()
-                      .duration(500)
-                      .style("opacity", 0);
-              });
-        });*/
-        /*  // the data layout produced from createDataOb()
-          var data = [
-            markers : [ {km : 1, time : 291000}, {km : 2, time : 332000}, {km : 3, time : 332000} ],  startTime: "2014-08-07T20:23:56.000Z", totalDistance: 6.51, totalTime: 1854000},
-            markers : [ {km : 1, time : 291000}, {km : 2, time : 332000}, {km : 3, time : 332000} ],  startTime: "2014-08-07T20:23:56.000Z", totalDistance: 6.51, totalTime: 1854000},
-            etc...
-          ]
-        */
-        function createDataOb() {
-          runs.forEach(function (run) {
-            var markersLen;
-            var runData = {};
-            runData.markers = [];
-            markersLen = run.markerItems.length;
-            markerSize.push(markersLen);
-            runData.startTime = run.startTime;
-            run.markerItems.forEach(function (marker) {
-              if (shortestMarkerTime === 0) {
-                shortestMarkerTime = marker.totalTime;
-              } else {
-                if (marker.totalTime < shortestMarkerTime) {
-                  shortestMarkerTime = marker.totalTime;
-                }
-              }
-              if (marker.totalTime > longestMarkerTime) {
-                longestMarkerTime = marker.totalTime;
-              }
-              var markerData = {
-                  km: marker.km,
-                  time: marker.totalTime
-                };
-              runData.markers.push(markerData);
+        addListItem(listItemSelectAll);
+        elem.append(chartDataSelectorList);
+        // ----- set the height for scrolling ----- //
+        setHeightAftrTopNav(elem[0]);
+        elem.on('click', toggleData);
+        // ----- add event listener on window resize ----- //
+        var resetHeight = function resetHeight() {
+          var element = elem[0];
+          setHeightAftrTopNav(element);
+        };
+        var resizeEvent = mediator.subscribe('windowResize', resetHeight, this);
+        // ----- remove event listener when scope is destroyed ----- //
+        scope.$on('$destroy', function () {
+          mediator.unsubscribe(resizeEvent);
+        });
+      }  // link
+    };  // returned object
+  };
+  // chartDataSelector
+  angular.module('charts').directive('chartDataSelector', [
+    '$window',
+    '$filter',
+    'addListItem',
+    'toggleData',
+    'setHeightAftrTopNav',
+    'mediator',
+    chartDataSelector
+  ]);
+}());'use strict';
+var lineChartAltitude = function (createSingleLineChart, mediator) {
+  return {
+    restrict: 'A',
+    replace: true,
+    template: '<div class="svgContainer"><svg id="chart--altitude" class="svgChart"></svg></div>',
+    link: function (scope, elem, attr) {
+      var run = scope.run;
+      var rawSvg = elem.find('svg')[0];
+      // var chartHeight = 360; // in px
+      var chart = createSingleLineChart(run, elem[0], rawSvg);
+      var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
+      // ----- remove event listener when scope is destroyed ----- //
+      scope.$on('$destroy', function () {
+        mediator.unsubscribe(resizeEvent);
+      });
+    }
+  };
+};
+angular.module('charts').directive('lineChartAltitude', [
+  'createSingleLineChart',
+  'mediator',
+  lineChartAltitude
+]);'use strict';
+(function (lodash) {
+  var _ = lodash;
+  var lineChart = function lineChart($window, $filter, mediator, createChart) {
+    return {
+      restrict: 'AE',
+      replace: true,
+      template: '<div class="svgContainer col-lg-11"><svg id="lChart" class="svgChart"></svg></div>',
+      link: function (scope, elem, attr) {
+        //  ----- Our Data ----- //
+        var runs = scope.runs;
+        var rawSvg = elem.find('svg');
+        var chartHeight = 360;
+        // in px
+        var chart = createChart(runs, elem[0], rawSvg, chartHeight);
+        // returns an object
+        var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
+        // ----- remove event listener when scope is destroyed ----- //
+        scope.$on('$destroy', function () {
+          mediator.unsubscribe(resizeEvent);
+        });  /*
+        // ----- Tooltip ----- //
+        var div = svg.append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 0);
+
+        var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            return 'KM: ' + d.km + '<br/>' + 'time: ' + d3.time.format('%M:%S')(new Date(d.time));
+          });
+
+        svg.call(tip);
+        // ----- / Tooltip ----- //
+*/
+             /*
+
+        // use rect to capture mouse movements
+        svg.append('rect')
+          .attr('width', chartWidth)
+          .attr('height', chartHeight)
+          .attr('class', 'rectCaptMouse')
+          .style('fill', 'none')
+          .style('pointer-events', 'all')
+          .on('mouseover', function() { focus.style('display', null); })
+          .on('mouseout', function() { focus.style('display', 'none'); });
+          // .on('mousemove', _.debounce(mousemove, 10));
+
+        var = rectCaptMouse = d3.select('.rectCaptMouse');// document.querySelector('.rectCaptMouse');
+
+        var focus = svg.append('g')
+          .style('display', 'none')
+          .attr('class', 'focus-group');
+
+        focus.append('circle')
+          .attr('class', 'y')
+          .style('fill', 'none')
+          .style('stroke', 'blue')
+          .attr('r', 4);
+
+
+        var bisectDate = d3.bisector(function(d) { return d.km; }).left;
+
+
+        rectCaptMouse.on('mousemove', mousemove);
+
+        var prevMousePos = null;
+        function mousemove() {
+
+          var mousePos = xScale.invert(d3.mouse(this)[0]); // x val mouse position without rounding
+          var xValMousePos = Math.round(mousePos); // x val mouse position with rounding
+          var indx = xValMousePos - 1;
+          var results = [];
+
+          if (xValMousePos !== prevMousePos) {
+            prevMousePos = xValMousePos;
+            results.length = 0;
+
+            data.forEach(function(d, index, array) {
+              var time = d.markers[indx].time;
+              // console.log(time);
+              results.push(time);
             });
-            runData.totalDistance = run.totalDistanceKm;
-            runData.totalTime = run.totalTime;
-            data.push(runData);
-          });
-        }
-        //createDataOb
-        /*
-        // Gets screen width of device
-        getScreenWidth = function getScreenWidth() {
-          var resolution = window.devicePixelRatio||screen.pixelDepth||screen.colorDepth;
-          var clientWidth = document.documentElement.clientWidth;
-          var screenWidth;
-          deviceScreenWidth = clientWidth / resolution;
-          return deviceScreenWidth;
-        }; // getScreenWidth
-        */
-        // setting the values of the vars declared earlier
-        function setChartParameters() {
-          if (shortestMarkerTime !== 0) {
-            xAxis_base = shortestMarkerTime / 1.1;
+            if (xValMousePos === 4) {
+              console.log('YES' + results);
+            }
           }
-          xScale = d3.scale.linear().domain([
-            1,
-            markerCount
-          ]).range([
-            50,
-            chartWidth
-          ]);
-          yScale = d3.time.scale().domain([
-            xAxis_base,
-            longestMarkerTime
-          ]).range([
-            chartHeight,
-            0
-          ]);
-          xAxisGen = d3.svg.axis().scale(xScale).orient('bottom').ticks(markerCount);
-          yAxisGen = d3.svg.axis().scale(yScale).orient('left').ticks(d3.time.seconds, 15).tickFormat(d3.time.format('%Mm %Ss'));
-          // .ticks(5);
-          lineFun = d3.svg.line().x(function (d) {
-            return xScale(d.km);
-          }).y(function (d) {
-            return yScale(d.time);
-          }).interpolate('linear');
-        }
-        // setChartParameters
-        // utility function for generating path colours
-        function getRandomColor() {
-          var letters = '0123456789ABCDEF'.split('');
-          var color = '#';
-          for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-          }
-          return color;
-        }
-        // getRandomColor
-        function drawAxis() {
-          setChartParameters();
-          svg.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0, 470)').call(xAxisGen);
-          svg.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(45,0)').call(yAxisGen);
-        }
-        // drawAxis
-        function drawLines(d) {
-          svg.append('svg:path').attr({
-            d: lineFun(d.markers),
-            'stroke': getRandomColor(),
-            'stroke-width': 2,
-            'fill': 'none',
-            'class': pathClass
-          });
-        }  // drawLines
+
+        } // mousemove
+
+*/
+             /*        // ----- On mouse hover tooltip ----- //
+        var yLines = svg.selectAll('.yAxis');
+        // yLines.on('mouseover', console.log('yes'));
+
+
+        var vertLines = svg.selectAll('.yAxis > g.tick');
+        console.log(vertLines);*/
       }  // link
     };  // returned object
   };
   // lChart
-  angular.module('charts').directive('lChart', [
+  angular.module('charts').directive('lineChart', [
     '$window',
     '$filter',
-    lChart
+    'mediator',
+    'createChart',
+    lineChart
   ]);
+}(window._));'use strict';
+(function () {
+  var createSingleLineChart = function ($window) {
+    return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
+      var d3 = $window.d3;
+      var run = getRunRes;
+      var margin = {
+          top: 20,
+          right: 20,
+          bottom: 20,
+          left: 20
+        };
+      var chartHeight = 368;
+      // same size as gmap on dashboard when you add 40px margin
+      var yAxisHeight = chartHeight - margin.top - margin.bottom;
+      var chartContainerHeight;
+      // ----- CHART WIDTH - RESPONSIVE ----- //
+      var chartContainerWidth = 0;
+      var getChartContainerWidth;
+      var setChartContainerWidth;
+      // this is from using bootstrap cols - they use 15px padding either side
+      var chartContainerPadding = 30;
+      var getChartWidth;
+      var resizeChart;
+      setChartContainerWidth = function setChartContainerWidth(wrapper) {
+        chartContainerWidth = parseInt(wrapper.offsetWidth);
+      };
+      getChartContainerWidth = function getChartContainerWidth() {
+        if (chartContainerWidth === 0) {
+          setChartContainerWidth(rawElem);
+        }
+        return chartContainerWidth;
+      };
+      getChartWidth = function getChartWidth() {
+        var containerWidth = getChartContainerWidth();
+        return containerWidth - margin.left - margin.right;
+      };
+      setChartContainerWidth(rawElem);
+      // ----- END CHART WIDTH - RESPONSIVE ----- //
+      // set x axis range
+      var x = d3.time.scale().range([
+          0,
+          getChartWidth()
+        ]);
+      // set y axis range
+      var y = d3.scale.linear().range([
+          yAxisHeight,
+          0
+        ]);
+      var xAxis = d3.svg.axis().scale(x).orient('bottom').ticks(d3.time.minute, 2).tickFormat(d3.time.format('%M'));
+      var yAxis = d3.svg.axis().scale(y).orient('left');
+      var line = d3.svg.line().x(function (d) {
+          return x(d.time);
+        }).y(function (d) {
+          return y(d.altitude);
+        });
+      chartContainerHeight = chartHeight + margin.top + margin.bottom;
+      // var svg = d3.select('body').append('svg')
+      var svg = d3.select(rawSvg).attr('width', getChartContainerWidth()).attr('height', chartContainerHeight);
+      var svgAxis = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      var startTime = new Date(run[0][0][3]);
+      var data = [];
+      setData(run);
+      function setData(coords) {
+        coords.forEach(function (coord, i) {
+          var set = i;
+          coord.map(function (d, i) {
+            var runData = {};
+            var currentTime = new Date(d[3]);
+            var newTime = currentTime - startTime;
+            runData.altitude = d[2];
+            runData.time = newTime;
+            data.push(runData);
+          });
+        });
+      }
+      // so there is an array whose values are objects.
+      // These objects are the x values and the y values
+      x.domain(d3.extent(data, function (d) {
+        return d.time;
+      }));
+      y.domain(d3.extent(data, function (d) {
+        return d.altitude;
+      }));
+      svgAxis.append('g').attr('class', 'xAxis axis').attr('transform', 'translate(0,' + yAxisHeight + ')').call(xAxis).append('text').attr('y', 20).attr('x', getChartWidth() / 2).attr('dy', '1em').style('text-anchor', 'end').text('Time (mins)');
+      svgAxis.append('g').attr('class', 'yAxis axis').call(yAxis).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text('Altitude');
+      svgAxis.append('path').datum(data).attr('class', 'line').attr('d', line).attr('stroke', 'blue').attr('stroke-width', 2).attr('fill', 'none');
+      resizeChart = function resizeChart() {
+        setChartContainerWidth(rawElem);
+        svg.attr('width', getChartContainerWidth());
+        // Update range of scale with new width
+        x.range([
+          0,
+          getChartWidth()
+        ]);
+        // xScale.range([50, chart.axis.x.width.get()]);
+        var xAxisGen = svg.select('.xAxis');
+        xAxisGen.call(xAxis);
+        var runPath = svg.select('.line');
+        runPath.attr({ 'd': line(data) });
+      };
+      return { resizeChart: resizeChart };
+    };  // returned function
+  };
+  angular.module('charts').service('createSingleLineChart', [
+    '$window',
+    createSingleLineChart
+  ]);
+}());'use strict';
+var createChart = function ($window) {
+  return function (runs, rawElem, rawSvg, chartHeight) {
+    var d3 = $window.d3;
+    var data = runs.runs;
+    var markerCount = d3.max(runs.markerSize);
+    // highest marker
+    var longestMarkerTime = runs.longestMarkerTime;
+    var shortestMarkerTime = runs.shortestMarkerTime;
+    var getLowestYAxis = function getLowestYAxis() {
+      var lowestYAxisPoint;
+      if (shortestMarkerTime !== 0) {
+        lowestYAxisPoint = shortestMarkerTime / 1.1;
+      } else {
+        lowestYAxisPoint = 0;
+      }
+      return lowestYAxisPoint;
+    };
+    var margin = 30;
+    // pads the chart inside of the svg
+    var lineColors = [
+        '#B65020',
+        '#000',
+        '#ec6b60',
+        '#563D7C',
+        '#F4FD1F',
+        '#EE5FF1',
+        '#F28483',
+        '#6AF0D4',
+        '#2C4F53',
+        '#3A4F56'
+      ];
+    var yAxisHeight = chartHeight - margin * 2;
+    var svg = d3.select(rawSvg[0]);
+    var runGroup = [];
+    // used to group run path and circles (tool tips)
+    var pathClass = 'path';
+    var xScale, yScale, xAxisGen, yAxisGen, lineFun;
+    // vars for paths generation
+    var drawPaths;
+    var resizeChart;
+    var init;
+    var chartContainerHeight;
+    // ----- CHART WIDTH - RESPONSIVE ----- //
+    var chartContainerWidth = 0;
+    var getChartContainerWidth;
+    var setChartContainerWidth;
+    // this is from using bootstrap cols - they use 15px padding either side
+    var chartContainerPadding = 30;
+    var chartXAxisWidth;
+    var getChartWidth;
+    setChartContainerWidth = function setChartContainerWidth(wrapper) {
+      chartContainerWidth = parseInt(wrapper.offsetWidth) - chartContainerPadding;
+    };
+    getChartContainerWidth = function getChartContainerWidth() {
+      if (chartContainerWidth === 0) {
+        setChartContainerWidth(rawElem);
+      }
+      return chartContainerWidth;
+    };
+    getChartWidth = function getChartWidth() {
+      var containerWidth = getChartContainerWidth();
+      return containerWidth - margin * 2;
+    };
+    setChartContainerWidth(rawElem);
+    // ----- END CHART WIDTH - RESPONSIVE ----- //
+    var chart = {
+        margin: 20,
+        axis: {
+          y: {
+            height: yAxisHeight,
+            lowest: getLowestYAxis()
+          },
+          x: {
+            width: { get: getChartWidth },
+            ticks: {
+              count: markerCount,
+              type: d3.time,
+              interval: {
+                measure: 'seconds',
+                lapse: 30
+              },
+              format: '%M:%S'
+            },
+            orient: 'bottom'
+          }
+        },
+        xScale: {
+          type: d3.scale.linear(),
+          domain: [
+            1,
+            markerCount
+          ],
+          range: [
+            50,
+            getChartWidth()
+          ]
+        },
+        yScale: {
+          type: d3.time.scale(),
+          domain: [
+            getLowestYAxis(),
+            longestMarkerTime
+          ],
+          range: [
+            yAxisHeight,
+            0
+          ]
+        },
+        scatterplot: { circles: { radius: 3 } }
+      };
+    init = function init() {
+      setChartParameters();
+      drawAxis();
+    }();
+    resizeChart = function resizeChart() {
+      setChartContainerWidth(rawElem);
+      svg.attr('width', getChartContainerWidth());
+      // Update range of scale with new width
+      xScale.range([
+        50,
+        chart.axis.x.width.get()
+      ]);
+      redrawAxis();
+      redrawPaths();
+    };
+    drawPaths = function drawPaths(data) {
+      data.forEach(function (d, index, array) {
+        // container for each path in line chart
+        runGroup[index] = svg.append('g');
+        runGroup[index].attr('class', 'runLine vis-hidden run-' + index);
+        // Draws the line
+        runGroup[index].append('svg:path').attr({
+          d: lineFun(d.markers),
+          'stroke': lineColors[index],
+          'stroke-width': 2,
+          'fill': 'none',
+          'class': pathClass + ' path' + index
+        });
+        // Add the scatterplot
+        runGroup[index].selectAll('dot').data(d.markers).enter().append('circle').attr('r', chart.scatterplot.circles.radius).attr('cx', function (d) {
+          return xScale(d.km);
+        }).attr('cy', function (d) {
+          return yScale(d.time);
+        });  // .on('mouseover', tip.show)
+             // .on('mouseout', tip.hide);
+      });  // data.forEach
+    }(data);
+    // drawPaths
+    // setting the values of the vars declared earlier
+    function setChartParameters() {
+      chartContainerHeight = chart.axis.y.height + margin * 2;
+      // ----- set chart container height and width ----- //
+      svg.attr('height', chartContainerHeight);
+      svg.attr('width', getChartContainerWidth());
+      xScale = chart.xScale.type.domain(chart.xScale.domain).range(chart.xScale.range);
+      yScale = chart.yScale.type.domain(chart.yScale.domain).range(chart.yScale.range);
+      xAxisGen = d3.svg.axis().scale(xScale).orient(chart.axis.x.orient).tickSize(-chart.axis.y.height, 0, 0).ticks(chart.axis.x.ticks.count);
+      yAxisGen = d3.svg.axis().scale(yScale).orient('left').tickSize(-chart.axis.x.width.get(), 0, 0).ticks(chart.axis.x.ticks.type[chart.axis.x.ticks.interval.measure], chart.axis.x.ticks.interval.lapse).tickFormat(chart.axis.x.ticks.type.format(chart.axis.x.ticks.format));
+      lineFun = d3.svg.line().x(function (d) {
+        return xScale(d.km);
+      }).y(function (d) {
+        return yScale(d.time);
+      }).interpolate('linear');
+    }
+    // setChartParameters
+    function drawAxis() {
+      svg.append('svg:g').attr('class', 'xAxis axis grid').attr('transform', 'translate(0,' + chart.axis.y.height + ')').call(xAxisGen).append('text').attr('class', 'xAxis__label').attr('y', 20).attr('x', getChartWidth() / 2).attr('dy', '1em').style('text-anchor', 'end').text('Distance (km)');
+      svg.append('svg:g').attr('class', 'yAxis axis grid').attr('transform', 'translate(50, 0)').call(yAxisGen).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text('Time');
+    }
+    // drawAxis
+    // ----- Redraw axis on window resize ----- //
+    function redrawAxis() {
+      var x = svg.select('.xAxis');
+      x.call(xAxisGen).select('.xAxis__label').attr('y', 20).attr('x', getChartWidth() / 2).attr('dy', '1em').style('text-anchor', 'end').text('Distance (km)');
+      yAxisGen = d3.svg.axis().scale(yScale).orient('left').tickSize(-chart.axis.x.width.get(), 0, 0).ticks(d3.time.seconds, 30).tickFormat(d3.time.format('%Mm %Ss'));
+      var y = svg.select('.yAxis');
+      y.call(yAxisGen);
+    }
+    // redrawAxis
+    // ----- redraw the paths on window resize ----- //
+    function redrawPaths() {
+      data.forEach(function (d, index, array) {
+        var runPath = svg.select('path.path' + index);
+        runPath.attr({ 'd': lineFun(d.markers) });
+        // Add the scatterplot
+        var runGroup = svg.select('g.run-' + index);
+        var circle = runGroup.selectAll('circle');
+        circle.attr('r', chart.scatterplot.circles.radius).attr('cx', function (d) {
+          return xScale(d.km);
+        }).attr('cy', function (d) {
+          return yScale(d.time);
+        });
+      });
+    }
+    // redrawPaths
+    return {
+      svg: svg,
+      resizeChart: resizeChart
+    };
+  };
+};
+angular.module('charts').service('createChart', [
+  '$window',
+  createChart
+]);'use strict';
+(function () {
+  var toggleData = function () {
+    var allRunsSelect = false;
+    return function toggleData(event) {
+      // ----- toggles chart lines and background colours in dataselector ----- //
+      var e = event;
+      var el = angular.element(e.target.parentNode);
+      var runNum = el.attr('class').split(' ')[0];
+      if (runNum === 'run-all') {
+        toggleAllRuns();
+      } else {
+        el.toggleClass('inactive');
+        var runClass = 'g.' + runNum;
+        var chartRun = document.querySelector(runClass);
+        toggleVis(chartRun);
+      }
+      // toggle visibility of a single chart line
+      function toggleVis(chartRun) {
+        var el = angular.element(chartRun);
+        el.toggleClass('vis-hidden');
+      }
+      // toggle visibility of all chart lines.
+      // Also toggle dataselector background colours for all runs
+      function toggleAllRuns() {
+        var allRunsNodeList = document.querySelectorAll('.runLine');
+        var toggleAClass;
+        allRunsSelect = !allRunsSelect;
+        if (allRunsSelect === false) {
+          toggleAClass = function (element, classNm) {
+            element.addClass(classNm);
+          };
+        } else {
+          toggleAClass = function (element, classNm) {
+            element.removeClass(classNm);
+          };
+        }
+        toggleGraphRuns();
+        toggleAllSelectorItems();
+        function toggleGraphRuns() {
+          var allRunsArray = function () {
+              var result = [];
+              for (var i = 0; i < allRunsNodeList.length; i++) {
+                result[i] = allRunsNodeList[i];
+              }
+              return result;
+            }();
+          allRunsArray.forEach(function (run, index, array) {
+            var aRun = angular.element(run);
+            toggleAClass(aRun, 'vis-hidden');
+          });
+        }
+        // toggleGraphRuns
+        function toggleAllSelectorItems() {
+          var selectorListItems = document.querySelectorAll('.dataselector-list li');
+          var allSelectorsArray = function () {
+              var result = [];
+              for (var i = 0; i < selectorListItems.length; i++) {
+                result[i] = selectorListItems[i];
+              }
+              return result;
+            }();
+          allSelectorsArray.forEach(function (listItem, index, array) {
+            var aListItem = angular.element(listItem);
+            toggleAClass(aListItem, 'inactive');
+          });
+        }  // toggleAllSelectorItems
+      }  // toggleAllRuns
+    };  // return
+  };
+  // var toggleData
+  angular.module('charts').factory('toggleData', [toggleData]);
 }());'use strict';
 // Setting up route
 angular.module('core').config([
@@ -404,7 +929,7 @@ angular.module('core').service('Menus', [function () {
     this.defaultRoles = ['*'];
     // Define the menus object
     this.menus = {};
-    // A private function for rendering decision
+    // A private function for rendering decision 
     var shouldRender = function (user) {
       if (user) {
         if (!!~this.roles.indexOf('*')) {
@@ -535,167 +1060,831 @@ angular.module('core').service('Menus', [function () {
     //Adding the topbar menu
     this.addMenu('topbar');
   }]);'use strict';
+var mainContent = function (mediator, setHeightAftrTopNav) {
+  return {
+    restrict: 'C',
+    link: function (scope, elem, attr) {
+      // ----- set the height for scrolling ----- //
+      setHeightAftrTopNav(elem[0]);
+      // ----- add event listener on window resize ----- //
+      // adding to scope for testability
+      scope.resetHeight = function resetHeight() {
+        setHeightAftrTopNav(elem[0]);
+      };
+      var resizeEvent = mediator.subscribe('windowResize', scope.resetHeight, this);
+      // ----- remove event listener when scope is destroyed ----- //
+      scope.$on('$destroy', function () {
+        mediator.unsubscribe(resizeEvent);
+      });
+    }
+  };
+};
+angular.module('customCore').directive('mainContent', [
+  'mediator',
+  'setHeightAftrTopNav',
+  mainContent
+]);'use strict';
+// Used in navigation, main content, charts dataselector to give
+// height to vertical scrolling items
+(function () {
+  var setHeightAftrTopNav = function setHeightAftrTopNav() {
+    return function (elem) {
+      var htmlEl;
+      var topNav;
+      setElHeight(elem);
+      function setElHeight(elem) {
+        htmlEl = document.querySelector('html');
+        topNav = document.getElementById('top-nav-js') || '';
+        var htmlHeight = htmlEl.clientHeight;
+        var topNavHeight = topNav === '' ? 50 : topNav.clientHeight;
+        // default 50px
+        var elNewHeight = htmlHeight - topNavHeight;
+        elem.style.height = elNewHeight + 'px';
+      }  //setElHeight
+    };  //setHeight
+  };
+  angular.module('customCore').factory('setHeightAftrTopNav', [setHeightAftrTopNav]);
+}());/*(function(lodash) {
+  'use strict';
+
+  var _ = lodash;
+
+  var windowResize = function(){
+
+    // ----- Mediator ----- //
+
+    var subscribers = [];
+
+    // guid generator
+    function guidGenerator() {
+      var S4 = function() {
+         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+      };
+
+      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    }
+
+    // on resize fire callback fns
+    var subscribe = function(fn) {
+      var Subscriber = function(fn) {
+        this.guid = guidGenerator();
+        this.fn = fn;
+      };
+      var sub = new Subscriber(fn);
+      subscribers.push(sub);
+      // subscribers.push({context : this , callback : fn, guid : guid});
+      return sub.guid;
+    };
+
+    var unsubscribe = function(guid) {
+      var index = _.findIndex(subscribers, guid);
+      subscribers.splice(index, 1);
+      return subscribers;
+      // return subscribers.indexOf(sub[guid]);
+    };
+
+    var getSubscribers = function() {
+      return subscribers;
+    };
+
+
+    var actions = {
+      subscribe : subscribe,
+      unsubscribe : unsubscribe,
+      getSubscribers : getSubscribers
+    };
+
+    return actions;
+
+  };
+
+  // can use set and get / remove methods here with add and remove listeners
+
+
+  angular.module('customCore').service('windowResize', [windowResize]);
+
+}(window._));*/
+'use strict';
+(function () {
+  var config = function ($stateProvider) {
+    $stateProvider.state('dashboard', {
+      url: '/dashboard',
+      resolve: {
+        getSummariesOneRes: [
+          'getSummaries',
+          function (getSummaries) {
+            return getSummaries.get();
+          }
+        ],
+        getRunRes: [
+          'getRuns',
+          function (getRuns) {
+            return getRuns.get();
+          }
+        ],
+        getSummariesFormattedOneRes: [
+          'getSummaries',
+          'formatSummaries',
+          function (getSummaries, formatSummaries) {
+            var queryOptions = { limit: 1 };
+            // format the summs for the table directive
+            // - directive needs to know number of markers etc
+            var formattedSumms = getSummaries.get(queryOptions).then(function (d) {
+                return formatSummaries(d);
+              });
+            return formattedSumms;
+          }
+        ]
+      },
+      views: {
+        '': { templateUrl: 'modules/dashboard/views/dashboard.client.view.html' },
+        'chartLine@dashboard': {
+          templateUrl: 'modules/dashboard/views/dashboard-chart-line.client.view.html',
+          controller: 'DashboardChartlineCtrl'
+        },
+        'summary@dashboard': {
+          templateUrl: 'modules/runs/views/run-table.client.view.html',
+          controller: 'DashboardSummCtrl'
+        },
+        'map@dashboard': {
+          templateUrl: 'modules/gmap/views/run-map.client.view.html',
+          controller: 'DashboardMapCtrl'
+        }
+      }
+    });
+  };
+  // config
+  angular.module('dashboard').config([
+    '$stateProvider',
+    config
+  ]);
+}());'use strict';
+(function () {
+  function DashboardChartlineCtrl($scope, getRunRes) {
+    $scope.run = getRunRes[0].features[0].geometry.coordinates;
+  }
+  angular.module('dashboard').controller('DashboardChartlineCtrl', [
+    '$scope',
+    'getRunRes',
+    DashboardChartlineCtrl
+  ]);
+}());'use strict';
+(function () {
+  function DashboardMapCtrl($scope, getRunRes, getSummariesOneRes, createGmap) {
+    var run = getRunRes;
+    var summaries = getSummariesOneRes;
+    // console.log(run[0].features[0].geometry.coordinates);
+    // console.log(summaries[0].markerItems);
+    $scope.gMap = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);  // console.log($scope.gmap);
+  }
+  angular.module('dashboard').controller('DashboardMapCtrl', [
+    '$scope',
+    'getRunRes',
+    'getSummariesOneRes',
+    'createGmap',
+    DashboardMapCtrl
+  ]);
+}());'use strict';
+(function () {
+  function DashboardSummCtrl($scope, getSummariesFormattedOneRes) {
+    $scope.tableSortable = false;
+    $scope.runs = getSummariesFormattedOneRes;
+  }
+  angular.module('dashboard').controller('DashboardSummCtrl', [
+    '$scope',
+    'getSummariesFormattedOneRes',
+    DashboardSummCtrl
+  ]);
+}());'use strict';
+(function () {
+  var addListItem = function () {
+    return function addListItem(options) {
+      var li = document.createElement('li');
+      var anchor;
+      var listItem = {
+          anchorElement: null,
+          textContent: null,
+          className: null,
+          parentListElement: null,
+          attributes: null
+        };
+      if (options) {
+        listItem.anchorElement = options.anchorElement ? options.anchorElement : null;
+        listItem.textContent = options.textContent ? options.textContent : null;
+        listItem.classNm = options.classNm ? options.classNm : null;
+        listItem.parentListElement = options.parentListElement ? options.parentListElement : null;
+        listItem.attributes = options.attributes ? options.attributes : null;
+      }
+      if (listItem.anchorElement) {
+        anchor = document.createElement('a');
+        listItem.anchorElement.textContent ? anchor.textContent = listItem.anchorElement.textContent : '';
+        li.appendChild(anchor);
+      }
+      if (listItem.classNm) {
+        li.className = listItem.classNm;
+      }
+      if (listItem.attributes) {
+        //test if array
+        listItem.attributes.forEach(function (attr) {
+          li.setAttribute(attr.name, attr.value);
+        });
+      }
+      listItem.parentListElement.appendChild(li);
+    };  // return
+  };
+  // var addListItem
+  angular.module('data-selector').factory('addListItem', [addListItem]);
+}());'use strict';
+var setMapMarkers = function setMapMarkers() {
+  return function (runStart, runEnd, summaryMarkerItems) {
+    var markers = [];
+    // the revealed markers
+    var mapMarkerPrototype = {
+        id: -1,
+        coords: null,
+        options: {
+          labelContent: '',
+          draggable: false
+        },
+        icon: '/styles/img/maps/1x1pxtransparent.png'
+      };
+    // factory pattern for creating map marker items
+    var setMarkerItem = function markerItem(options) {
+      return angular.extend(Object.create(mapMarkerPrototype), options);
+    };
+    // Uses the factory and pushes produced marker items to the markers array
+    var createMarkerItem = function (markers, setMarkerItem) {
+        var markerCounter = 0;
+        return function (options) {
+          var aMarker;
+          options.id = markerCounter;
+          aMarker = setMarkerItem(options);
+          markers.push(aMarker);
+          markerCounter = +1;
+        };
+      }(markers, setMarkerItem);
+    // sets all map markers
+    setMarkers(runStart, runEnd, summaryMarkerItems, createMarkerItem);
+    return markers;
+    // requires createMarkerItem()
+    function setStartnEndMarkers(runStart, runEnd, createMarkerItem) {
+      var starter = {
+          coords: runStart,
+          options: { labelContent: 'START' }
+        };
+      var finish = {
+          coords: runEnd,
+          options: { labelContent: 'FINISH' }
+        };
+      createMarkerItem(starter);
+      createMarkerItem(finish);
+    }
+    // ----- Creating map markers using the summaries ----- //
+    // params: markerItems An array of items to be made into markers
+    function createMarkers(summaryMarkerItems) {
+      summaryMarkerItems.forEach(function (markerItem) {
+        var marker = {};
+        marker.coords = {
+          latitude: markerItem.coords.latitude,
+          longitude: markerItem.coords.longitude
+        };
+        marker.options = { labelContent: markerItem.km + '<br />km' };
+        createMarkerItem(marker);
+      });
+    }
+    // requires setStartnEndMarkers(), createMarkers()
+    function setMarkers(runStart, runEnd, summaryMarkers, createMarkerItem) {
+      setStartnEndMarkers(runStart, runEnd, createMarkerItem);
+      createMarkers(summaryMarkers);
+    }
+  };  // returned function
+};
+// setMapMarkers
+angular.module('gmap').factory('setMapMarkers', [setMapMarkers]);'use strict';
+(function (lodash) {
+  var _ = lodash;
+  var setMapPolylines = function () {
+    var polylinePrototype;
+    var paths = [];
+    // an array of longitude and latitude objects
+    var numPaths;
+    var polylines = [];
+    // prototype
+    polylinePrototype = {
+      id: -1,
+      path: [],
+      stroke: {
+        color: '#FF0000',
+        weight: 3
+      },
+      visible: true,
+      geodesic: true,
+      editable: false,
+      draggable: false,
+      static: true
+    };
+    // requires paths array - check var declaration for description
+    // params coords - an array of coord objects
+    function createPaths(coords) {
+      coords.forEach(function (val) {
+        if (_.isArray(val)) {
+          var newPath = [];
+          val.forEach(function (val) {
+            var latLong = {};
+            latLong.latitude = val[1];
+            latLong.longitude = val[0];
+            newPath.push(latLong);
+          });
+          paths.push(newPath);
+        }
+      });
+      numPaths = paths.length;
+    }
+    function setPolyline(options) {
+      return angular.extend(Object.create(polylinePrototype), options);
+    }
+    // requires setPolyline and paths
+    function createPolylines() {
+      for (var i = 0; i < numPaths; i++) {
+        var newPolyLine = {};
+        newPolyLine.id = i + 1;
+        // start at 1
+        newPolyLine.path = paths[i];
+        var polyline = setPolyline(newPolyLine);
+        polylines.push(polyline);
+      }
+    }
+    return function setMapPolylines(coords) {
+      paths.length = 0;
+      // resetting
+      polylines.length = 0;
+      createPaths(coords);
+      createPolylines();
+      return {
+        paths: paths,
+        polylines: polylines
+      };
+    };
+  };
+  angular.module('gmap').factory('setMapPolylines', [setMapPolylines]);
+}(window._));'use strict';
+// activityData is used for markers start and end and also for the polylines
+// summary is used for markers
+var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
+  return function (activityData, summaryMarkerItems) {
+    var polylines;
+    var markers;
+    var paths = [];
+    // coords object used by both polylines and markers - for start, end
+    var activityStartCoords;
+    // coords used for markers
+    var activityEndCoords;
+    // coords used for markers
+    var center;
+    var zoom = 13;
+    var getpolylines;
+    getpolylines = setMapPolylines(activityData);
+    polylines = getpolylines.polylines;
+    paths = getpolylines.paths;
+    setStartnEnd(paths.length);
+    // sets activityStartCoords and activityEndCoords
+    function setStartnEnd(numPaths) {
+      var last;
+      if (paths[0][0] !== 'undefined') {
+        activityStartCoords = paths[0][0];
+        if (numPaths !== 'undefined') {
+          last = paths[numPaths - 1].length - 1;
+          activityEndCoords = paths[numPaths - 1][last];
+        }
+      }
+    }
+    markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
+    center = {
+      latitude: paths[0][0].latitude,
+      longitude: paths[0][0].longitude
+    };
+    var gmap = {
+        polylines: polylines,
+        markers: markers,
+        center: center,
+        zoom: zoom
+      };
+    return gmap;
+  };
+};
+angular.module('gmap').service('createGmap', [
+  'setMapPolylines',
+  'setMapMarkers',
+  createGmap
+]);(function (lodash) {
+  'use strict';
+  var _ = lodash;
+  var mediator = function (windowResize) {
+    // ----- Topics ----- //
+    var topics = {};
+    var topicPrototype = { subscribers: [] };
+    var topicFactory = function topicFactory(newTopic) {
+      return angular.extend(topicPrototype, newTopic);
+    };
+    var addTopic = function addTopic(name, options) {
+      if (!(topics[name] instanceof Object)) {
+        var aTopic = topicFactory(options);
+        topics[name] = aTopic;
+      }
+    };
+    // Initiate our topics from the passed in services
+    // note just move the slice number up if need other services
+    // which are not topics
+    var eventTopics = [].slice.call(arguments, 0);
+    (function () {
+      eventTopics.forEach(function (topic) {
+        addTopic(topic.name, topic);
+      });
+    }());
+    // ----- END Topics ----- //
+    // test
+    // addTopic('windowResize', windowResize);
+    // ----- Add / remove subs to topics ----- //
+    var addSubToTopic = function addSubToTopic(topic, sub) {
+      var activeListener;
+      if (topics[topic] instanceof Object) {
+        topics[topic].subscribers.push(sub);
+        var addListener = function (fn, context) {
+          var callback = function () {
+            fn.call(context);
+          };
+          var listener = topics[topic].addListener(callback);
+          return listener;
+        };
+        activeListener = addListener(sub.fn, sub.context);
+      } else {
+        console.log('NO TOPIC OF THAT DESCRIPTION');
+      }
+      return activeListener;
+    };
+    var rmSubFromTopic = function rmSubFromTopic(atopic, guid) {
+      var topic = topics[atopic];
+      var ind = _.findIndex(topic.subscribers, { 'guid': guid });
+      topic.subscribers.splice(ind, 1);  // remove sub
+    };
+    // guid generator
+    function guidGenerator() {
+      var S4 = function () {
+        return ((1 + Math.random()) * 65536 | 0).toString(16).substring(1);
+      };
+      return S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4();
+    }
+    var subscribe = function (topic, fn, context) {
+      var Subscriber = function (topic, fn, context) {
+        this.guid = guidGenerator();
+        this.topic = topic;
+        this.fn = fn;
+        this.context = context;
+      };
+      var sub = new Subscriber(topic, fn, context);
+      sub.activeListener = addSubToTopic(sub.topic, sub);
+      return sub;
+    };
+    var getSubscribers = function getSubscribers(topic) {
+      var subs = [];
+      if (topics[topic] instanceof Object) {
+        subs = topics[topic].subscribers;
+      }
+      return subs;
+    };
+    var unsubscribe = function (sub) {
+      if (topics[sub.topic] instanceof Object) {
+        var topic = topics[sub.topic];
+        topic.removeListener(sub.activeListener);
+        rmSubFromTopic(sub.topic, sub.guid);
+      } else {
+        console.log('event / topic does not exist');
+      }
+    };
+    var actions = {
+        subscribe: subscribe,
+        unsubscribe: unsubscribe,
+        getSubscribers: getSubscribers
+      };
+    return actions;
+  };
+  angular.module('mediator').service('mediator', [
+    'windowResize',
+    mediator
+  ]);
+}(window._));// Window resize
+(function (lodash) {
+  'use strict';
+  var _ = lodash;
+  var windowResize = function windowResize() {
+    var registerTopic = {
+        name: 'windowResize',
+        addListener: function (callback) {
+          var action = function (callback) {
+              return _.debounce(callback, 150);
+            }(callback);
+          window.addEventListener('resize', action);
+          return action;
+        },
+        removeListener: function (action) {
+          window.removeEventListener('resize', action);
+        }
+      };
+    // registerTopic
+    return registerTopic;  // returns a reference to the active listener - to remove later
+  };
+  // windowResize
+  angular.module('mediator').service('windowResize', [windowResize]);
+}(window._));'use strict';
 // Setting up route
 angular.module('runs').config([
   '$stateProvider',
   function ($stateProvider) {
     // Runs state routing
-    $stateProvider.state('listRuns', {
-      url: '/runs',
+    $stateProvider.state('tableRuns', {
+      url: '/runs/table',
       resolve: {
-        runsSummaries: [
-          'runsService',
-          function (runsService) {
-            return runsService.getRuns().$promise;
+        getSummariesTenRes: [
+          'getSummaries',
+          'formatSummaries',
+          function (getSummaries, formatSummaries) {
+            var queryOptions = { limit: 10 };
+            // format the summs for the table directive
+            // - directive needs to know number of markers etc
+            var formattedSumms = getSummaries.get(queryOptions).then(function (d) {
+                return formatSummaries(d);
+              });
+            return formattedSumms;
           }
         ]
       },
-      templateUrl: 'modules/runs/views/list-runs.client.view.html',
-      controller: 'MyRunsCtrl as myRuns'
-    }).state('run', {
-      url: '/run',
+      templateUrl: 'modules/runs/views/run-table.client.view.html',
+      controller: 'TableRunsCtrl'
+    }).state('mapRuns', {
+      url: '/runs/map',
+      resolve: {
+        getRunRes: [
+          'getRuns',
+          function (getRuns) {
+            return getRuns.get();
+          }
+        ],
+        getSummariesFiveRes: [
+          'getSummaries',
+          function (getSummaries) {
+            var queryOptions = { limit: 5 };
+            return getSummaries.get(queryOptions);
+          }
+        ]
+      },
       views: {
         '': { templateUrl: 'modules/runs/views/run.client.view.html' },
-        'columnOne@run': { templateUrl: 'modules/runs/views/run-single.client.view.html' },
-        'columnTwo@run': {
-          templateUrl: 'modules/runs/views/run-map.client.view.html',
-          controller: 'MyMapsCtrl as mapsCtrl'
+        'columnOne@mapRuns': {
+          templateUrl: 'modules/runs/views/run-map-summary.client.view.html',
+          controller: 'MapSummaryCtrl'
+        },
+        'columnTwo@mapRuns': {
+          templateUrl: 'modules/gmap/views/run-map.client.view.html',
+          controller: 'MyMapsCtrl'
         }
       }
     });
   }
 ]);'use strict';
-(function (lodash) {
-  var _ = lodash;
-  // MyRunsCtrl controller constructor function
-  function MyRunCtrl($state) {
-    var that = this;
-    that.name = 'hello world';
-    $state.transitionTo('run.map');
+(function () {
+  function MapSummaryCtrl($scope, getSummariesFiveRes, dateFilter) {
+    // adding for map dataselector directive
+    $scope.summs = getSummariesFiveRes;
+    var latestFive = getSummariesFiveRes;
+    $scope.summaries = [];
+    $scope.setLatestSummaries = setLatestSummaries;
+    $scope.setLatestSummaries(latestFive);
+    function setLatestSummaries(latestSumms) {
+      latestSumms.forEach(function (summary, index) {
+        var summ = {
+            listOrder: index,
+            activityId: summary.runId,
+            date: dateFilter(summary.startTime, 'MMM d, y h:mm a'),
+            totalTime: dateFilter(summary.totalTime, 'H:m:s'),
+            totalDistanceKm: summary.totalDistanceKm.toFixed(2)
+          };
+        $scope.summaries.push(summ);
+      });
+    }
   }
-  angular.module('runs').controller('MyRunCtrl', MyRunCtrl);
-}(window._));'use strict';
-(function (lodash, google) {
-  var _ = lodash;
+  angular.module('runs').controller('MapSummaryCtrl', [
+    '$scope',
+    'getSummariesFiveRes',
+    'dateFilter',
+    MapSummaryCtrl
+  ]);
+}());'use strict';
+(function (google) {
   if (google === 'undefined') {
     return;
   }
-  // MyRunsCtrl controller constructor function
-  function MyMapsCtrl() {
-    var that = this;
-    that.name = 'hello world';
-    that.map = {
-      center: {
-        latitude: 51.459545,
-        longitude: -0.220431
-      },
-      zoom: 14
-    };
-    that.marker = {
-      id: 0,
-      coords: {
-        latitude: 51.459545,
-        longitude: -0.220431
-      },
-      options: { draggable: true },
-      label: 'START'
-    };
-    that.polylines = {
-      id: 1,
-      path: [
-        {
-          latitude: 51.459545,
-          longitude: -0.220431
-        },
-        {
-          latitude: 51.458987,
-          longitude: -0.232163
-        },
-        {
-          latitude: 51.458532,
-          longitude: -0.23477
-        },
-        {
-          latitude: 51.451967,
-          longitude: -0.232989
-        }
-      ],
-      stroke: {
-        color: '#ff0000',
-        weight: 3
-      },
-      visible: true,
-      editable: false,
-      draggable: false
-    };
-    // We want the distance of the polyline
-    // Returns an array of LtLng objects for the google maps computeLength()
-    var paths = that.polylines.path.map(function (currentVal, index, array) {
-        return new google.maps.LatLng(currentVal.latitude, currentVal.longitude);
-      });
-    that.distance = function () {
-      var meterResult = google.maps.geometry.spherical.computeLength(paths);
-      var kilometerResult = metersToKilometers(meterResult);
-      return Math.round(100 * kilometerResult) / 100;  // rounding to 2 decimal places
-    }();
-    function metersToKilometers(meters) {
-      return meters / 1000;
-    }
-  }
-  angular.module('runs').controller('MyMapsCtrl', MyMapsCtrl);
-}(window._, window.google));'use strict';
-(function (lodash) {
-  var _ = lodash;
-  // MyRunsCtrl controller constructor function
-  function MyRunsCtrl(runsSummaries) {
-    var that = this;
-    var sortedAsc = false;
-    // used as a signal for sortResults()
-    var sortByDateAsc = false;
-    // used as a signal for sortByDate()
-    that.runs = runsSummaries;
-    that.sortedRuns = null;  /*    // sort results by date
-    that.sortByDate = function sortByDate(runs) {
-      if (sortByDateAsc === false) {
-        sortByDateAsc = true;
-        that.sortedRuns = _.sortBy(runs, 'date');
+  // google maps is not found
+  // Maps controller
+  // Used to display google map
+  function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
+    var run = getRunRes;
+    var mapData = [];
+    $scope.gMap = null;
+    var summaries = getSummariesFiveRes;
+    // ----- Create new map ----- //
+    // function createGmap(activityData, summaryMarkerItems)
+    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
+    $scope.gMap = mapData[0];
+    var recreateGmap = function recreateGmap(event, info) {
+      if (typeof mapData[info.listOrder] === 'undefined') {
+        // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
+        getRunById.get(info.activityId).then(function (newData) {
+          mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
+          $scope.gMap = mapData[info.listOrder];
+        });
       } else {
-        sortByDateAsc = false;
-        that.sortedRuns = _.sortBy(runs, 'date').reverse();
+        $scope.gMap = mapData[info.listOrder];
+        $scope.$digest();
       }
     };
-
-    // sort results by time
-    that.sortByTime = function sortByTime() {
-      if (sortedAsc === false) {
-        sortedAsc = true;
-        that.sortedRuns = _.sortBy(that.Allruns, 'time');
-      } else {
-        sortedAsc = false;
-        that.sortedRuns = _.sortBy(that.Allruns, 'time').reverse();
-      }
-
-    };*/
+    // on a broadcasted event from the summary directive
+    // we change the map to the selected activity
+    $scope.$on('summarySelected', recreateGmap);
   }
-  angular.module('runs').controller('MyRunsCtrl', [
-    'runsSummaries',
-    MyRunsCtrl
+  angular.module('runs').controller('MyMapsCtrl', [
+    '$scope',
+    'getRunRes',
+    'getRunById',
+    'getSummariesFiveRes',
+    'createGmap',
+    MyMapsCtrl
   ]);
-}(window._));'use strict';
-(function (lodash) {
+}(window.google));'use strict';
+(function () {
+  // table of runs
+  function TableRunsCtrl(getSummariesTenRes, $scope) {
+    $scope.runs = getSummariesTenRes;
+  }
+  angular.module('runs').controller('TableRunsCtrl', [
+    'getSummariesTenRes',
+    '$scope',
+    TableRunsCtrl
+  ]);
+}());'use strict';
+(function () {
+  var mapDataSelector = function mapDataSelector($window, $rootScope, dateFilter, addListItem, setHeightAftrTopNav, mediator) {
+    return {
+      restrict: 'AE',
+      replace: 'true',
+      template: '<div class="dataselector hidden-lg"></div>',
+      link: function (scope, elem, attr) {
+        var data = scope.summs;
+        var prevTargetEl;
+        // The list of runs from which you can select to show on chart
+        var dataSelectorList = document.createElement('ul');
+        // add Select All item
+        var listItemSelectRun = {
+            parentListElement: dataSelectorList,
+            anchorElement: { textContent: 'Select a run' },
+            classNm: 'select-run'
+          };
+        addListItem(listItemSelectRun);
+        // Add all of the data selector list items to chartDataSelectorList
+        data.forEach(function (d, index, array) {
+          var inactiveClass = index === 0 ? '' : 'inactive';
+          var selectorListItem = {
+              parentListElement: dataSelectorList,
+              anchorElement: { textContent: dateFilter(d.startTime, 'medium') },
+              classNm: inactiveClass,
+              attributes: [
+                {
+                  name: 'data-activity-id',
+                  value: d.runId
+                },
+                {
+                  name: 'data-list-order',
+                  value: index
+                }
+              ]
+            };
+          addListItem(selectorListItem);
+        });
+        elem.append(dataSelectorList);
+        elem.on('click', function (e) {
+          var targetEl = e.target;
+          var activityId = '';
+          var listOrder = 0;
+          toggleVals(targetEl);
+          function toggleVals(targetEl) {
+            if (targetEl.nodeName.toLowerCase() !== 'li') {
+              toggleVals(targetEl.parentNode);
+            } else {
+              activityId = targetEl.getAttribute('data-activity-id') || '';
+              listOrder = targetEl.getAttribute('data-list-order');
+              targetEl.classList.toggle('inactive');
+              if (!prevTargetEl) {
+                // set initial prevTargetEl to first run in list
+                prevTargetEl = elem.find('li')[1];
+              }
+              prevTargetEl.classList.toggle('inactive');
+              prevTargetEl = targetEl;
+            }
+          }
+          $rootScope.$broadcast('summarySelected', {
+            'activityId': activityId,
+            'listOrder': listOrder
+          });
+        });
+        // ----- set the height for scrolling ----- //
+        setHeightAftrTopNav(elem[0]);
+        // ----- add event listener on window resize ----- //
+        var resetHeight = function resetHeight() {
+          var element = elem[0];
+          setHeightAftrTopNav(element);
+        };
+        var resizeEvent = mediator.subscribe('windowResize', resetHeight, this);
+        // ----- remove event listener when scope is destroyed ----- //
+        scope.$on('$destroy', function () {
+          mediator.unsubscribe(resizeEvent);
+        });
+      }  // link
+    };  // returned object
+  };
+  // mapDataSelector
+  angular.module('runs').directive('mapDataSelector', [
+    '$window',
+    '$rootScope',
+    'dateFilter',
+    'addListItem',
+    'setHeightAftrTopNav',
+    'mediator',
+    mapDataSelector
+  ]);
+}());'use strict';
+var mapSummaries = function ($rootScope) {
+  return {
+    restrict: 'A',
+    link: function postLink(scope, el, attr) {
+      var prevTargetEl;
+      el.on('click', function (e) {
+        var divEl = e.target;
+        var activityId = '';
+        var listOrder = 0;
+        getAttr();
+        function getAttr() {
+          if (divEl.nodeName !== 'DIV') {
+            divEl = e.target.parentNode;
+            getAttr();
+          } else {
+            activityId = divEl.getAttribute('data-activity-id') || '';
+            listOrder = divEl.getAttribute('data-list-order');
+            if (!prevTargetEl) {
+              var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
+              prevTargetEl = firstSumm;
+            }
+            prevTargetEl.classList.remove('active');
+            prevTargetEl = divEl;
+            divEl.classList.add('active');
+          }
+        }
+        // getAttr
+        // This will trigger a change of the map to the selected run
+        $rootScope.$broadcast('summarySelected', {
+          'activityId': activityId,
+          'listOrder': listOrder
+        });
+      });
+    }
+  };  // returned object
+};
+// mapSummaries
+angular.module('runs').directive('mapSummaries', [
+  '$rootScope',
+  mapSummaries
+]);'use strict';
+(function (lodash, sorttable) {
   var _ = lodash;
   var runsSummaryTable = function runsSummaryTable($filter) {
     return {
-      restrict: 'E',
+      restrict: 'AE',
       link: function (scope, element, attrs) {
-        var runs = scope.myRuns.runs;
+        var runs = scope.runs;
+        var sortable = scope.tableSortable !== undefined ? scope.tableSortable : true;
+        // Makes sure the runs are sorted by date initially
+        var runsSorted = _.sortBy(runs.runs, 'startTime').reverse();
+        runs.runs = runsSorted;
         // creates placeholder container
         var docFragment = document.createDocumentFragment();
-        var tableOfRuns = createTableOfRuns(runs);
+        var tableOfRuns = createTableOfRuns(runs, sortable);
         // layout our table.
-        function createTableOfRuns(runs) {
+        function createTableOfRuns(runs, sortable) {
           var table = document.createElement('table');
-          table.className = 'table table-responsive table-hover';
+          // note sortable class added for sorttable.js
+          if (sortable) {
+            table.className = 'table table-responsive sortable';
+          } else {
+            table.className = 'table table-responsive';
+          }
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;
@@ -704,8 +1893,8 @@ angular.module('runs').config([
           var headings = {
               date: 'Date',
               markers: 0,
-              totalDistance: 'Total Distance',
-              totalTime: 'Total Time'
+              totalDistance: 'Distance',
+              totalTime: 'Time'
             };
           // amends headings.markers to get highest number of markers
           getMarkerSize(runs, headings);
@@ -719,15 +1908,7 @@ angular.module('runs').config([
           table.appendChild(tableData);
           return table;
           function getMarkerSize(runs, headings) {
-            // used for marker heading - to work out total no. of markers
-            // default = 0 incase it is not resolved (otherwise it runs to infinity)
-            var markers = [];
-            // create the headings
-            runs.forEach(function (run) {
-              // push to markers so we can get the max marker value
-              markers.push(run.markerItems.length);
-            });
-            var markerSize = _.max(markers);
+            var markerSize = _.max(runs.markerSize);
             headings.markers = markerSize;
           }
           function createTableHeadings(headings, headingRow) {
@@ -755,20 +1936,22 @@ angular.module('runs').config([
           function createTableData(runs, markersSize, $filter) {
             var markerSize = markersSize;
             var container = document.createElement('tbody');
-            // var container = document.createDocumentFragment();
-            runs.forEach(function (run) {
+            runs.runs.forEach(function (run) {
               var tr = document.createElement('tr');
               var tdStartTime = document.createElement('td');
               // use filter to change timestamp to time
-              var sTime = $filter('date')(run.startTime, 'EEEE MMM d, y h:mm:ss a');
+              var sTime = $filter('date')(run.startTime, 'EEE MMM d, y h:mma');
               tdStartTime.appendChild(document.createTextNode(sTime));
+              // use sortable custom key attribute for sorttable.js
+              var attTime = $filter('date')(run.startTime, 'yyyyMMddHHmm');
+              tdStartTime.setAttribute('sorttable_customkey', attTime);
               tr.appendChild(tdStartTime);
               for (var i = 0; i < markerSize; i++) {
                 var td = document.createElement('td');
                 var markerTime;
                 var data;
-                if (run.markerItems[i]) {
-                  markerTime = run.markerItems[i].totalTime;
+                if (run.markers[i]) {
+                  markerTime = run.markers[i].time;
                   data = $filter('date')(markerTime, 'm:ss');
                 } else {
                   data = '';
@@ -777,7 +1960,7 @@ angular.module('runs').config([
                 tr.appendChild(td);
               }
               var tdTotalDist = document.createElement('td');
-              var dist = +run.totalDistanceKm.toFixed(2);
+              var dist = run.totalDistance.toFixed(2);
               tdTotalDist.appendChild(document.createTextNode(dist));
               tr.appendChild(tdTotalDist);
               var tdTotalTime = document.createElement('td');
@@ -790,41 +1973,389 @@ angular.module('runs').config([
           }
         }
         element.append(tableOfRuns);
-      }
+        // add the sorttable.js initiation
+        var table = document.querySelector('table.sortable') || '';
+        if (table !== '') {
+          sorttable.makeSortable(table);
+        }
+      }  // link
     };
   };
   angular.module('runs').directive('runsSummaryTable', [
     '$filter',
     runsSummaryTable
   ]);
-}(window._));'use strict';
-// As a factory
-// (function() {
-var runsService = function ($resource) {
-  var runs = {
-      resource: $resource('/my/runs/', {}, {
-        query: {
-          method: 'GET',
-          isArray: true
-        },
-        create: { method: 'POST' }
-      }),
-      getRuns: function getRuns() {
-        if (this.data !== null) {
-          return this.data;
+}(window._, window.sorttable));'use strict';
+(function () {
+  var formatSummaries = function ($q) {
+    return function formatSummaries(runs) {
+      var deferred = $q.defer();
+      var runsData = {
+          runs: [],
+          markerSize: [],
+          longestMarkerTime: 0,
+          shortestMarkerTime: 0
+        };
+      runs.forEach(function (run) {
+        var markersLen;
+        var runData = {};
+        runData.markers = [];
+        markersLen = run.markerItems.length;
+        runsData.markerSize.push(markersLen);
+        runData.startTime = run.startTime;
+        run.markerItems.forEach(function (marker) {
+          if (runsData.shortestMarkerTime === 0) {
+            runsData.shortestMarkerTime = marker.totalTime;
+          } else {
+            if (marker.totalTime < runsData.shortestMarkerTime) {
+              runsData.shortestMarkerTime = marker.totalTime;
+            }
+          }
+          if (marker.totalTime > runsData.longestMarkerTime) {
+            runsData.longestMarkerTime = marker.totalTime;
+          }
+          var markerData = {
+              km: marker.km,
+              time: marker.totalTime
+            };
+          runData.markers.push(markerData);
+        });
+        runData.totalDistance = run.totalDistanceKm;
+        runData.totalTime = run.totalTime;
+        runsData.runs.push(runData);
+      });
+      deferred.resolve(runsData);
+      return deferred.promise;
+    };  //createDataOb
+  };
+  angular.module('runs').factory('formatSummaries', [
+    '$q',
+    formatSummaries
+  ]);
+}());'use strict';
+// returns a run by id
+(function () {
+  var getRunById = function ($resource, Authentication) {
+    var runs = {
+        resource: $resource('/api/v_' + ApplicationConfiguration.apiVersion + '/:user_id/run/data/:run_id', {
+          'user_id': '@user_id',
+          'run_id': '@run_id'
+        }, {
+          query: {
+            method: 'GET',
+            isArray: true
+          },
+          create: { method: 'POST' }
+        }),
+        get: function get(id) {
+          var promise = this.resource.query({
+              'user_id': Authentication.user._id,
+              'run_id': id
+            }).$promise;
+          return promise;
         }
-        this.data = this.resource.query();
-        return this.data;
+      };
+    return runs;
+  };
+  angular.module('runs').factory('getRunById', [
+    '$resource',
+    'Authentication',
+    getRunById
+  ]);
+}());'use strict';
+(function () {
+  var getRuns = function getRuns($resource, Authentication) {
+    var run = {
+        resource: $resource('/api/v_' + ApplicationConfiguration.apiVersion + '/:user_id/run/data', { 'user_id': '@user_id' }),
+        get: function get(options) {
+          // if (this.data !== null) {
+          //   return this.data;
+          // }
+          // set default options
+          var query = {
+              limit: 1,
+              offset: 0
+            };
+          if (options) {
+            query = {
+              limit: options.limit ? options.limit : 1,
+              offset: options.offset ? options.offset : 0
+            };
+          }
+          var promise = this.resource.query({
+              'user_id': Authentication.user._id,
+              'limit': query.limit,
+              'offset': query.offset
+            }).$promise;
+          return promise;  // this.data = result;
+                           // return this.data;
+        },
+        data: null
+      };
+    return run;
+  };
+  angular.module('runs').service('getRuns', [
+    '$resource',
+    'Authentication',
+    'formatSummaries',
+    getRuns
+  ]);
+}());'use strict';
+// returns a run by id
+(function () {
+  var getSummariesById = function ($resource, Authentication) {
+    var runs = {
+        resource: $resource('/api/v_' + ApplicationConfiguration.apiVersion + '/:user_id/run/summaries/:summary_id', {
+          'user_id': '@user_id',
+          'summary_id': '@summary_id'
+        }, {
+          query: {
+            method: 'GET',
+            isArray: true
+          },
+          create: { method: 'POST' }
+        }),
+        get: function get(id) {
+          var promise = this.resource.query({
+              'user_id': Authentication.user._id,
+              'summary_id': id
+            }).$promise;
+          return promise;
+        }
+      };
+    return runs;
+  };
+  angular.module('runs').factory('getSummariesById', [
+    '$resource',
+    'Authentication',
+    getSummariesById
+  ]);
+}());'use strict';
+(function () {
+  var getSummaries = function getSummaries($resource, Authentication) {
+    var summary = {
+        resource: $resource('/api/v_' + ApplicationConfiguration.apiVersion + '/:user_id/run/summaries', { 'user_id': '@user_id' }),
+        get: function get(options) {
+          // if (this.data !== null) {
+          //   return this.data;
+          // }
+          // set default options
+          var query = {
+              limit: 1,
+              offset: 0
+            };
+          if (options) {
+            query = {
+              limit: options.limit ? options.limit : 1,
+              offset: options.offset ? options.offset : 0
+            };
+          }
+          var promise = this.resource.query({
+              'user_id': Authentication.user._id,
+              'limit': query.limit,
+              'offset': query.offset
+            }).$promise;
+          return promise;  // this.data = result;
+                           // return this.data;
+        },
+        data: null
+      };
+    return summary;
+  };
+  angular.module('runs').service('getSummaries', [
+    '$resource',
+    'Authentication',
+    getSummaries
+  ]);
+}());'use strict';
+(function () {
+  var SideNavGroupController = function SideNavGroupController($scope) {
+    $scope.hasIcon = angular.isDefined($scope.icon);
+    $scope.hasSubMenu = angular.isDefined($scope.hasChildren);
+  };
+  angular.module('left-nav').controller('SideNavGroupController', [
+    '$scope',
+    SideNavGroupController
+  ]);
+}());'use strict';
+(function () {
+  var SideNavItemController = function SideNavItemController($scope) {
+    $scope.hasIcon = angular.isDefined($scope.icon);
+  };
+  angular.module('left-nav').controller('SideNavItemController', [
+    '$scope',
+    SideNavItemController
+  ]);
+}());'use strict';
+(function (lodash) {
+  var _ = lodash;
+  var SideNavController = function SideNavController($scope, Authentication) {
+    // $scope.authentication is used to determine when to show signout / signin
+    $scope.authentication = Authentication;
+  };
+  angular.module('left-nav').controller('SideNavController', [
+    '$scope',
+    'Authentication',
+    SideNavController
+  ]);
+}(window._));'use strict';
+(function () {
+  var sideNavGroup = function sideNavGroup() {
+    return {
+      restrict: 'AE',
+      replace: true,
+      transclude: true,
+      controller: 'SideNavGroupController',
+      scope: {
+        title: '@',
+        icon: '@',
+        iconCaption: '@',
+        active: '=?',
+        hasChildren: '=?',
+        hasChildrenIcon: '@'
       },
-      data: null
+      link: function link(scope, element, attrs, parentCtrls) {
+        // ----- Set event listener to toggle view for child elements -----//
+        var anchor = element.children()[0];
+        var angAnchor = angular.element(anchor);
+        angAnchor.on('click', function (event) {
+          element.toggleClass('open');
+        });
+      },
+      template: '<li data-ng-class="{ active : active, hasChildren : hasChildren }">' + '<a href="">' + '<span data-ng-if="hasIcon" class="icon {{ icon }}"><em data-ng-if="hasIconCaption"> {{ iconCaption }} </em></span>' + '<span class="navTitle">{{ title }}</span>' + '<span class="icon toggleIcon {{ hasChildrenIcon }}"></span>' + '</a>' + '<ul data-ng-transclude=""></ul>' + '</li>'
     };
-  return runs;
-};
-angular.module('runs').factory('runsService', [
-  '$resource',
-  runsService
-]);  // }());
-'use strict';
+  };
+  angular.module('left-nav').directive('sideNavGroup', sideNavGroup);
+}());'use strict';
+(function () {
+  var sideNavItem = function sideNavItem() {
+    return {
+      require: ['^sideNav'],
+      restrict: 'AE',
+      replace: true,
+      transclude: true,
+      controller: 'SideNavItemController',
+      scope: {
+        title: '@',
+        view: '@',
+        icon: '@',
+        iconCaption: '@',
+        href: '@',
+        target: '@'
+      },
+      link: function (scope, element, attrs, parentCtrls) {
+        var navCtrl = parentCtrls[0];
+        var navgroupCtrl = parentCtrls[1];
+      },
+      template: '<li>' + '<a ui-sref="{{ view }}" title="{{ title }}">' + '<span data-ng-if="hasIcon" class="icon {{ icon }}"><em data-ng-if="hasIconCaption"> {{ iconCaption }}</em></span>' + '<span class="navTitle">{{ title }}</span>' + '<span data-ng-transclude=""></span>' + '</a>' + '</li>'
+    };
+  };
+  angular.module('left-nav').directive('sideNavItem', sideNavItem);
+}());(function () {
+  var sideNav = function sideNav($location, setHeightAftrTopNav, mediator) {
+    return {
+      restrict: 'AE',
+      transclude: true,
+      replace: true,
+      template: '<nav><ul data-ng-transclude=""></ul></nav>',
+      controller: 'SideNavController',
+      compile: function compile(tElement, tAttrs, transclude) {
+        return {
+          post: function postLink(scope, iElement, iAttrs, controller) {
+            var mediaQuery = window.matchMedia('(max-width: 768px)');
+            var bod = document.querySelector('body');
+            scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+              if (fromState.name !== '') {
+                // remove the li with active
+                if (document.querySelector('.left-nav li.active')) {
+                  var prevEl = document.querySelector('.left-nav li.active');
+                  prevEl.classList.remove('active');
+                }
+              }
+              // Add active class to li
+              if (document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]')) {
+                var newEl = document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]').parentNode;
+                newEl.classList.add('active');
+              }
+              if (mediaQuery.matches) {
+                bod.classList.toggle('leftNav--toggle');
+              }
+            });
+            // ----- set the height for scrolling ----- //
+            setHeightAftrTopNav(iElement[0].parentElement);
+            // ----- add event listener on window resize ----- //
+            // adding to scope for testability
+            scope.resetHeight = function resetHeight() {
+              var element = iElement[0].parentElement;
+              setHeightAftrTopNav(element);
+            };
+            var resizeEvent = mediator.subscribe('windowResize', scope.resetHeight, this);
+            // ----- remove event listener when scope is destroyed ----- //
+            scope.$on('$destroy', function () {
+              mediator.unsubscribe(resizeEvent);
+            });
+          }  // post
+        };  // returned object
+      }
+    };  // returned object
+  };
+  // sideNav
+  angular.module('left-nav').directive('sideNav', [
+    '$location',
+    'setHeightAftrTopNav',
+    'mediator',
+    sideNav
+  ]);
+}());'use strict';
+(function () {
+  var topNavToggleChartData = function topNavToggleChartData() {
+    return {
+      restrict: 'A',
+      link: function postLink(scope, element, attr, ctrl) {
+        var dataSelector = element.attr('data-data-selector');
+        var chartList;
+        var click = element.on('click', toggleMenu);
+        var bod = document.querySelector('body');
+        function toggleMenu(event) {
+          chartList = document.querySelector('#dataselector-list-js');
+          event.preventDefault();
+          chartList.classList.toggle('inactive');
+          element.toggleClass('open');
+        }
+        var toggleDataSelector = function (dataSelectorId) {
+            var dataSelector = dataSelectorId;
+            return function toggleDataSelector(event) {
+              event.preventDefault();
+              bod.classList.toggle('dataselector-list-' + dataSelector + '--open');
+            };
+          }(dataSelector);
+        element.on('click', toggleDataSelector);
+        // ----- remove event listener when scope is destroyed ----- //
+        scope.$on('$destroy', function () {
+          click();
+          chartList = null;
+        });
+      }  // link
+    };
+  };
+  angular.module('top-nav').directive('topNavToggleChartData', [topNavToggleChartData]);
+}());'use strict';
+(function () {
+  var topNavMenuIcon = function topNavMenuIcon() {
+    return {
+      restrict: 'A',
+      link: function postLink(scope, el, attr, ctrl) {
+        var bod = document.querySelector('body');
+        el.on('click', toggleMenu);
+        function toggleMenu(event) {
+          event.preventDefault();
+          bod.classList.toggle('leftNav--toggle');
+        }
+      }
+    };
+  };
+  angular.module('top-nav').directive('topNavMenuIcon', [topNavMenuIcon]);
+}());'use strict';
 /*
  * Decorator for Angular File Upload service
  * Adds functionality to check the suffix of a file
@@ -850,88 +2381,130 @@ angular.module('upload-data').config([
   function ($stateProvider) {
     // Runs state routing
     $stateProvider.state('upload', {
-      url: '/my/upload/gpx',
+      url: '/upload/gpx',
       templateUrl: 'modules/upload-data/views/upload-data.client.view.html',
       controller: 'UploadDataCtrl'
     });
   }
-]);'use strict';
-/*
+]);(function () {
+  'use strict';
+  /*
  * Upload a file to the database
  * Params: upload data service
  */
-var UploadDataCtrl = function UploadDataCtrl($scope, $upload) {
-  /*  // allows us to see the file that was uploaded
-  document.getElementById("uploadBtn").onchange = function () {
-      document.getElementById("uploadFile").value = this.value;
-  };*/
-  $scope.message = [];
-  $scope.message.push('<p></p>');
-  $scope.fileName = 'Choose file';
-  $scope.onFileSelect = function ($files) {
-    //$files: an array of files selected, each file has name, size, and type.
-    function uploadSuccess(data, status, headers, config) {
-      // file is uploaded successfully
-      $scope.message.push('<li class="bg-success">Successfully uploaded: ' + config.file.name + '</li>');
-    }
-    function uploadProgress(evt) {
-      console.log('percent: ' + parseInt(100 * evt.loaded / evt.total));
-    }
-    for (var i = 0; i < $files.length; i++) {
-      var file = $files[i];
+  var UploadDataCtrl = function UploadDataCtrl($scope, upload) {
+    $scope.message = upload.resultsListItems;
+    $scope.fileName = 'Choose file';
+    $scope.onFileSelect = function ($files) {
+      for (var i = 0; i < $files.length; i++) {
+        var file = $files[i];
+        upload.uploadFile(file);
+      }  // for loop
+    };  // $scope.onFileSelect
+  };
+  angular.module('upload-data').controller('UploadDataCtrl', [
+    '$scope',
+    'upload',
+    UploadDataCtrl
+  ]);
+}());(function () {
+  'use strict';
+  /**
+ * @description Watches for new result items and adds them to the DOM
+ */
+  var uploadResults = function uploadResults($compile) {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        function compileMe(toBeCompiled) {
+          return $compile(toBeCompiled)(scope);
+        }
+        scope.$watchCollection('message', function () {
+          var num = scope.message.length - 1;
+          var newEl = compileMe(scope.message[num]);
+          element.prepend(newEl);
+        });
+      }  // link
+    };  // return
+  };
+  // uploadFileName
+  angular.module('upload-data').directive('uploadResults', [
+    '$compile',
+    uploadResults
+  ]);
+}());(function () {
+  'use strict';
+  /**
+ * @description : a service that uploads a gpx to the db.
+ * @param $upload the decorator used for the angular file upload module.
+ * @param $rootScope
+ * @returns {Object} upload function and results items
+ */
+  var uploadData = function uploadData($upload, $rootScope) {
+    var uploadSuccess;
+    var uploadProgress;
+    var upload;
+    var resultsListItems = [];
+    var uploadDefineVars;
+    var uploadFile;
+    // define vars dependent on whether web workers are available
+    uploadDefineVars = function uploadDefineVars() {
+      if (window.Worker instanceof Function) {
+        // Send them to the web worker
+        uploadSuccess = function uploadSuccess(message) {
+          // file is uploaded successfully
+          resultsListItems.push('<li>Successfully uploaded: ' + message.data + '</li>');
+          $rootScope.$apply();
+        };
+        upload = function upload(file) {
+          var worker = new Worker('/lib/custom/angular-file-upload-extra/web-worker.js');
+          worker.postMessage(file);
+          worker.onmessage = uploadSuccess;
+        };
+      } else {
+        // ORIGINAL WAY OF USING ANGULAR FILE UPLOAD
+        uploadSuccess = function uploadSuccess(data, status, headers, config) {
+          // file is uploaded successfully
+          resultsListItems.push('<li">Successfully uploaded: ' + config.file.name + '</li>');
+        };
+        uploadProgress = function uploadProgress(evt) {
+          console.log('percent: ' + parseInt(100 * evt.loaded / evt.total));
+        };
+        upload = function upload(file) {
+          // $scope.upload =
+          $upload.upload({
+            url: '/upload',
+            method: 'POST',
+            file: file
+          }).progress(uploadProgress).success(uploadSuccess);  //.error(...)
+                                                               //.then(success, error, progress);
+                                                               // access or attach event listeners to the underlying XMLHttpRequest.
+                                                               //.xhr(function(xhr){xhr.upload.addEventListener(...)})
+        };
+      }
+    };
+    // uploadDefineVars
+    uploadDefineVars();
+    uploadFile = function (file) {
       // We've added a decorator to check the suffix
       // returns true if suffix is gpx
       var isitGpx = $upload.checkSuffix('gpx', file.name);
       if (isitGpx === false) {
-        $scope.message.push('<li class="bg-danger">The file needs to be a gpx : ' + file.name + '</li>');
-        continue;
+        return resultsListItems.push('<li class="upload-file__message--fail">The file needs to be a gpx : ' + file.name + '</li>');
       }
-      $scope.upload = $upload.upload({
-        url: '/upload',
-        method: 'POST',
-        file: file
-      }).progress(uploadProgress).success(uploadSuccess);  //.error(...)
-                                                           //.then(success, error, progress);
-                                                           // access or attach event listeners to the underlying XMLHttpRequest.
-                                                           //.xhr(function(xhr){xhr.upload.addEventListener(...)})
-    }  /* alternative way of uploading, send the file binary with the file's content-type.
-       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
-       It could also be used to monitor the progress of a normal http post/put request with large data*/
-       // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+      upload(file);
+    };
+    return {
+      resultsListItems: resultsListItems,
+      uploadFile: uploadFile
+    };
   };
-};
-angular.module('upload-data').controller('UploadDataCtrl', [
-  '$scope',
-  '$upload',
-  UploadDataCtrl
-]);// directiveFactory
-var uploadFileName = function uploadFileName($compile) {
-  return {
-    restrict: 'A',
-    link: function (scope, element, attrs) {
-      function compileMe(toBeCompiled) {
-        return $compile(toBeCompiled)(scope);
-      }
-      scope.$watchCollection('message', function () {
-        var num = scope.message.length - 1;
-        var newEl = compileMe(scope.message[num]);
-        var resultsList = document.getElementById('uploadResults');
-        angular.element(resultsList).prepend(newEl);
-      });
-    }
-  };
-};
-angular.module('upload-data').directive('uploadFileName', [
-  '$compile',
-  uploadFileName
-]);'use strict';
-var uploadService = function uploadService($resource) {
-  return $resource('/upload');
-};
-angular.module('upload-data').factory('uploadService', [
-  '$resource',
-  uploadService
-]);'use strict';
+  angular.module('upload-data').service('upload', [
+    '$upload',
+    '$rootScope',
+    uploadData
+  ]);
+}());'use strict';
 // Config HTTP Error Handling
 angular.module('users').config([
   '$httpProvider',
@@ -952,7 +2525,7 @@ angular.module('users').config([
               $location.path('signin');
               break;
             case 403:
-              // Add unauthorized behaviour
+              // Add unauthorized behaviour 
               break;
             }
             return $q.reject(rejection);
@@ -982,6 +2555,15 @@ angular.module('users').config([
     }).state('signin', {
       url: '/signin',
       templateUrl: 'modules/users/views/authentication/signin.client.view.html'
+    }).state('signout', {
+      url: '/auth/one/signout',
+      controller: function ($http, $state, $location, $scope) {
+        $http.get('auth/signout').then(function () {
+          $location.url('/');
+          // Need to force a reload otherwise user is not removed.
+          window.location.reload();
+        });
+      }
     }).state('forgot', {
       url: '/password/forgot',
       templateUrl: 'modules/users/views/password/forgot-password.client.view.html'
@@ -1080,7 +2662,7 @@ angular.module('users').controller('SettingsController', [
     // If user is not signed in then redirect back home
     if (!$scope.user)
       $location.path('/');
-    // Check if there are additional accounts
+    // Check if there are additional accounts 
     $scope.hasConnectedAdditionalSocialAccounts = function (provider) {
       for (var i in $scope.user.additionalProvidersData) {
         return true;
@@ -1142,136 +2724,4 @@ angular.module('users').factory('Users', [
   function ($resource) {
     return $resource('users', {}, { update: { method: 'PUT' } });
   }
-]);'use strict';
-// Setting up route
-angular.module('visualisations').config([
-  '$stateProvider',
-  function ($stateProvider) {
-    $stateProvider.state('vis', {
-      url: '/my/runs/linechart',
-      templateUrl: 'modules/visualisations/views/vis.client.view.html',
-      controller: 'MyVisCtrl'
-    });
-  }
-]);'use strict';
-(function () {
-  var MyVisCtrl = function MyVisCtrl($scope) {
-    $scope.salesData = [
-      {
-        hour: 1,
-        sales: 54
-      },
-      {
-        hour: 2,
-        sales: 66
-      },
-      {
-        hour: 3,
-        sales: 77
-      },
-      {
-        hour: 4,
-        sales: 70
-      },
-      {
-        hour: 5,
-        sales: 60
-      },
-      {
-        hour: 6,
-        sales: 63
-      },
-      {
-        hour: 7,
-        sales: 55
-      },
-      {
-        hour: 8,
-        sales: 47
-      },
-      {
-        hour: 9,
-        sales: 55
-      },
-      {
-        hour: 10,
-        sales: 30
-      }
-    ];
-    $scope.name = 'ME';
-  };
-  angular.module('visualisations').controller('MyVisCtrl', [
-    '$scope',
-    MyVisCtrl
-  ]);
-}());'use strict';
-// (function() {
-var linearChart = function linearChart($parse, $window) {
-  return {
-    restrict: 'EA',
-    template: '<svg width="850" height="200"></svg>',
-    link: function (scope, elem, attrs) {
-      var exp = $parse(attrs.chartData);
-      var salesDataToPlot = exp(scope);
-      var padding = 20;
-      var pathClass = 'path';
-      var xScale, yScale, xAxisGen, yAxisGen, lineFun;
-      var d3 = $window.d3;
-      var rawSvg = elem.find('svg');
-      var svg = d3.select(rawSvg[0]);
-      scope.$watchCollection(exp, function (newVal, oldVal) {
-        salesDataToPlot = newVal;
-        redrawLineChart();
-      });
-      function setChartParameters() {
-        xScale = d3.scale.linear().domain([
-          salesDataToPlot[0].hour,
-          salesDataToPlot[salesDataToPlot.length - 1].hour
-        ]).range([
-          padding + 5,
-          rawSvg.attr('width') - padding
-        ]);
-        yScale = d3.scale.linear().domain([
-          0,
-          d3.max(salesDataToPlot, function (d) {
-            return d.sales;
-          })
-        ]).range([
-          rawSvg.attr('height') - padding,
-          0
-        ]);
-        xAxisGen = d3.svg.axis().scale(xScale).orient('bottom').ticks(salesDataToPlot.length - 1);
-        yAxisGen = d3.svg.axis().scale(yScale).orient('left').ticks(5);
-        lineFun = d3.svg.line().x(function (d) {
-          return xScale(d.hour);
-        }).y(function (d) {
-          return yScale(d.sales);
-        }).interpolate('basis');
-      }
-      function drawLineChart() {
-        setChartParameters();
-        svg.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0,180)').call(xAxisGen);
-        svg.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(20,0)').call(yAxisGen);
-        svg.append('svg:path').attr({
-          d: lineFun(salesDataToPlot),
-          'stroke': 'blue',
-          'stroke-width': 1,
-          'fill': 'none',
-          'class': pathClass
-        });
-      }
-      function redrawLineChart() {
-        setChartParameters();
-        svg.selectAll('g.y.axis').call(yAxisGen);
-        svg.selectAll('g.x.axis').call(xAxisGen);
-        svg.selectAll('.' + pathClass).attr({ d: lineFun(salesDataToPlot) });
-      }
-      drawLineChart();
-    }
-  };
-};
-angular.module('visualisations').directive('linearChart', [
-  '$parse',
-  '$window',
-  linearChart
-]);  // }());
+]);
