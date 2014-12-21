@@ -5,7 +5,8 @@ var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var apiVersion = '1_0_0';
   var applicationModuleName = 'runningApp';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils', 'uiGmapgoogle-maps'];
+	// var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils', 'uiGmapgoogle-maps'];
+  var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

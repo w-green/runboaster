@@ -52,10 +52,10 @@ angular.module('runs').config(['$stateProvider',
               controller : 'MapSummaryCtrl'
             },
 
-            'columnTwo@mapRuns' : {
-                templateUrl : 'modules/gmap/views/run-map.client.view.html',
-                controller : 'MyMapsCtrl'
-            }
+            // 'columnTwo@mapRuns' : {
+            //     templateUrl : 'modules/gmap/views/run-map.client.view.html',
+            //     controller : 'MyMapsCtrl'
+            // }
         }
 
     });
