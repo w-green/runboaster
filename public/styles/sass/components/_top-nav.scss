@@ -54,7 +54,17 @@ $top-nav-border: 3px solid $main-content-bg---color;
     display: block;
     // background-color: #0FF;
   }
+
+  a.toggleIcon {
+    color: $green-pale;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
+
+
 
 body.dataselector-list-chart--open
 .top-nav__menu-icon_toggle-data--chart
