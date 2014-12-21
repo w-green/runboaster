@@ -15,7 +15,7 @@
   filter: alpha(opacity=0);
 }
 
-ul#uploadResults > li {
+ul.upload-results > li {
   padding: 10px;
   margin-bottom: 10px;
 }
