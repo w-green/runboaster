@@ -56,17 +56,15 @@ $top-nav-border: 3px solid $main-content-bg---color;
   }
 }
 
-
 body.dataselector-list-chart--open
 .top-nav__menu-icon_toggle-data--chart
-span.toggleIcon,
+a.toggleIcon,
 body.dataselector-list-map--open
 .top-nav__menu-icon_toggle-data--map
-span.toggleIcon,
+a.toggleIcon
  {
   transform: rotate(45deg);
 }
 
-// -----  Map selector togggle ----- //
 
 

@@ -3,3 +3,10 @@
   overflow-y: auto !important;
   // background-color: $main-content-bg---color;
 }
+
+// ----- Allow for left nav ----- //
+@media(min-width: $screen-lg-min) {
+  .main-content {
+    margin-left: $left-nav-width;
+  }
+}
