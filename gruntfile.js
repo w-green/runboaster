@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 				}
 			},
 			clientCSS: {
-				files: watchFiles.clientCSS,
+				files: 'public/styles/css/main.css',
 				tasks: ['csslint'],
 				options: {
 					livereload: true
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 			},
       sass: {
           files: watchFiles.sass,
-          tasks: ['sass:dev'],
+          tasks: ['sass:dev', 'autoprefixer'],
           options: {
           livereload: true
         }
@@ -78,8 +78,11 @@ module.exports = function(grunt) {
         browsers: ['last 2 version','ie 9']
       },
       target: {
-        src: watchFiles.clientCSS
-      },
+        src: 'public/styles/css/main.css'
+      }
+      // target: {
+      //   src: watchFiles.clientCSS
+      // },
     },
 		uglify: {
 			production: {
@@ -196,7 +199,7 @@ module.exports = function(grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'autoprefixer', 'concurrent:default']);
+	grunt.registerTask('default', ['autoprefixer', 'lint', 'concurrent:default']);
 
 	// Debug task.
 	grunt.registerTask('debug', ['lint', 'concurrent:debug']);

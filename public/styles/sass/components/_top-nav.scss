@@ -55,12 +55,12 @@ $top-nav-border: 3px solid $main-content-bg---color;
     // background-color: #0FF;
   }
 
+  &:hover a {
+    text-decoration: none;
+  }
+
   a.toggleIcon {
     color: $green-pale;
-
-    &:hover {
-      text-decoration: none;
-    }
   }
 }
 
