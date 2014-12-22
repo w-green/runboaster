@@ -53,9 +53,13 @@ angular.module('runs').config(['$stateProvider',
             },
 
             'columnTwo@mapRuns' : {
-                templateUrl : 'modules/gmap/views/run-map.client.view.html',
+                templateUrl : 'modules/runs/views/run-map-leaflet.client.view.html',
                 controller : 'MyMapsCtrl'
             }
+            // 'columnTwo@mapRuns' : {
+            //     templateUrl : 'modules/gmap/views/run-map.client.view.html',
+            //     controller : 'MyMapsCtrl'
+            // }
         }
 
     });
