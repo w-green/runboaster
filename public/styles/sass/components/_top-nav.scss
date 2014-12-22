@@ -6,12 +6,6 @@ $top-nav-border: 3px solid $main-content-bg---color;
   height: $top-nav-height;
   // background-color: $blue-dark;
 
-  &>:first-child {
-    width: $left-nav-width;
-    height: $top-nav-height;
-    // background-color: $yellow;
-    margin-top: 0;
-  }
   &>div {
     height: $top-nav-height;
     display: inline-block;
