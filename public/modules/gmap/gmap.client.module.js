@@ -1,3 +1,3 @@
-// 'use strict';
+'use strict';
 
-// ApplicationConfiguration.registerModule('gmap');
+ApplicationConfiguration.registerModule('gmap');

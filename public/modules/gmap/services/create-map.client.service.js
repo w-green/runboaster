@@ -1,51 +1,51 @@
-// 'use strict';
+'use strict';
 
-// // activityData is used for markers start and end and also for the polylines
-// // summary is used for markers
-// var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
+// activityData is used for markers start and end and also for the polylines
+// summary is used for markers
+var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
 
-//   return function (activityData, summaryMarkerItems) {
-//     var polylines;
-//     var markers;
-//     var paths = []; // coords object used by both polylines and markers - for start, end
-//     var activityStartCoords; // coords used for markers
-//     var activityEndCoords; // coords used for markers
-//     var center;
-//     var zoom = 13;
-//     var getpolylines;
+  return function (activityData, summaryMarkerItems) {
+    var polylines;
+    var markers;
+    var paths = []; // coords object used by both polylines and markers - for start, end
+    var activityStartCoords; // coords used for markers
+    var activityEndCoords; // coords used for markers
+    var center;
+    var zoom = 13;
+    var getpolylines;
 
-//     getpolylines = setMapPolylines(activityData);
-//     polylines = getpolylines.polylines;
-//     paths = getpolylines.paths;
+    getpolylines = setMapPolylines(activityData);
+    polylines = getpolylines.polylines;
+    paths = getpolylines.paths;
 
 
-//     setStartnEnd(paths.length);
+    setStartnEnd(paths.length);
 
-//     // sets activityStartCoords and activityEndCoords
-//     function setStartnEnd(numPaths) {
-//       var last;
-//       if(paths[0][0] !== 'undefined') {
-//         activityStartCoords = paths[0][0];
-//         if(numPaths !== 'undefined') {
-//           last = paths[numPaths - 1].length - 1;
-//           activityEndCoords = paths[numPaths - 1][last];
-//         }
-//       }
-//     }
+    // sets activityStartCoords and activityEndCoords
+    function setStartnEnd(numPaths) {
+      var last;
+      if(paths[0][0] !== 'undefined') {
+        activityStartCoords = paths[0][0];
+        if(numPaths !== 'undefined') {
+          last = paths[numPaths - 1].length - 1;
+          activityEndCoords = paths[numPaths - 1][last];
+        }
+      }
+    }
 
-//     markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
-//     center = {latitude: paths[0][0].latitude, longitude: paths[0][0].longitude};
+    markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
+    center = {latitude: paths[0][0].latitude, longitude: paths[0][0].longitude};
 
-//     var gmap = {
-//       polylines : polylines,
-//       markers : markers,
-//       center : center,
-//       zoom : zoom
-//     };
+    var gmap = {
+      polylines : polylines,
+      markers : markers,
+      center : center,
+      zoom : zoom
+    };
 
-//     return gmap;
-//   };
+    return gmap;
+  };
 
-// };
+};
 
-// angular.module('gmap').service('createGmap', ['setMapPolylines', 'setMapMarkers', createGmap]);
+angular.module('gmap').service('createGmap', ['setMapPolylines', 'setMapMarkers', createGmap]);
