@@ -4,14 +4,15 @@ var ApplicationConfiguration = function () {
     // Init module configuration options
     var apiVersion = '1_0_0';
     var applicationModuleName = 'runningApp';
-    // var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils', 'uiGmapgoogle-maps'];
     var applicationModuleVendorDependencies = [
         'ngResource',
         'ngAnimate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils'
+        'ui.utils',
+        'uiGmapgoogle-maps'
       ];
+    // var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils'];
     // Add a new vertical module
     var registerModule = function (moduleName, dependencies) {
       // Create angular module
@@ -75,9 +76,8 @@ ApplicationConfiguration.registerModule('dashboard', [
   'mediator'
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('data-selector');// 'use strict';
-// ApplicationConfiguration.registerModule('gmap');
-'use strict';
+ApplicationConfiguration.registerModule('data-selector');'use strict';
+ApplicationConfiguration.registerModule('gmap');'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('mediator');'use strict';
 // Use Applicaion configuration module to register a new module
@@ -1285,187 +1285,189 @@ angular.module('customCore').directive('mainContent', [
   };
   // var addListItem
   angular.module('data-selector').factory('addListItem', [addListItem]);
-}());// 'use strict';
-// var setMapMarkers = function setMapMarkers() {
-//   return function(runStart, runEnd, summaryMarkerItems) {
-//     var markers = []; // the revealed markers
-//     var mapMarkerPrototype =
-//     {
-//       id : -1,
-//       coords : null,
-//       options : {
-//         labelContent : '',
-//         draggable : false
-//       },
-//       icon : '/styles/img/maps/1x1pxtransparent.png'
-//     };
-//     // factory pattern for creating map marker items
-//     var setMarkerItem = function markerItem(options) {
-//       return angular.extend(Object.create(mapMarkerPrototype), options);
-//     };
-//     // Uses the factory and pushes produced marker items to the markers array
-//     var createMarkerItem = (function(markers, setMarkerItem) {
-//       var markerCounter = 0;
-//       return function(options) {
-//         var aMarker;
-//         options.id = markerCounter;
-//         aMarker = setMarkerItem(options);
-//         markers.push(aMarker);
-//         markerCounter =+ 1;
-//       };
-//     })(markers, setMarkerItem);
-//     // sets all map markers
-//     setMarkers(runStart, runEnd, summaryMarkerItems, createMarkerItem);
-//     return markers;
-//     // requires createMarkerItem()
-//     function setStartnEndMarkers(runStart, runEnd, createMarkerItem) {
-//       var starter =
-//         {
-//           coords : runStart,
-//           options : {
-//             labelContent : 'START',
-//           }
-//         };
-//       var finish =
-//       {
-//         coords : runEnd,
-//         options : {
-//           labelContent : 'FINISH',
-//         }
-//       };
-//       createMarkerItem(starter);
-//       createMarkerItem(finish);
-//     }
-//     // ----- Creating map markers using the summaries ----- //
-//     // params: markerItems An array of items to be made into markers
-//     function createMarkers(summaryMarkerItems) {
-//       summaryMarkerItems.forEach(function(markerItem) {
-//         var marker = {};
-//         marker.coords = {
-//           latitude : markerItem.coords.latitude,
-//           longitude : markerItem.coords.longitude
-//         };
-//         marker.options = {
-//           labelContent : markerItem.km + '<br />km'
-//         };
-//         createMarkerItem(marker);
-//       });
-//     }
-//     // requires setStartnEndMarkers(), createMarkers()
-//     function setMarkers(runStart, runEnd, summaryMarkers, createMarkerItem) {
-//       setStartnEndMarkers(runStart, runEnd, createMarkerItem);
-//       createMarkers(summaryMarkers);
-//     }
-//   }; // returned function
-// }; // setMapMarkers
-// angular.module('gmap').factory('setMapMarkers', [setMapMarkers]);
-// 'use strict';
-// (function(lodash){
-//   var _ = lodash;
-//   var setMapPolylines = function() {
-//     var polylinePrototype;
-//     var paths = []; // an array of longitude and latitude objects
-//     var numPaths;
-//     var polylines = [];
-//     // prototype
-//     polylinePrototype =
-//       {
-//         id : -1,
-//         path: [],
-//         stroke : {
-//           color : '#FF0000',
-//           weight : 3
-//         },
-//         visible: true,
-//         geodesic: true,
-//         editable: false,
-//         draggable: false,
-//         static: true
-//       };
-//     // requires paths array - check var declaration for description
-//     // params coords - an array of coord objects
-//     function createPaths(coords) {
-//       coords.forEach(function(val) {
-//         if (_.isArray(val)) {
-//           var newPath = [];
-//           val.forEach(function(val) {
-//             var latLong = {};
-//             latLong.latitude = val[1];
-//             latLong.longitude = val[0];
-//             newPath.push(latLong);
-//           });
-//           paths.push(newPath);
-//         }
-//       });
-//       numPaths = paths.length;
-//     }
-//     function setPolyline(options) {
-//      return angular.extend(Object.create(polylinePrototype), options);
-//     }
-//     // requires setPolyline and paths
-//     function createPolylines() {
-//       for(var i = 0; i < numPaths; i++) {
-//         var newPolyLine = {};
-//         newPolyLine.id = i + 1; // start at 1
-//         newPolyLine.path = paths[i];
-//         var polyline = setPolyline(newPolyLine);
-//         polylines.push(polyline);
-//       }
-//     }
-//     return function setMapPolylines(coords) {
-//       paths.length = 0; // resetting
-//       polylines.length = 0;
-//       createPaths(coords);
-//       createPolylines();
-//       return {
-//         paths : paths,
-//         polylines : polylines
-//       };
-//     };
-//   };
-//   angular.module('gmap').factory('setMapPolylines', [setMapPolylines]);
-// })(window._);
-// 'use strict';
-// // activityData is used for markers start and end and also for the polylines
-// // summary is used for markers
-// var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
-//   return function (activityData, summaryMarkerItems) {
-//     var polylines;
-//     var markers;
-//     var paths = []; // coords object used by both polylines and markers - for start, end
-//     var activityStartCoords; // coords used for markers
-//     var activityEndCoords; // coords used for markers
-//     var center;
-//     var zoom = 13;
-//     var getpolylines;
-//     getpolylines = setMapPolylines(activityData);
-//     polylines = getpolylines.polylines;
-//     paths = getpolylines.paths;
-//     setStartnEnd(paths.length);
-//     // sets activityStartCoords and activityEndCoords
-//     function setStartnEnd(numPaths) {
-//       var last;
-//       if(paths[0][0] !== 'undefined') {
-//         activityStartCoords = paths[0][0];
-//         if(numPaths !== 'undefined') {
-//           last = paths[numPaths - 1].length - 1;
-//           activityEndCoords = paths[numPaths - 1][last];
-//         }
-//       }
-//     }
-//     markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
-//     center = {latitude: paths[0][0].latitude, longitude: paths[0][0].longitude};
-//     var gmap = {
-//       polylines : polylines,
-//       markers : markers,
-//       center : center,
-//       zoom : zoom
-//     };
-//     return gmap;
-//   };
-// };
-// angular.module('gmap').service('createGmap', ['setMapPolylines', 'setMapMarkers', createGmap]);
+}());'use strict';
+var setMapMarkers = function setMapMarkers() {
+  return function (runStart, runEnd, summaryMarkerItems) {
+    var markers = [];
+    // the revealed markers
+    var mapMarkerPrototype = {
+        id: -1,
+        coords: null,
+        options: {
+          labelContent: '',
+          draggable: false
+        },
+        icon: '/styles/img/maps/1x1pxtransparent.png'
+      };
+    // factory pattern for creating map marker items
+    var setMarkerItem = function markerItem(options) {
+      return angular.extend(Object.create(mapMarkerPrototype), options);
+    };
+    // Uses the factory and pushes produced marker items to the markers array
+    var createMarkerItem = function (markers, setMarkerItem) {
+        var markerCounter = 0;
+        return function (options) {
+          var aMarker;
+          options.id = markerCounter;
+          aMarker = setMarkerItem(options);
+          markers.push(aMarker);
+          markerCounter = +1;
+        };
+      }(markers, setMarkerItem);
+    // sets all map markers
+    setMarkers(runStart, runEnd, summaryMarkerItems, createMarkerItem);
+    return markers;
+    // requires createMarkerItem()
+    function setStartnEndMarkers(runStart, runEnd, createMarkerItem) {
+      var starter = {
+          coords: runStart,
+          options: { labelContent: 'START' }
+        };
+      var finish = {
+          coords: runEnd,
+          options: { labelContent: 'FINISH' }
+        };
+      createMarkerItem(starter);
+      createMarkerItem(finish);
+    }
+    // ----- Creating map markers using the summaries ----- //
+    // params: markerItems An array of items to be made into markers
+    function createMarkers(summaryMarkerItems) {
+      summaryMarkerItems.forEach(function (markerItem) {
+        var marker = {};
+        marker.coords = {
+          latitude: markerItem.coords.latitude,
+          longitude: markerItem.coords.longitude
+        };
+        marker.options = { labelContent: markerItem.km + '<br />km' };
+        createMarkerItem(marker);
+      });
+    }
+    // requires setStartnEndMarkers(), createMarkers()
+    function setMarkers(runStart, runEnd, summaryMarkers, createMarkerItem) {
+      setStartnEndMarkers(runStart, runEnd, createMarkerItem);
+      createMarkers(summaryMarkers);
+    }
+  };  // returned function
+};
+// setMapMarkers
+angular.module('gmap').factory('setMapMarkers', [setMapMarkers]);'use strict';
 (function (lodash) {
+  var _ = lodash;
+  var setMapPolylines = function () {
+    var polylinePrototype;
+    var paths = [];
+    // an array of longitude and latitude objects
+    var numPaths;
+    var polylines = [];
+    // prototype
+    polylinePrototype = {
+      id: -1,
+      path: [],
+      stroke: {
+        color: '#FF0000',
+        weight: 3
+      },
+      visible: true,
+      geodesic: true,
+      editable: false,
+      draggable: false,
+      static: true
+    };
+    // requires paths array - check var declaration for description
+    // params coords - an array of coord objects
+    function createPaths(coords) {
+      coords.forEach(function (val) {
+        if (_.isArray(val)) {
+          var newPath = [];
+          val.forEach(function (val) {
+            var latLong = {};
+            latLong.latitude = val[1];
+            latLong.longitude = val[0];
+            newPath.push(latLong);
+          });
+          paths.push(newPath);
+        }
+      });
+      numPaths = paths.length;
+    }
+    function setPolyline(options) {
+      return angular.extend(Object.create(polylinePrototype), options);
+    }
+    // requires setPolyline and paths
+    function createPolylines() {
+      for (var i = 0; i < numPaths; i++) {
+        var newPolyLine = {};
+        newPolyLine.id = i + 1;
+        // start at 1
+        newPolyLine.path = paths[i];
+        var polyline = setPolyline(newPolyLine);
+        polylines.push(polyline);
+      }
+    }
+    return function setMapPolylines(coords) {
+      paths.length = 0;
+      // resetting
+      polylines.length = 0;
+      createPaths(coords);
+      createPolylines();
+      return {
+        paths: paths,
+        polylines: polylines
+      };
+    };
+  };
+  angular.module('gmap').factory('setMapPolylines', [setMapPolylines]);
+}(window._));'use strict';
+// activityData is used for markers start and end and also for the polylines
+// summary is used for markers
+var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
+  return function (activityData, summaryMarkerItems) {
+    var polylines;
+    var markers;
+    var paths = [];
+    // coords object used by both polylines and markers - for start, end
+    var activityStartCoords;
+    // coords used for markers
+    var activityEndCoords;
+    // coords used for markers
+    var center;
+    var zoom = 13;
+    var getpolylines;
+    getpolylines = setMapPolylines(activityData);
+    polylines = getpolylines.polylines;
+    paths = getpolylines.paths;
+    setStartnEnd(paths.length);
+    // sets activityStartCoords and activityEndCoords
+    function setStartnEnd(numPaths) {
+      var last;
+      if (paths[0][0] !== 'undefined') {
+        activityStartCoords = paths[0][0];
+        if (numPaths !== 'undefined') {
+          last = paths[numPaths - 1].length - 1;
+          activityEndCoords = paths[numPaths - 1][last];
+        }
+      }
+    }
+    markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
+    center = {
+      latitude: paths[0][0].latitude,
+      longitude: paths[0][0].longitude
+    };
+    var gmap = {
+        polylines: polylines,
+        markers: markers,
+        center: center,
+        zoom: zoom
+      };
+    return gmap;
+  };
+};
+angular.module('gmap').service('createGmap', [
+  'setMapPolylines',
+  'setMapMarkers',
+  createGmap
+]);(function (lodash) {
   'use strict';
   var _ = lodash;
   var mediator = function (windowResize) {
@@ -1631,6 +1633,10 @@ angular.module('runs').config([
         'columnOne@mapRuns': {
           templateUrl: 'modules/runs/views/run-map-summary.client.view.html',
           controller: 'MapSummaryCtrl'
+        },
+        'columnTwo@mapRuns': {
+          templateUrl: 'modules/gmap/views/run-map.client.view.html',
+          controller: 'MyMapsCtrl'
         }
       }
     });
@@ -1663,41 +1669,48 @@ angular.module('runs').config([
     'dateFilter',
     MapSummaryCtrl
   ]);
-}());// 'use strict';
-// (function(google) {
-//   if (google === 'undefined') {return;} // google maps is not found
-//   // Maps controller
-//   // Used to display google map
-//   function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
-//     var run = getRunRes;
-//     var mapData = [];
-//     $scope.gMap = null;
-//     var summaries = getSummariesFiveRes;
-//     // ----- Create new map ----- //
-//     // function createGmap(activityData, summaryMarkerItems)
-//     mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
-//     $scope.gMap = mapData[0];
-//     var recreateGmap = function recreateGmap(event, info) {
-//       if(typeof mapData[info.listOrder] === 'undefined') {
-//         // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
-//         getRunById.get(info.activityId).then(function(newData){
-//           mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
-//           $scope.gMap = mapData[info.listOrder];
-//         });
-//       }
-//       else {
-//         $scope.gMap = mapData[info.listOrder];
-//         $scope.$digest();
-//       }
-//     };
-//     // on a broadcasted event from the summary directive
-//     // we change the map to the selected activity
-//     $scope.$on('summarySelected', recreateGmap);
-//   }
-//   // angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', 'createGmap', MyMapsCtrl]);
-//   angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', MyMapsCtrl]);
-// }(window.google));
-'use strict';
+}());'use strict';
+(function (google) {
+  if (google === 'undefined') {
+    return;
+  }
+  // google maps is not found
+  // Maps controller
+  // Used to display google map
+  function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
+    var run = getRunRes;
+    var mapData = [];
+    $scope.gMap = null;
+    var summaries = getSummariesFiveRes;
+    // ----- Create new map ----- //
+    // function createGmap(activityData, summaryMarkerItems)
+    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
+    $scope.gMap = mapData[0];
+    var recreateGmap = function recreateGmap(event, info) {
+      if (typeof mapData[info.listOrder] === 'undefined') {
+        // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
+        getRunById.get(info.activityId).then(function (newData) {
+          mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
+          $scope.gMap = mapData[info.listOrder];
+        });
+      } else {
+        $scope.gMap = mapData[info.listOrder];
+        $scope.$digest();
+      }
+    };
+    // on a broadcasted event from the summary directive
+    // we change the map to the selected activity
+    $scope.$on('summarySelected', recreateGmap);
+  }
+  angular.module('runs').controller('MyMapsCtrl', [
+    '$scope',
+    'getRunRes',
+    'getRunById',
+    'getSummariesFiveRes',
+    'createGmap',
+    MyMapsCtrl
+  ]);  // angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', MyMapsCtrl]);
+}(window.google));'use strict';
 (function () {
   // table of runs
   function TableRunsCtrl(getSummariesTenRes, $scope) {
