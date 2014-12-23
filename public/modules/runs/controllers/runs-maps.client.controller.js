@@ -2,17 +2,9 @@
 
 (function() {
 
-
   // Maps controller
   // Used to display google map
   function MyMapsCtrl($scope, getRunRes, getSummariesFiveRes, leafletData, leafletBoundsHelpers, createGmap) {
-
-    var latLngs = [
-      [ 51.438422, -0.231078 ],
-      [ 51.438361, -0.231197 ],
-      [ 51.438283, -0.23135 ]
-    ];
-
 
     var run = getRunRes;
     var coordinates = run[0].features[0].geometry.coordinates;
