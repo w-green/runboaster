@@ -39,7 +39,7 @@ describe('Gmap directive for click events :', function() {
 
   it('should generate the summaries based on our mock data', function(){
     // match activity id from mock data
-    expect(summariesEl.html()).toMatch(/(Date: Aug 21, 2014 2:27:42 PM)/);
+    expect(summariesEl.html()).toMatch(/(Date: Aug 21, 2014 2:27)/);
   });
 
 });

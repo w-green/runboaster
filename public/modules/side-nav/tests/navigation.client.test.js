@@ -138,18 +138,18 @@ var scope, nav, ctrl, wrapper, wrapper_height, topNav;
 
       });
 
-      it('should check state change', inject(function($rootScope) {
+      // xit('should check state change', inject(function($rootScope) {
 
-        scope.$broadcast('$stateChangeSuccess', {name : 'charts'}, '', {name : ''});
-        $rootScope.$apply();
-        expect(navItem[0].classList.contains('active')).toBe(true);
+      //   scope.$broadcast('$stateChangeSuccess', {name : 'charts'}, '', {name : ''});
+      //   $rootScope.$apply();
+      //   expect(navItem[0].classList.contains('active')).toBe(true);
 
-        scope.$broadcast('$stateChangeSuccess', {name : 'table'}, '', {name : 'charts'});
-        $rootScope.$apply();
-        expect(navItem[0].classList.contains('active')).toBe(false);
-        expect(navItem2[0].classList.contains('active')).toBe(true);
+      //   scope.$broadcast('$stateChangeSuccess', {name : 'table'}, '', {name : 'charts'});
+      //   $rootScope.$apply();
+      //   expect(navItem[0].classList.contains('active')).toBe(false);
+      //   expect(navItem2[0].classList.contains('active')).toBe(true);
 
-      })); // it
+      // })); // it
 
     }); // describe
 
