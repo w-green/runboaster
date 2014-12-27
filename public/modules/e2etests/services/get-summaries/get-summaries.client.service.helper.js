@@ -24,7 +24,10 @@ module.exports = {
       var api = angDoc.injector('runs').get('getSummaries');
 
       api.get(arguments[0]).then(function(data) {
-        callback(data);
+        callback({
+          aSumtotalTime : data[0].totalTime,
+          count : data.length
+        });
       });
 
     }, query); // return

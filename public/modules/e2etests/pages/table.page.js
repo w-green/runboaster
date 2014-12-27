@@ -23,7 +23,7 @@ var getDateByRows = function(nums) {
 
 var tablePage = {
   goto : function goto() {
-      browser.get('/#!/runs');
+      browser.get('/#!/runs/table');
     },
   sortRuns : {
     byDate : function() {

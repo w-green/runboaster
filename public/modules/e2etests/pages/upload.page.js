@@ -9,7 +9,7 @@ var dummyFiles = function(file) {
 
 var uploadPage = {
   goto : function goto() {
-      browser.get('/#!/my/upload/gpx');
+      browser.get('/#!/upload/gpx');
     },
   uploadResultsList : element(by.id('uploadResults')),
   uploadBtn : element(by.id('uploadBtn')),

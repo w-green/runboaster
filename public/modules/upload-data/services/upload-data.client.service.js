@@ -27,7 +27,7 @@ var uploadData = function uploadData($upload, $rootScope) {
       uploadSuccess = function uploadSuccess(message) {
         // file is uploaded successfully
         resultsListItems
-          .push('<li>Successfully uploaded: ' + message.data + '</li>');
+          .push('<li class="upload-file__message--success">Successfully uploaded: ' + message.data + '</li>');
         $rootScope.$apply();
       };
 

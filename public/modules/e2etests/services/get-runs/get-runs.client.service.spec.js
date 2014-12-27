@@ -17,9 +17,8 @@ describe('get runs using getRuns service', function() {
     };
 
     api.get(query)
-      .then(function(summary) {
-        expect(summary).toBeDefined();
-        expect(summary.length).toEqual(3);
+      .then(function(runCount) {
+        expect(runCount).toEqual(3);
       });
 
   });

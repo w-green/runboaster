@@ -18,13 +18,14 @@ describe('Upload Page: ', function() {
   it('should receive a success message if we upload gpx files', function() {
     uploadPage.goto();
     uploadPage.upload.single().then(function waitForResults() {
-      browser.wait(function(){
-        return element(by.css('.bg-success')).isPresent();
+      browser.wait(function() {
+        return element(by.css('.upload-file__message--success')).isPresent();
       }, 1500)
       .then(function(result) {
         expect(result).toBe(true);
       });
     });
+
 
   });
 
@@ -32,8 +33,8 @@ describe('Upload Page: ', function() {
     uploadPage.goto();
     uploadPage.upload.singleFalse().then(function waitForResults() {
       browser.wait(function() {
-        return element(by.css('.bg-danger')).isPresent();
-      })
+        return element(by.css('.upload-file__message--fail')).isPresent();
+      }, 500)
       .then(function(result) {
         expect(result).toBe(true);
       });

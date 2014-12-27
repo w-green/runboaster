@@ -22,7 +22,7 @@ module.exports = {
       var api = angDoc.injector('runs').get('getRuns');
 
       api.get(arguments[0]).then(function(data) {
-        callback(data);
+        callback(data.length);
       });
 
     }, query); // return

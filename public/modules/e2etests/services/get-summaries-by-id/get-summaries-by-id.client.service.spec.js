@@ -20,7 +20,7 @@ describe('gets a summary by id using the getSummariesById service', function() {
     api.get(id)
       .then(function(summary) {
         expect(summary).toBeDefined();
-        expect(summary[0]._id).toMatch(id);
+        expect(summary.id).toMatch(id);
       });
   });
 
@@ -30,7 +30,7 @@ describe('gets a summary by id using the getSummariesById service', function() {
     api.getUsingResource(id)
       .then(function(summary) {
         expect(summary).toBeDefined();
-        expect(summary[0]._id).toMatch(id);
+        expect(summary.id).toMatch(id);
       });
   });
 

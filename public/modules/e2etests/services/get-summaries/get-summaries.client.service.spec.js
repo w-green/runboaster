@@ -17,9 +17,9 @@ describe('get runs summaries using getSummaries service', function() {
     };
 
     api.get(query)
-      .then(function(summary) {
-        expect(summary).toBeDefined();
-        expect(summary.length).toEqual(3);
+      .then(function(summaries) {
+        expect(summaries.aSumtotalTime).toEqual(jasmine.any(Number));
+        expect(summaries.count).toEqual(3);
       });
 
   });

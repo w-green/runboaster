@@ -9,7 +9,7 @@ module.exports = {
       var Authentication = angDoc.injector('users').get('Authentication');
       var api = angDoc.injector('runs').get('getSummariesById');
       api.get(arguments[0]).then(function(data) {
-        callback(data);
+        callback({id : data[0]._id});
       });
     }, id); // return
     // return result;
@@ -24,7 +24,7 @@ module.exports = {
       var Authentication = angDoc.injector('users').get('Authentication');
       var api = angDoc.injector('runs').get('getSummariesById');
       api.resource.query({'user_id' : Authentication.user._id, 'summary_id' : arguments[0]}, function(data) {
-        callback(data);
+        callback({id : data[0]._id});
       });
     }, id); // return
 

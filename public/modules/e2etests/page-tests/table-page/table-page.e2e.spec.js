@@ -20,7 +20,8 @@ describe('Table Page: ', function() {
 
     Q.all(tp.getDateByRows([1, 3, 5])).done(function(rows){
       var data = rows.map(function(val) {
-        return new Date(val);
+        var runDate = val.substr(0, 16);
+        return new Date(runDate);
       });
 
       var firstRow = data[0];
@@ -37,27 +38,36 @@ describe('Table Page: ', function() {
   it('should be able to sort by date', function(){
     tp.goto();
 
-    Q.all(tp.getDateByRows([1, 10])).done(function(rows){
-      var firstRow = rows[0];
-      var lastRow = rows[1];
+    // remove the left nav because selenium can only click on
+    // elements that are visible. If the left nav is visible it hides
+    // the tables' headings
+    browser.executeScript('document.getElementById("body-js").setAttribute("class", "leftNav--toggle");').then(function() {
 
-      tp.sortRuns.byDate()
-        .then(function(){
-          Q.all(tp.getDateByRows([1, 10])).done(function(rows){
-            var newFirstRow = rows[0];
-            var newLastRow = rows[1];
-            expect(firstRow).toMatch(newLastRow);
-            expect(lastRow).toMatch(newFirstRow);
-          });
-        }); // then
+      Q.all(tp.getDateByRows([1, 10])).done(function(rows){
+        var firstRow = rows[0];
+        var lastRow = rows[1];
 
-    }); // Q
+        tp.sortRuns.byDate()
+          .then(function(){
+            Q.all(tp.getDateByRows([1, 10])).done(function(rows){
+              var newFirstRow = rows[0];
+              var newLastRow = rows[1];
+              expect(firstRow).toMatch(newLastRow);
+              expect(lastRow).toMatch(newFirstRow);
+            });
+          }); // then
+
+      }); // Q
+
+    }); // browser.executeScript
 
   }); // it
 
   // ----- TEAR DOWN ----- //
   it('tear down for tests', function(){
-    logout();
+    browser.executeScript('document.getElementById("body-js").setAttribute("class", "");').then(function() {
+      logout();
+    });
   });
 
 });

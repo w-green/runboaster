@@ -19,8 +19,8 @@ describe('gets a run by id using the getRunsById service', function() {
     var id = '5486ccc1026367e431dbd057';
     api.get(id)
       .then(function(run) {
-        expect(run).toBeDefined();
-        expect(run[0]._id).toMatch(id);
+        expect(run.id).toBeDefined();
+        expect(run.id).toMatch(id);
       });
   });
 
@@ -29,8 +29,8 @@ describe('gets a run by id using the getRunsById service', function() {
     var id = '5486ccc1026367e431dbd057';
     api.getUsingResource(id)
       .then(function(run) {
-        expect(run).toBeDefined();
-        expect(run[0]._id).toMatch(id);
+        expect(run.id).toBeDefined();
+        expect(run.id).toMatch(id);
       });
   });
 
