@@ -6,12 +6,13 @@ var setLeafletMapMarkers = function setLeafletMapMarkers() {
     var mapMarkerPrototype =
     {
       id : -1,
+      meters : 0,
       coords : null,
       options : {
-        labelContent : '',
-        draggable : false
-      },
-      icon : '/styles/img/maps/1x1pxtransparent.png'
+        clickable : false,
+        draggable : false,
+        keyboard : false
+      }
     };
 
     // factory pattern for creating map marker items
@@ -29,6 +30,7 @@ var setLeafletMapMarkers = function setLeafletMapMarkers() {
         aMarker = setMarkerItem(options);
         markers.push(aMarker);
         markerCounter =+ 1;
+        return aMarker;
       };
 
     })(markers, setMarkerItem);
@@ -43,18 +45,12 @@ var setLeafletMapMarkers = function setLeafletMapMarkers() {
     function setStartnEndMarkers(runStart, runEnd, createMarkerItem) {
       var starter =
         {
-          coords : runStart,
-          options : {
-            labelContent : 'START',
-          }
+          coords : [runStart.latitude, runStart.longitude]
         };
 
       var finish =
       {
-        coords : runEnd,
-        options : {
-          labelContent : 'FINISH',
-        }
+        coords : [runEnd.latitude, runEnd.longitude]
       };
 
       createMarkerItem(starter);
@@ -68,13 +64,11 @@ var setLeafletMapMarkers = function setLeafletMapMarkers() {
     function createMarkers(summaryMarkerItems) {
       summaryMarkerItems.forEach(function(markerItem) {
         var marker = {};
-        marker.coords = {
-          latitude : markerItem.coords.latitude,
-          longitude : markerItem.coords.longitude
-        };
-        marker.options = {
-          labelContent : markerItem.km + '<br />km'
-        };
+        marker.coords = [
+          markerItem.coords.latitude,
+          markerItem.coords.longitude
+        ];
+        marker.meters = markerItem.km * 1000;
         createMarkerItem(marker);
       });
     }

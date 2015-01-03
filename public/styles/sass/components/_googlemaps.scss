@@ -16,33 +16,33 @@
 }
 
 
-.mapSummaryItem {
-  // color: $theme-font---color;
-  padding: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  font-size: 0.8em;
-  line-height: 0.8em;
+// .mapSummaryItem {
+//   // color: $theme-font---color;
+//   padding: 10px;
+//   margin-bottom: 15px;
+//   cursor: pointer;
+//   font-size: 0.8em;
+//   line-height: 0.8em;
 
-  .label {
-    color: #FFF;
-  }
+//   .label {
+//     color: #FFF;
+//   }
 
-  .icon {
-    display: none;
-  }
+//   .icon {
+//     display: none;
+//   }
 
-  &.active .icon {
-    display: block;
-    position: absolute;
-    right: 15px;
-  }
+//   &.active .icon {
+//     display: block;
+//     position: absolute;
+//     right: 15px;
+//   }
 
-  &:hover {
-    // background-color: $green;
-  }
+//   &:hover {
+//     // background-color: $green;
+//   }
 
-  &.active {
-    // background-color: darken($green, 10%);
-  }
-}
+//   &.active {
+//     // background-color: darken($green, 10%);
+//   }
+// }

@@ -2,7 +2,7 @@
 
 // Mock for jasmine tests.
 
-var mockLatest5Summaries =
+var mockSumsLatest5Service =
 
 [
   {
@@ -578,5 +578,5 @@ var mockLatest5Summaries =
 ];
 
 angular.module('mocks')
-  .value('mockSumsLatest5Service', mockLatest5Summaries);
+  .value('mockSumsLatest5Service', mockSumsLatest5Service);
 

@@ -7,14 +7,14 @@ describe('Create map service : ', function() {
   beforeEach(function() {
 
     // create map module
-    module('gmap');
+    module('leaflet-maps');
 
     // mock modules
     module('mocks');
 
   });
 
-  beforeEach(inject(function(mocksSingleRunData, runsSummaryMockService, createGmap) {
+  beforeEach(inject(function(mocksSingleRunData, runsSummaryMockService, createLeafletMap) {
     var coords;
     var summaryMarkerItems;
 
@@ -22,16 +22,15 @@ describe('Create map service : ', function() {
     summaryMarkerItems = runsSummaryMockService.markerItems;
 
     // use mock data to instantiate map service
-    map = createGmap(coords, summaryMarkerItems);
+    map = createLeafletMap(coords, summaryMarkerItems);
 
   }));
 
 
-  it('should produce a gmap instance', function() {
+  it('should produce a map object instance', function() {
     // expect gmap instance with polylines, markers, center and zoom
     expect(map.polylines).toBeDefined();
     expect(map.markers).toBeDefined();
-    expect(map.center).toBeDefined();
     expect(map.zoom).toBeDefined();
 
   });

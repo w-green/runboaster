@@ -1,50 +1,63 @@
-// 'use strict';
+'use strict';
 
-// var mapSummaries = function($rootScope) {
+var mapSummaries = function($rootScope) {
 
-//   return {
-//     restrict : 'A',
-//     link : function postLink(scope, el, attr) {
-//       var prevTargetEl;
+  return {
+    restrict : 'A',
+    link : function postLink(scope, el, attr) {
+      var prevTargetEl;
 
-//       el.on('click', function(e) {
-//         var divEl = e.target;
-//         var activityId = '';
-//         var listOrder = 0;
-//         getAttr();
+      // el.on('click', function(e) {
+      //   var divEl = e.target;
+      //   var activityId = '';
+      //   var listOrder = 0;
+      //   getAttr();
+      scope.changeActiveMap = function changeActiveMap(e) {
 
-//         function getAttr(){
+        var divEl = e.target;
+        var activityId = '';
+        var listOrder = 0;
+        getAttr();
 
-//           if(divEl.nodeName !== 'DIV') {
-//            divEl = e.target.parentNode;
-//            getAttr();
-//           }
-//           else {
-//            activityId = divEl.getAttribute('data-activity-id') || '';
-//            listOrder = divEl.getAttribute('data-list-order');
+        function getAttr(){
 
-//            if(!prevTargetEl) {
-//             var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
-//             prevTargetEl = firstSumm;
-//            }
-//            prevTargetEl.classList.remove('active');
-//            prevTargetEl = divEl;
+          if(divEl.nodeName !== 'DIV') {
+           divEl = e.target.parentNode;
+           getAttr();
+          }
+          else {
+           activityId = divEl.getAttribute('data-activity-id') || '';
+           listOrder = divEl.getAttribute('data-list-order');
 
-//            divEl.classList.add('active');
+           if(!prevTargetEl) {
+            var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
+            prevTargetEl = firstSumm;
+           }
+           prevTargetEl.classList.remove('active');
+           prevTargetEl = divEl;
 
-//           }
-//         } // getAttr
+           divEl.classList.add('active');
 
-//         // This will trigger a change of the map to the selected run
-//         $rootScope.$broadcast('summarySelected', {'activityId' : activityId, 'listOrder' : listOrder});
+          }
+        } // getAttr
 
-//       });
-//     }
+        // This will trigger a change of the map to the selected run
+        $rootScope
+          .$broadcast(
+            'summarySelected',
+            {'activityId' : activityId, 'listOrder' : listOrder}
+          );
+      };
 
-//   }; // returned object
-
-// }; // mapSummaries
+      el.on('click', scope.changeActiveMap);
 
 
+    }
 
-// angular.module('runs').directive('mapSummaries', ['$rootScope', mapSummaries]);
+  }; // returned object
+
+}; // mapSummaries
+
+
+
+angular.module('runs').directive('mapSummaries', ['$rootScope', mapSummaries]);

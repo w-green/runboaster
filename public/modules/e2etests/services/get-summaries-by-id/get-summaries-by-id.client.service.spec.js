@@ -8,6 +8,7 @@ var api = require('./get-summaries-by-id.client.service.helper.js');
 // NOTE for this you will need to know the Id of a summary in mongo
 
 describe('gets a summary by id using the getSummariesById service', function() {
+  var id = '54a3ca0a06db4abb25595f8f';
 
   // ----- SET UP ----- //
   it('setup for tests', function(){
@@ -16,7 +17,6 @@ describe('gets a summary by id using the getSummariesById service', function() {
 
 
   it('get a summary by an id using the normal get method', function() {
-    var id = '5486ccc4026367e431dbd05c';
     api.get(id)
       .then(function(summary) {
         expect(summary).toBeDefined();
@@ -26,7 +26,6 @@ describe('gets a summary by id using the getSummariesById service', function() {
 
 
   it('get a summary by an id using the resource query', function() {
-    var id = '5486ccc4026367e431dbd05c';
     api.getUsingResource(id)
       .then(function(summary) {
         expect(summary).toBeDefined();

@@ -1,7 +1,7 @@
 'use strict';
 
-describe('Gmap directive for click events :', function() {
-  var mockSumsLatest5Service, scope, ctrl, summariesEl;
+describe('run summaries for map :', function() {
+  var mockSumsLatest5Service, scope, ctrl, summariesEl, rootScope;
 
   beforeEach(function() {
     module('mocks'); // our Mock data
@@ -16,6 +16,7 @@ describe('Gmap directive for click events :', function() {
 
   beforeEach(inject(function($controller, $rootScope, $compile, _mockSumsLatest5Service_) {
     mockSumsLatest5Service = _mockSumsLatest5Service_;
+    rootScope = $rootScope;
 
     var summs =
     '<section data-map-summaries>' +
@@ -37,9 +38,10 @@ describe('Gmap directive for click events :', function() {
 
   }));
 
-  it('should generate the summaries based on our mock data', function(){
+  it('should generate the summaries based on our mock data', function() {
     // match activity id from mock data
     expect(summariesEl.html()).toMatch(/(Date: Aug 21, 2014 2:27)/);
   });
+
 
 });

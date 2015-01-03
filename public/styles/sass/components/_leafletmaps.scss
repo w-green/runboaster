@@ -1,0 +1,64 @@
+// ----- Leaflet map ----- //
+
+.leaflet-map__marker-icons {
+  width: 50px !important;
+  min-height: 27px !important;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  line-height: 15px;
+  padding: 3px;
+  background-color: blue;
+  border-radius: 0 10px 10px;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
+
+.leaflet-map__marker-icons--start {
+  background-color: $green;
+}
+
+.leaflet-map__marker-icons--finish {
+  margin-top: -30px !important;
+  border-radius: 10px 10px 10px 0;
+  background-color: #000;
+}
+
+
+.leaflet-map {
+  border: 4px solid #FFF;
+}
+
+// ----- Summary items ----- //
+
+.mapSummaryItem {
+  // color: $theme-font---color;
+  padding: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-size: 0.8em;
+  line-height: 0.8em;
+
+  .label {
+    color: #FFF;
+  }
+
+  .icon {
+    display: none;
+  }
+
+  &.active .icon {
+    display: block;
+    position: absolute;
+    right: 15px;
+  }
+
+  &:hover {
+    // background-color: $green;
+  }
+
+  &.active {
+    // background-color: darken($green, 10%);
+  }
+}

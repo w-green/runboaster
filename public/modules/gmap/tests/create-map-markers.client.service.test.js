@@ -25,7 +25,6 @@ describe('Create map markers : ', function() {
       };
 
     summaryMarkerItems = runsSummaryMockService.markerItems;
-    // console.log(summaryMarkerItems);
     markers = setMapMarkers(runStart, runEnd, summaryMarkerItems);
 
   }));
