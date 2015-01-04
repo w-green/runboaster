@@ -12,8 +12,8 @@
       replace : false,
       link : function(scope, elem, attr) {
         var mapData = scope.LMap;
-        var boundsMarkers = [];
         var iconClass = 'leaflet-map__marker-icons';
+
 
         scope.mapContainer = L.map(elem[0], {});
 
@@ -25,34 +25,48 @@
           })
           .addTo(scope.mapContainer);
 
-        boundsMarkers = _.pluck(mapData.markers, 'coords');
+        function setMapData(mapData) {
+          setBounds(mapData);
+          setPolylines(mapData);
+          setMarkers(mapData);
+        }
 
-        // add bounds
-        scope.mapContainer.fitBounds(boundsMarkers);
+        function setBounds(mapData) {
+          var boundsMarkers = [];
 
-        // add polylines
-        L.multiPolyline(mapData.polylines, {color: 'red'})
-          .addTo(scope.mapContainer);
+          boundsMarkers = _.pluck(mapData.markers, 'coords');
 
-        // add start marker
-        createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start')
-          .addTo(scope.mapContainer);
+          // add bounds
+          scope.mapContainer.fitBounds(boundsMarkers);
+        }
 
-        // add finish marker
-        createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish')
-          .addTo(scope.mapContainer);
+        function setPolylines(mapData) {
+          // add polylines
+          L.multiPolyline(mapData.polylines, {color: 'red'})
+            .addTo(scope.mapContainer);
+        }
 
-        // add other markers
-        mapData.markers
-          .filter(function(marker, i, arry) {
-            return marker.meters > 0;
-          })
-          .forEach(function(marker, i) {
-            var title = (marker.meters / 1000) + ' km';
-            createMarkerIcon(marker, title)
-              .addTo(scope.mapContainer);
-          });
+        function setMarkers(mapData) {
+          // add start marker
+          createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start')
+            .addTo(scope.mapContainer);
 
+          // add finish marker
+          createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish')
+            .addTo(scope.mapContainer);
+
+          // add other markers
+          mapData.markers
+            .filter(function(marker, i, arry) {
+              return marker.meters > 0;
+            })
+            .forEach(function(marker, i) {
+              var title = (marker.meters / 1000) + ' km';
+              createMarkerIcon(marker, title)
+                .addTo(scope.mapContainer);
+            });
+
+        }
 
         function createMarkerIcon(marker, title, extraClass) {
           var iconClassNames = extraClass === undefined ? iconClass : iconClass + ' ' + extraClass;
@@ -66,6 +80,19 @@
           return L.marker(marker.coords, marker.options);
         }
 
+
+        // if map data changes recreate map
+        scope.$watch('LMap', createMap);
+
+        function createMap(mapData) {
+          setMapData(mapData);
+        }
+
+        scope.$on('destroy', function() {
+          mapData = null;
+          scope.mapContainer = null;
+        });
+
       } // link
 
 
@@ -75,3 +102,5 @@
 
   angular.module('leaflet-maps').directive('leafletMap',['setLeafletMapPolylines', 'createLeafletMap', leafletMap]);
 })(window.L, window._);
+
+

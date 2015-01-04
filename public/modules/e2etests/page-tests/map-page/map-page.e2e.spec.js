@@ -35,14 +35,6 @@ describe('Map Page: ', function() {
 
   });
 
-  // it('should update the map with the map that matches the clicked on summary', function() {
-
-
-
-  // });
-
-
-
   // ----- TEAR DOWN ----- //
   it('tear down for tests', function() {
     browser.executeScript('document.getElementById("body-js").setAttribute("class", "");').then(function() {

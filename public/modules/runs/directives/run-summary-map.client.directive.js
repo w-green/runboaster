@@ -4,14 +4,9 @@ var mapSummaries = function($rootScope) {
 
   return {
     restrict : 'A',
-    link : function postLink(scope, el, attr) {
+    link : function postLink(scope, elem, attr) {
       var prevTargetEl;
 
-      // el.on('click', function(e) {
-      //   var divEl = e.target;
-      //   var activityId = '';
-      //   var listOrder = 0;
-      //   getAttr();
       scope.changeActiveMap = function changeActiveMap(e) {
 
         var divEl = e.target;
@@ -49,7 +44,8 @@ var mapSummaries = function($rootScope) {
           );
       };
 
-      el.on('click', scope.changeActiveMap);
+      // add an event listener to trigger change of map
+      elem.on('click', scope.changeActiveMap);
 
 
     }

@@ -28,7 +28,6 @@ describe('Create map service : ', function() {
 
 
   it('should produce a map object instance', function() {
-    // expect gmap instance with polylines, markers, center and zoom
     expect(map.polylines).toBeDefined();
     expect(map.markers).toBeDefined();
     expect(map.zoom).toBeDefined();

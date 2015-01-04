@@ -7,6 +7,7 @@ exports.config = {
     navigation: './public/modules/e2etests/page-tests/navigation/**/*.spec.js',
     uploadPage: './public/modules/e2etests/page-tests/upload-page/**/*.spec.js',
     tablePage: './public/modules/e2etests/page-tests/table-page/**/*.spec.js',
+    mapPage: './public/modules/e2etests/page-tests/map-page/**/*.spec.js',
     services: ['./public/modules/e2etests/services/**/*.spec.js'],
     servicesGetRunById: './public/modules/e2etests/services/get-runs-by-id/**/*.spec.js',
     servicesGetRuns: './public/modules/e2etests/services/get-runs/**/*.spec.js',

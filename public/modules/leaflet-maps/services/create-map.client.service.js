@@ -51,4 +51,4 @@ var createLeafletMap = function createLeafletMap(setLeafletMapPolylines, setLeaf
 
 };
 
-angular.module('leaflet-maps').service('createLeafletMap', ['setLeafletMapPolylines', 'setLeafletMapMarkers', createLeafletMap]);
+angular.module('leaflet-maps').factory('createLeafletMap', ['setLeafletMapPolylines', 'setLeafletMapMarkers', createLeafletMap]);
