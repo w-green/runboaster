@@ -9,10 +9,8 @@ var ApplicationConfiguration = function () {
         'ngAnimate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils',
-        'uiGmapgoogle-maps'
+        'ui.utils'
       ];
-    // var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'ui.utils'];
     // Add a new vertical module
     var registerModule = function (moduleName, dependencies) {
       // Create angular module
@@ -77,18 +75,16 @@ ApplicationConfiguration.registerModule('dashboard', [
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('data-selector');'use strict';
-ApplicationConfiguration.registerModule('gmap');'use strict';
+ApplicationConfiguration.registerModule('leaflet-maps');'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('mediator');'use strict';
 // Use Applicaion configuration module to register a new module
-// ApplicationConfiguration.registerModule('runs', ['ngResource', 'ui.router', 'uiGmapgoogle-maps', 'gmap', 'users', 'charts']);
 ApplicationConfiguration.registerModule('runs', [
   'ngResource',
   'ui.router',
   'users',
   'charts',
-  'leaflet-directive',
-  'gmap'
+  'leaflet-maps'
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('left-nav', [
@@ -1288,18 +1284,89 @@ angular.module('customCore').directive('mainContent', [
   // var addListItem
   angular.module('data-selector').factory('addListItem', [addListItem]);
 }());'use strict';
-var setMapMarkers = function setMapMarkers() {
+(function (leaflet, lodash) {
+  var L = leaflet;
+  var _ = lodash;
+  var leafletMap = function (setLeafletMapPolylines, createLeafletMap) {
+    return {
+      restrict: 'AE',
+      replace: false,
+      link: function (scope, elem, attr) {
+        var mapData = scope.LMap;
+        var iconClass = 'leaflet-map__marker-icons';
+        scope.mapContainer = L.map(elem[0], {});
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy;',
+          maxZoom: 18
+        }).addTo(scope.mapContainer);
+        function setMapData(mapData) {
+          setBounds(mapData);
+          setPolylines(mapData);
+          setMarkers(mapData);
+        }
+        function setBounds(mapData) {
+          var boundsMarkers = [];
+          boundsMarkers = _.pluck(mapData.markers, 'coords');
+          // add bounds
+          scope.mapContainer.fitBounds(boundsMarkers);
+        }
+        function setPolylines(mapData) {
+          // add polylines
+          L.multiPolyline(mapData.polylines, { color: 'red' }).addTo(scope.mapContainer);
+        }
+        function setMarkers(mapData) {
+          // add start marker
+          createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start').addTo(scope.mapContainer);
+          // add finish marker
+          createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish').addTo(scope.mapContainer);
+          // add other markers
+          mapData.markers.filter(function (marker, i, arry) {
+            return marker.meters > 0;
+          }).forEach(function (marker, i) {
+            var title = marker.meters / 1000 + ' km';
+            createMarkerIcon(marker, title).addTo(scope.mapContainer);
+          });
+        }
+        function createMarkerIcon(marker, title, extraClass) {
+          var iconClassNames = extraClass === undefined ? iconClass : iconClass + ' ' + extraClass;
+          var customIcon = L.divIcon({
+              className: iconClassNames,
+              html: '<span>' + title + '</span>'
+            });
+          marker.options.icon = customIcon;
+          return L.marker(marker.coords, marker.options);
+        }
+        // if map data changes recreate map
+        scope.$watch('LMap', createMap);
+        function createMap(mapData) {
+          setMapData(mapData);
+        }
+        scope.$on('destroy', function () {
+          mapData = null;
+          scope.mapContainer = null;
+        });
+      }  // link
+    };
+  };
+  angular.module('leaflet-maps').directive('leafletMap', [
+    'setLeafletMapPolylines',
+    'createLeafletMap',
+    leafletMap
+  ]);
+}(window.L, window._));'use strict';
+var setLeafletMapMarkers = function setLeafletMapMarkers() {
   return function (runStart, runEnd, summaryMarkerItems) {
     var markers = [];
     // the revealed markers
     var mapMarkerPrototype = {
         id: -1,
+        meters: 0,
         coords: null,
         options: {
-          labelContent: '',
-          draggable: false
-        },
-        icon: '/styles/img/maps/1x1pxtransparent.png'
+          clickable: false,
+          draggable: false,
+          keyboard: false
+        }
       };
     // factory pattern for creating map marker items
     var setMarkerItem = function markerItem(options) {
@@ -1314,6 +1381,7 @@ var setMapMarkers = function setMapMarkers() {
           aMarker = setMarkerItem(options);
           markers.push(aMarker);
           markerCounter = +1;
+          return aMarker;
         };
       }(markers, setMarkerItem);
     // sets all map markers
@@ -1322,12 +1390,16 @@ var setMapMarkers = function setMapMarkers() {
     // requires createMarkerItem()
     function setStartnEndMarkers(runStart, runEnd, createMarkerItem) {
       var starter = {
-          coords: runStart,
-          options: { labelContent: 'START' }
+          coords: [
+            runStart.latitude,
+            runStart.longitude
+          ]
         };
       var finish = {
-          coords: runEnd,
-          options: { labelContent: 'FINISH' }
+          coords: [
+            runEnd.latitude,
+            runEnd.longitude
+          ]
         };
       createMarkerItem(starter);
       createMarkerItem(finish);
@@ -1337,11 +1409,11 @@ var setMapMarkers = function setMapMarkers() {
     function createMarkers(summaryMarkerItems) {
       summaryMarkerItems.forEach(function (markerItem) {
         var marker = {};
-        marker.coords = {
-          latitude: markerItem.coords.latitude,
-          longitude: markerItem.coords.longitude
-        };
-        marker.options = { labelContent: markerItem.km + '<br />km' };
+        marker.coords = [
+          markerItem.coords.latitude,
+          markerItem.coords.longitude
+        ];
+        marker.meters = markerItem.km * 1000;
         createMarkerItem(marker);
       });
     }
@@ -1353,77 +1425,31 @@ var setMapMarkers = function setMapMarkers() {
   };  // returned function
 };
 // setMapMarkers
-angular.module('gmap').factory('setMapMarkers', [setMapMarkers]);'use strict';
-(function (lodash) {
-  var _ = lodash;
-  var setMapPolylines = function () {
-    var polylinePrototype;
-    var paths = [];
-    // an array of longitude and latitude objects
-    var numPaths;
-    var polylines = [];
-    // prototype
-    polylinePrototype = {
-      id: -1,
-      path: [],
-      stroke: {
-        color: '#FF0000',
-        weight: 3
-      },
-      visible: true,
-      geodesic: true,
-      editable: false,
-      draggable: false,
-      static: true
-    };
-    // requires paths array - check var declaration for description
-    // params coords - an array of coord objects
-    function createPaths(coords) {
-      coords.forEach(function (val) {
-        if (_.isArray(val)) {
-          var newPath = [];
-          val.forEach(function (val) {
-            var latLong = {};
-            latLong.latitude = val[1];
-            latLong.longitude = val[0];
-            newPath.push(latLong);
-          });
-          paths.push(newPath);
-        }
+angular.module('leaflet-maps').factory('setLeafletMapMarkers', [setLeafletMapMarkers]);'use strict';
+(function () {
+  var setLeafletMapPolylines = function () {
+    return function setMapPolylines(coordinates) {
+      var polylines = [];
+      coordinates.forEach(function (coords) {
+        var newPolyline = [];
+        var newCoord;
+        coords.map(function (data) {
+          newCoord = [
+            data[1],
+            data[0]
+          ];
+          newPolyline.push(newCoord);
+        });
+        polylines.push(newPolyline);
       });
-      numPaths = paths.length;
-    }
-    function setPolyline(options) {
-      return angular.extend(Object.create(polylinePrototype), options);
-    }
-    // requires setPolyline and paths
-    function createPolylines() {
-      for (var i = 0; i < numPaths; i++) {
-        var newPolyLine = {};
-        newPolyLine.id = i + 1;
-        // start at 1
-        newPolyLine.path = paths[i];
-        var polyline = setPolyline(newPolyLine);
-        polylines.push(polyline);
-      }
-    }
-    return function setMapPolylines(coords) {
-      paths.length = 0;
-      // resetting
-      polylines.length = 0;
-      createPaths(coords);
-      createPolylines();
-      return {
-        paths: paths,
-        polylines: polylines
-      };
+      return polylines;
     };
   };
-  angular.module('gmap').factory('setMapPolylines', [setMapPolylines]);
-}(window._));'use strict';
+  angular.module('leaflet-maps').factory('setLeafletMapPolylines', [setLeafletMapPolylines]);
+}());'use strict';
 // activityData is used for markers start and end and also for the polylines
 // summary is used for markers
-var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
+var createLeafletMap = function createLeafletMap(setLeafletMapPolylines, setLeafletMapMarkers) {
   return function (activityData, summaryMarkerItems) {
     var polylines;
     var markers;
@@ -1433,42 +1459,39 @@ var createGmap = function createGmap(setMapPolylines, setMapMarkers) {
     // coords used for markers
     var activityEndCoords;
     // coords used for markers
-    var center;
     var zoom = 13;
-    var getpolylines;
-    getpolylines = setMapPolylines(activityData);
-    polylines = getpolylines.polylines;
-    paths = getpolylines.paths;
-    setStartnEnd(paths.length);
+    polylines = setLeafletMapPolylines(activityData);
+    setStartnEnd(polylines.length);
     // sets activityStartCoords and activityEndCoords
     function setStartnEnd(numPaths) {
       var last;
-      if (paths[0][0] !== 'undefined') {
-        activityStartCoords = paths[0][0];
+      if (polylines[0][0] !== 'undefined') {
+        activityStartCoords = {
+          'latitude': polylines[0][0][0],
+          'longitude': polylines[0][0][1]
+        };
         if (numPaths !== 'undefined') {
-          last = paths[numPaths - 1].length - 1;
-          activityEndCoords = paths[numPaths - 1][last];
+          last = polylines[numPaths - 1].length - 1;
+          activityEndCoords = {
+            'latitude': polylines[numPaths - 1][last][0],
+            'longitude': polylines[numPaths - 1][last][1]
+          };
         }
       }
     }
-    markers = setMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
-    center = {
-      latitude: paths[0][0].latitude,
-      longitude: paths[0][0].longitude
-    };
-    var gmap = {
+    markers = setLeafletMapMarkers(activityStartCoords, activityEndCoords, summaryMarkerItems);
+    var leafletMap = {
         polylines: polylines,
         markers: markers,
-        center: center,
         zoom: zoom
       };
-    return gmap;
+    return leafletMap;
   };
 };
-angular.module('gmap').service('createGmap', [
-  'setMapPolylines',
-  'setMapMarkers',
-  createGmap
+angular.module('leaflet-maps').factory('createLeafletMap', [
+  'setLeafletMapPolylines',
+  'setLeafletMapMarkers',
+  createLeafletMap
 ]);(function (lodash) {
   'use strict';
   var _ = lodash;
@@ -1637,7 +1660,7 @@ angular.module('runs').config([
           controller: 'MapSummaryCtrl'
         },
         'columnTwo@mapRuns': {
-          templateUrl: 'modules/runs/views/run-map-leaflet.client.view.html',
+          templateUrl: 'modules/leaflet-maps/views/leaflet-map.client.view.html',
           controller: 'MyMapsCtrl'
         }
       }
@@ -1672,136 +1695,60 @@ angular.module('runs').config([
     MapSummaryCtrl
   ]);
 }());'use strict';
-(function (google) {
-  if (google === 'undefined') {
-    return;
-  }
-  // google maps is not found
+(function (leaflet) {
+  var L = leaflet;
   // Maps controller
-  // Used to display google map
-  function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
-    var run = getRunRes;
-    var mapData = [];
-    $scope.gMap = null;
-    var summaries = getSummariesFiveRes;
-    // ----- Create new map ----- //
-    // function createGmap(activityData, summaryMarkerItems)
-    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
-    $scope.gMap = mapData[0];
-    var recreateGmap = function recreateGmap(event, info) {
-      if (typeof mapData[info.listOrder] === 'undefined') {
-        // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
-        getRunById.get(info.activityId).then(function (newData) {
-          mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
-          $scope.gMap = mapData[info.listOrder];
-        });
-      } else {
-        $scope.gMap = mapData[info.listOrder];
-        $scope.$digest();
-      }
-    };
-    // on a broadcasted event from the summary directive
-    // we change the map to the selected activity
-    $scope.$on('summarySelected', recreateGmap);
-  }
-  angular.module('runs').controller('MyMapsCtrl', [
-    '$scope',
-    'getRunRes',
-    'getRunById',
-    'getSummariesFiveRes',
-    'createGmap',
-    MyMapsCtrl
-  ]);  // angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', MyMapsCtrl]);
-}(window.google));'use strict';
-(function () {
-  // Maps controller
-  // Used to display google map
-  function MyMapsCtrl($scope, getRunRes, getSummariesFiveRes, leafletData, leafletBoundsHelpers, createGmap) {
+  function MyMapsCtrl($rootScope, $scope, $q, getRunRes, getSummariesFiveRes, createLeafletMap, getRunById) {
     var run = getRunRes;
     var coordinates = run[0].features[0].geometry.coordinates;
-    var polylines = [];
-    coordinates.forEach(function (coords) {
-      var newPolyline = [];
-      var newCoord;
-      coords.map(function (data) {
-        newCoord = [];
-        newCoord.push(data[1]);
-        newCoord.push(data[0]);
-        newPolyline.push(newCoord);
-      });
-      polylines.push(newPolyline);
-    });
-    console.log(polylines);
-    // console.log(run[0].features[0].geometry.coordinates);
-    var mapData = [];
-    $scope.gMap = null;
     var summaries = getSummariesFiveRes;
+    var mapData = [];
+    $scope.LMap = null;
     // ----- Create new map ----- //
-    // function createGmap(activityData, summaryMarkerItems)
-    mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
-    $scope.gMap = mapData[0];
-    var map = L.map('map', {});
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data &copy;',
-      maxZoom: 18
-    }).addTo(map);
-    var markers = [];
-    // add the markers
-    mapData[0].markers.forEach(function (marker) {
-      var coord = [
-          marker.coords.latitude,
-          marker.coords.longitude
-        ];
-      markers.push(coord);
-      L.marker(coord).addTo(map);
+    mapData[0] = createLeafletMap(coordinates, summaries[0].markerItems);
+    // sets the map that the Leaflet map directive uses
+    $scope.LMap = mapData[0];
+    // @returns a new map
+    $scope.getNewMap = function getNewMap(id, orderNum) {
+      var selectedRun = getRunById.get(id);
+      var newMap;
+      var deferred = $q.defer();
+      selectedRun.then(function (run) {
+        var selectedRunCoords = run[0].features[0].geometry.coordinates;
+        newMap = createLeafletMap(selectedRunCoords, summaries[orderNum].markerItems);
+        deferred.resolve(newMap);
+      });
+      return deferred.promise;
+    };
+    function changeMap(event, info) {
+      if (!mapData[info.listOrder]) {
+        $scope.getNewMap(info.activityId, info.listOrder).then(function (map) {
+          mapData[info.listOrder] = map;
+          $scope.LMap = mapData[info.listOrder];
+        });
+      } else {
+        $scope.LMap = mapData[info.listOrder];
+        $scope.$digest();
+      }
+      $rootScope.$digest();
+    }
+    $scope.$on('summarySelected', changeMap);
+    $scope.$on('destroy', function () {
+      mapData = [];
     });
-    map.fitBounds(markers);
-    var polyline = L.multiPolyline(polylines, { color: 'red' }).addTo(map);
   }
+  // MyMapsCtrl
   angular.module('runs').controller('MyMapsCtrl', [
+    '$rootScope',
     '$scope',
+    '$q',
     'getRunRes',
     'getSummariesFiveRes',
-    'leafletData',
-    'leafletBoundsHelpers',
-    'createGmap',
+    'createLeafletMap',
+    'getRunById',
     MyMapsCtrl
-  ]);  // angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', MyMapsCtrl]);
-}());  // 'use strict';
-       // (function(google) {
-       //   if (google === 'undefined') {return;} // google maps is not found
-       //   // Maps controller
-       //   // Used to display google map
-       //   function MyMapsCtrl($scope, getRunRes, getRunById, getSummariesFiveRes, createGmap) {
-       //     var run = getRunRes;
-       //     var mapData = [];
-       //     $scope.gMap = null;
-       //     var summaries = getSummariesFiveRes;
-       //     // ----- Create new map ----- //
-       //     // function createGmap(activityData, summaryMarkerItems)
-       //     mapData[0] = createGmap(run[0].features[0].geometry.coordinates, summaries[0].markerItems);
-       //     $scope.gMap = mapData[0];
-       //     var recreateGmap = function recreateGmap(event, info) {
-       //       if(typeof mapData[info.listOrder] === 'undefined') {
-       //         // getDataById.get('548951ce4c29a6090ce92130').$promise.then(function(newData){
-       //         getRunById.get(info.activityId).then(function(newData){
-       //           mapData[info.listOrder] = createGmap(newData[0].features[0].geometry.coordinates, summaries[info.listOrder].markerItems);
-       //           $scope.gMap = mapData[info.listOrder];
-       //         });
-       //       }
-       //       else {
-       //         $scope.gMap = mapData[info.listOrder];
-       //         $scope.$digest();
-       //       }
-       //     };
-       //     // on a broadcasted event from the summary directive
-       //     // we change the map to the selected activity
-       //     $scope.$on('summarySelected', recreateGmap);
-       //   }
-       //   angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', 'createGmap', MyMapsCtrl]);
-       //   // angular.module('runs').controller('MyMapsCtrl', ['$scope', 'getRunRes', 'getRunById', 'getSummariesFiveRes', MyMapsCtrl]);
-       // }(window.google));
-'use strict';
+  ]);
+}(window.L));'use strict';
 (function () {
   // table of runs
   function TableRunsCtrl(getSummariesTenRes, $scope) {
@@ -1902,42 +1849,50 @@ angular.module('runs').config([
     'mediator',
     mapDataSelector
   ]);
-}());// 'use strict';
-// var mapSummaries = function($rootScope) {
-//   return {
-//     restrict : 'A',
-//     link : function postLink(scope, el, attr) {
-//       var prevTargetEl;
-//       el.on('click', function(e) {
-//         var divEl = e.target;
-//         var activityId = '';
-//         var listOrder = 0;
-//         getAttr();
-//         function getAttr(){
-//           if(divEl.nodeName !== 'DIV') {
-//            divEl = e.target.parentNode;
-//            getAttr();
-//           }
-//           else {
-//            activityId = divEl.getAttribute('data-activity-id') || '';
-//            listOrder = divEl.getAttribute('data-list-order');
-//            if(!prevTargetEl) {
-//             var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
-//             prevTargetEl = firstSumm;
-//            }
-//            prevTargetEl.classList.remove('active');
-//            prevTargetEl = divEl;
-//            divEl.classList.add('active');
-//           }
-//         } // getAttr
-//         // This will trigger a change of the map to the selected run
-//         $rootScope.$broadcast('summarySelected', {'activityId' : activityId, 'listOrder' : listOrder});
-//       });
-//     }
-//   }; // returned object
-// }; // mapSummaries
-// angular.module('runs').directive('mapSummaries', ['$rootScope', mapSummaries]);
-'use strict';
+}());'use strict';
+var mapSummaries = function ($rootScope) {
+  return {
+    restrict: 'A',
+    link: function postLink(scope, elem, attr) {
+      var prevTargetEl;
+      scope.changeActiveMap = function changeActiveMap(e) {
+        var divEl = e.target;
+        var activityId = '';
+        var listOrder = 0;
+        getAttr();
+        function getAttr() {
+          if (divEl.nodeName !== 'DIV') {
+            divEl = e.target.parentNode;
+            getAttr();
+          } else {
+            activityId = divEl.getAttribute('data-activity-id') || '';
+            listOrder = divEl.getAttribute('data-list-order');
+            if (!prevTargetEl) {
+              var firstSumm = divEl.parentNode.querySelector('div.mapSummaryItem');
+              prevTargetEl = firstSumm;
+            }
+            prevTargetEl.classList.remove('active');
+            prevTargetEl = divEl;
+            divEl.classList.add('active');
+          }
+        }
+        // getAttr
+        // This will trigger a change of the map to the selected run
+        $rootScope.$broadcast('summarySelected', {
+          'activityId': activityId,
+          'listOrder': listOrder
+        });
+      };
+      // add an event listener to trigger change of map
+      elem.on('click', scope.changeActiveMap);
+    }
+  };  // returned object
+};
+// mapSummaries
+angular.module('runs').directive('mapSummaries', [
+  '$rootScope',
+  mapSummaries
+]);'use strict';
 (function (lodash, sorttable) {
   var _ = lodash;
   var runsSummaryTable = function runsSummaryTable($filter) {
@@ -2529,7 +2484,7 @@ angular.module('upload-data').config([
         // Send them to the web worker
         uploadSuccess = function uploadSuccess(message) {
           // file is uploaded successfully
-          resultsListItems.push('<li>Successfully uploaded: ' + message.data + '</li>');
+          resultsListItems.push('<li class="upload-file__message--success">Successfully uploaded: ' + message.data + '</li>');
           $rootScope.$apply();
         };
         upload = function upload(file) {
