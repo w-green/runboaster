@@ -1,5 +1,17 @@
 <!-- top navigation -->
 <nav data-top-nav class="top-nav navbar navbar-fixed-top" id="top-nav-js">
+    <div class="top-nav__left">
+
+      <div data-ng-hide="authentication.user" class="menu-icon">
+        <span ui-sref="home" class="fa fa-lg fa-fw fa-home" title="Home"></span>
+      </div>
+
+      <div data-ng-hide="authentication.user" class="menu-icon">
+        <span ui-sref="about" class="fa fa-lg fa-fw fa-info-circle" title="Home"></span>
+      </div>
+
+   </div>
+
 
   <div class="pull-right">
 
@@ -11,7 +23,7 @@
       <a ui-sref="charts" class="fa fa-lg fa-fw fa-plus toggleIcon"></a>
     </div>
 
-    <div id="menu-icon-js" data-top-nav-menu-icon class="menu-icon">
+    <div id="menu-icon-js" data-ng-show="authentication.user" data-top-nav-menu-icon class="menu-icon">
       <a class="fa fa-lg fa-fw fa-bars"></a>
     </div>
   </div>

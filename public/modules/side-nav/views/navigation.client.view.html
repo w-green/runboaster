@@ -1,24 +1,16 @@
 <div data-side-nav>
 
-  <side:nav:item data-view="home" data-ng-hide="authentication.user" data-icon="fa fa-lg fa-fw fa-home" title="Home"></side:nav:item>
+  <side:nav:item data-view="tableRuns" data-icon="fa fa-lg fa-fw fa-table" title="Table"></side:nav:item>
 
-  <side:nav:item data-ng-show="authentication.user" data-view="tableRuns" data-icon="fa fa-lg fa-fw fa-table" title="Table"></side:nav:item>
+  <side:nav:item data-view="mapRuns" data-icon="fa fa-lg fa-fw fa-map-marker" title="Map"></side:nav:item>
 
-  <side:nav:item data-ng-show="authentication.user" data-view="mapRuns" data-icon="fa fa-lg fa-fw fa-map-marker" title="Map"></side:nav:item>
-
-  <side:nav:group data-ng-show="authentication.user" data-icon="fa fa-lg fa-fw fa-line-chart" title="Charts" data-has-children="true" data-has-children-icon="fa fa-lg fa-fw fa-angle-left">
+  <side:nav:group data-icon="fa fa-lg fa-fw fa-line-chart" title="Charts" data-has-children="true" data-has-children-icon="fa fa-lg fa-fw fa-angle-left">
     <side:nav:item data-icon="fa fa-lg fa-fw fa-area-chart" data-view="charts" title="Custom Charts" ></side:nav:item>
     <side:nav:item data-icon="fa fa-lg fa-fw fa-bar-chart" data-view="c3-charts" title="C3.js"></side:nav:item>
   </side:nav:group>
 
-  <side:nav:item data-ng-show="authentication.user" data-view="upload" data-icon="fa fa-lg fa-fw fa-upload" title="Upload Runs"></side:nav:item>
+  <side:nav:item data-view="upload" data-icon="fa fa-lg fa-fw fa-upload" title="Upload Runs"></side:nav:item>
 
-  <side:nav:item data-view="signin" data-ng-hide="authentication.user" ng-class="{active: $uiRoute}" data-icon="fa fa-lg fa-fw fa-sign-in" title="Sign In"></side:nav:item>
-
-  <side:nav:item data-view="signup" data-ng-hide="authentication.user" ng-class="{active: $uiRoute}" data-icon="fa fa-lg fa-fw fa-key" title="Sign Up"></side:nav:item>
-
-  <side:nav:item data-ng-show="authentication.user" data-icon="fa fa-lg fa-fw fa-sign-out" data-view="signout" title="Signout"></side:nav:item>
-
-  <side:nav:item data-view="about" ng-class="{active: $uiRoute}" data-icon="fa fa-lg fa-fw fa-info-circle" title="About"></side:nav:item>
+  <side:nav:item data-icon="fa fa-lg fa-fw fa-sign-out" data-view="signout" title="Signout"></side:nav:item>
 
 </div>

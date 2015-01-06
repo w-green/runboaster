@@ -49,12 +49,12 @@
 	<![endif]-->
 </head>
 
-<body class="ng-cloak dataselector-list-chart--open dataselector-list-map--open" id="body-js">
+<body data-body class="ng-cloak dataselector-list-chart--open dataselector-list-map--open" id="body-js" ng-class="{'leftNav--toggle' : !authentication.user}">
 	<header data-ng-include="'/modules/top-nav/views/top-nav.client.view.html'"></header>
 
 
   <!-- side nav : Navigation area -->
-  <aside id="left-nav-js" class="left-nav" data-ng-include="'/modules/side-nav/views/navigation.client.view.html'"></aside>
+  <aside data-side-nav-container data-ng-show="authentication.user" data-ng-include="'/modules/side-nav/views/navigation.client.view.html'" id="left-nav-js" class="left-nav"></aside>
   <!-- END side nav : Navigation area -->
 
 	<section data-main-content class="content main-content" id="main-content-js">
