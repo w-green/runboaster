@@ -49,7 +49,7 @@
 	<![endif]-->
 </head>
 
-<body data-body class="ng-cloak dataselector-list-chart--open dataselector-list-map--open" id="body-js" ng-class="{'leftNav--toggle' : !authentication.user}">
+<body data-body class="ng-cloak dataselector-list-chart--open dataselector-list-map--open" id="body-js" ng-class="{'leftNav--toggle is-not-logged-in' : !authentication.user, 'about-state' : aboutState}" >
 	<header data-ng-include="'/modules/top-nav/views/top-nav.client.view.html'"></header>
 
 
