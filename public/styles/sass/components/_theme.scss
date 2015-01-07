@@ -3,6 +3,14 @@ body {
   background-color: $theme-bg---color;
 }
 
+body.is-not-logged-in {
+  background-color: $theme-bg--not-logged-in---color;
+}
+
+body.about-state {
+  background-color: #FFF;
+}
+
 .main-content__heading {
   color: $theme-font---color;
 }

@@ -15,11 +15,15 @@ body {
 // ----- components ----- //
 @import "components/_typography.scss";
 @import "components/_theme.scss";
+@import "components/_buttons.scss";
+@import "components/_icons.scss";
+@import "components/_wg-carousel.scss";
 
 @import "components/_main-content.scss";
 @import "components/_top-nav.scss";
 @import "components/_left-nav.scss";
 
+@import "components/_articles.scss";
 @import "components/_dashboard.scss";
 @import "components/_leafletmaps.scss";
 // @import "components/_googlemaps.scss";

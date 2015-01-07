@@ -16,10 +16,9 @@ $top-nav-border: 3px solid $main-content-bg---color;
     cursor: pointer;
     float: left;
     user-select: none; // disables double click selection of element.
-  }
-  .fa-bars {
     color: #FFF;
   }
+
 }
 
 // ----- Overide Bootstrap ----- //
@@ -71,4 +70,10 @@ a.toggleIcon
 }
 
 
+// NOT LOGGED IN
 
+body.is-not-logged-in {
+  .menu-icon {
+    color: #000;
+  }
+}

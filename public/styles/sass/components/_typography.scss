@@ -29,6 +29,14 @@ body {
   color: $green-pale;
 }
 
+body.is-not-logged-in {
+  color: #FFF;
+}
+
+body.about-state {
+  color: #282828;
+}
+
 nav {
   a {
     color: #FFF;
