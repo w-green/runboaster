@@ -5,9 +5,17 @@
   var setLeafletMapPolylines = function() {
 
     return function setMapPolylines(coordinates) {
+
       var polylines = [];
 
-      coordinates.forEach(function(coords) {
+      if(typeof coordinates[0][0] === 'number') {
+        setPolylines(coordinates);
+      }
+      else {
+        coordinates.forEach(setPolylines);
+      }
+
+      function setPolylines(coords) {
 
         var newPolyline = [];
         var newCoord;
@@ -19,8 +27,7 @@
 
         polylines.push(newPolyline);
 
-      });
-
+      }
 
       return polylines;
     };

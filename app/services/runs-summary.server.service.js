@@ -69,39 +69,44 @@ exports.calculate =
     var startOfLap;
     var endOfLap;
 
+    // loops over every lap. Each lap which contains an array of objects
+    // that has coordinates and time
+    // This creates the data for our summaries
+    // (it outputs total distance, total times including pauses)
+    var setSummData = function setSummData(data) {
+      mappedData = mapData(data);
+
+      // ----- get the start of each lap ----- //
+      // allows us to calculate pauses
+      startOfLap = mappedData[0];
+
+      run.lapStart.push(startOfEachLap(startOfLap, kmMarker));
+
+      // Reduces the mapped data down to return a total distance for each lap
+      // Then adds this to the total distance in the parent scope
+      // which counts the total distance for the run
+      run.totalDistance = totalDistanceCounter(mappedData, run.totalDistance, kmMarker, run.kmMarkers);
+
+      // ----- Updates the km marker ----- //
+      // with output from totalDistanceCounter()
+      kmMarker = setKmMarker(run.totalDistance);
+
+      // ----- get the end of each lap ------ //
+      // allows us to calculate pauses
+      endOfLap = mappedData[mappedData.length -1];
+      run.lapEnd.push(endOfEachLap(endOfLap, kmMarker));
+    };
+
     if(Array.isArray(runData.features)) {
       runData.features.forEach(function(feature) {
         var runCoords = feature.geometry.coordinates;
 
-        // loops over every lap. Each lap which contains an array of objects
-        // that has coordinates and time
-        // This creates the data for our summaries
-        // (it outputs total distance, total times including pauses)
-        runCoords.forEach(function(data) {
-
-          mappedData = mapData(data);
-
-          // ----- get the start of each lap ----- //
-          // allows us to calculate pauses
-          startOfLap = mappedData[0];
-
-          run.lapStart.push(startOfEachLap(startOfLap, kmMarker));
-
-          // Reduces the mapped data down to return a total distance for each lap
-          // Then adds this to the total distance in the parent scope
-          // which counts the total distance for the run
-          run.totalDistance = totalDistanceCounter(mappedData, run.totalDistance, kmMarker, run.kmMarkers);
-
-          // ----- Updates the km marker ----- //
-          // with output from totalDistanceCounter()
-          kmMarker = setKmMarker(run.totalDistance);
-
-          // ----- get the end of each lap ------ //
-          // allows us to calculate pauses
-          endOfLap = mappedData[mappedData.length -1];
-          run.lapEnd.push(endOfEachLap(endOfLap, kmMarker));
-
-        }); // runCoords.forEach
+        if(feature.geometry.type && feature.geometry.type.toLowerCase() === 'linestring' && (typeof runCoords[0][0] === 'number')) {
+          setSummData(runCoords);
+        }
+        else {
+          runCoords.forEach(setSummData);
+        }
 
       }); //runData.features.forEach
     }
