@@ -9,7 +9,7 @@
       var run = getRunRes;
 
       var margin = {top: 20, right: 20, bottom: 20, left: 20};
-      var chartHeight = 368; // same size as gmap on dashboard when you add 40px margin
+      var chartHeight = 368; // same size as map on dashboard when you add 40px margin
       var yAxisHeight = chartHeight - margin.top - margin.bottom;
       var chartContainerHeight;
 

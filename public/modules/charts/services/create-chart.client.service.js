@@ -21,15 +21,15 @@ var createChart = function($window) {
     };
     var margin = 30; // pads the chart inside of the svg
     var lineColors = [
-      '#B65020', // brown
-      '#000', // blue
-      '#ec6b60', // turquoise
-      '#563D7C', // purple
       '#F4FD1F', // yellow
-      '#EE5FF1', // violet pink
-      '#F28483', // red
+      '#F0FFF0', // honeydew
       '#6AF0D4', // violet green / blue
-      '#2C4F53', // dark green
+      '#2AB21B', // dark green
+      '#ec6b60', // turquoise
+      '#B65020', // brown
+      '#EE5FF1', // violet pink
+      '#563D7C', // purple
+      '#F28483', // red
       '#3A4F56', // dark dark green
     ];
     var yAxisHeight = chartHeight - margin * 2;
@@ -107,7 +107,11 @@ var createChart = function($window) {
       },
       scatterplot : {
         circles : {
-          radius : 3
+          radius : 5,
+          border : {
+            size : 1,
+            color : '#FFF'
+          }
         }
       }
     };
@@ -155,6 +159,8 @@ var createChart = function($window) {
             .enter()
             .append('circle')
               .attr('r', chart.scatterplot.circles.radius)
+              .attr('stroke', chart.scatterplot.circles.border.color)
+              .attr('stroke-width', chart.scatterplot.circles.border.size)
               .attr('cx', function(d) { return xScale(d.km); })
               .attr('cy', function(d) { return yScale(d.time); });
               // .on('mouseover', tip.show)
@@ -234,7 +240,7 @@ var createChart = function($window) {
           .attr('y', 6)
           .attr('dy', '.71em')
           .style('text-anchor', 'end')
-          .text('Time');
+          .text('Pace');
     } // drawAxis
 
 

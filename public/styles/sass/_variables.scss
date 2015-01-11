@@ -10,7 +10,7 @@ $blue-dark: #273135;
 $terracotta: #FA7252;
 $honeydew: #F0FFF0;
 $yellow : #FFF40C;
-$dark: #242426;
+$grey-dark: #242426;
 $grey: #374140;
 $grey-light: lighten($grey, 20%);
 $blackish: #1C1B1C;
@@ -19,7 +19,7 @@ $blackish: #1C1B1C;
 // ----- Theme colours ----- //
 $main-content-bg---color: $honeydew;
 
-$theme-bg---color: $dark;
+$theme-bg---color: $grey-dark;
 $theme-font---color: $green-pale;
 
 //----- is-not-logged-in theme -----//
@@ -40,16 +40,16 @@ $vertical-list-spacing---height--gt-mobile: 45px;
 // ----- Custom Chart ----- //
 $dataselector-list---width: 300px;
 $chart_colors: (
-  #B65020, // brown
-  #000, // blue
-  #ec6b60, // turquoise
-  #563D7C, // purple
   #F4FD1F, // yellow
-  #EE5FF1, // violet pink
-  #F28483, // red
+  #F0FFF0, // honeydew
   #6AF0D4, // violet green / blue
-  #2C4F53, // dark green
-  #3A4F56, // dark dark green
+  #2AB21B, // dark green
+  #ec6b60, // turquoise
+  #B65020, // brown
+  #EE5FF1, // violet pink
+  #563D7C, // purple
+  #F28483, // pink
+  #3A4F56 // dark dark green
 );
 
 

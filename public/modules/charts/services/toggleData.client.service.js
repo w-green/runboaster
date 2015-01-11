@@ -11,21 +11,44 @@
       var e = event;
       var el = angular.element(e.target.parentNode);
       var runNum = el.attr('class').split(' ')[0];
+      var runClass;
 
       if (runNum === 'run-all') {
         toggleAllRuns();
       }
       else {
         el.toggleClass('inactive');
-        var runClass = 'g.' + runNum;
-        var chartRun = document.querySelector(runClass);
-        toggleVis(chartRun);
+        runClass = 'g.' + runNum;
+        showRunInChart(runClass);
       }
 
-      // toggle visibility of a single chart line
-      function toggleVis (chartRun) {
-        var el = angular.element(chartRun);
-        el.toggleClass('vis-hidden');
+      function showRunInChart(runClass) {
+
+        var path = document.querySelector( runClass + ' path');
+        var pathGroup = path.parentNode;
+        var isHidden = pathGroup.classList.contains('vis-hidden');
+
+        // make hidden and return
+        pathGroup.classList.toggle('vis-hidden');
+        if (!isHidden) {
+          return;
+        }
+
+        var PathLength = path.getTotalLength();
+        // Clear any previous transition
+        path.style.transition = path.style.WebkitTransition = 'none';
+        // Set up the starting positions
+        path.style.strokeDasharray = PathLength + ' ' + PathLength;
+        path.style.strokeDashoffset = PathLength;
+        // Trigger a layout so styles are calculated & the browser
+        // picks up the starting position before animating
+        path.getBoundingClientRect();
+        // Define our transition
+        path.style.transition = path.style.WebkitTransition =
+          'stroke-dashoffset 2s ease-in-out';
+        // Go!
+        path.style.strokeDashoffset = '0';
+
       }
 
       // toggle visibility of all chart lines.
@@ -65,6 +88,7 @@
 
         function toggleAllSelectorItems(){
           var selectorListItems = document.querySelectorAll('.dataselector-list li');
+          var aListItem;
           var allSelectorsArray = (function() {
             var result = [];
             for (var i = 0; i < selectorListItems.length; i++) {
@@ -74,7 +98,7 @@
           })();
 
           allSelectorsArray.forEach(function(listItem, index, array) {
-            var aListItem = angular.element(listItem);
+            aListItem = angular.element(listItem);
             toggleAClass(aListItem, 'inactive');
           });
 

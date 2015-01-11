@@ -4,7 +4,7 @@ exports.config = {
   // specs: ['./public/modules/*/tests/e2e/*.js'],
   specs: ['./public/modules/e2etests/**/*spec.js'],
   suites: {
-    navigation: './public/modules/e2etests/page-tests/navigation/**/*.spec.js',
+    topNav: './public/modules/e2etests/page-tests/navigation/**/*.spec.js',
     uploadPage: './public/modules/e2etests/page-tests/upload-page/**/*.spec.js',
     tablePage: './public/modules/e2etests/page-tests/table-page/**/*.spec.js',
     mapPage: './public/modules/e2etests/page-tests/map-page/**/*.spec.js',

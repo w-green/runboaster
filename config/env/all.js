@@ -37,7 +37,8 @@ module.exports = {
         'http://d3js.org/d3.v3.min.js',
         'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js',
         'public/lib/c3-0.3.0/c3.js',
-        'public/lib/sorttable/sorttable.min.js'
+        'public/lib/sorttable/sorttable.min.js',
+        'public/lib/Snap.svg-0.3.0/dist/snap.svg.js'
 
 			]
 		},
@@ -61,6 +62,7 @@ module.exports = {
 			'public/lib/angular-mocks/angular-mocks.js',
       'test-files/output/mocks.module.js',
       'test-files/output/run-data-single-mock.js',
+      'test-files/output/run-data-single-mock2.js',
       'test-files/output/runs-summary-mock-angular-test.js',
       'test-files/output/runs-summary-mock-2.js',
       'test-files/output/runs-summary-latest5.js',
