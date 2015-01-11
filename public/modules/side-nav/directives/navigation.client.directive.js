@@ -9,7 +9,6 @@
       controller: 'SideNavController',
       compile : function compile(tElement, tAttrs, transclude) {
         return {
-          // pre: function preLink(scope, iElement, iAttrs, controller) { ... },
           post: function postLink(scope, iElement, iAttrs, controller) {
             var mediaQuery = window.matchMedia('(max-width: 768px)');
             var bod = document.querySelector('body');
@@ -30,10 +29,9 @@
                 newEl.classList.add('active');
               }
 
-              if (mediaQuery.matches) {
+              if (mediaQuery.matches || toState.name === 'charts') {
                 bod.classList.toggle('leftNav--toggle');
               }
-
 
             });
 

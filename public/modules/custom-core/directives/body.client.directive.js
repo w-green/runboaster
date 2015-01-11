@@ -21,7 +21,7 @@ var body = function body($location, Authentication) {
 
       scope.$on('$stateChangeSuccess', function() {
         checkState();
-      })
+      });
 
     }
   };

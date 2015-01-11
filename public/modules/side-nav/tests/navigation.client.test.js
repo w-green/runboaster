@@ -62,7 +62,6 @@ var scope, nav, ctrl, wrapper, wrapper_height, topNav;
   it('should compile into nav element', function() {
     var element = nav[0];
     var nodeNom = element.nodeName.toLowerCase();
-
     expect(nodeNom).toMatch('nav');
   });
 

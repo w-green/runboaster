@@ -1,3 +1,3 @@
 'use strict';
 
-ApplicationConfiguration.registerModule('customCore', ['mediator']);
+ApplicationConfiguration.registerModule('customCore', ['ui.router', 'mediator']);

@@ -1,7 +1,14 @@
 'use strict';
 
+var login = require('../../tasks/login.js');
+var logout = require('../../tasks/logout.js');
 
-describe('Toggle menu class on body via menu icon : ', function() {
+describe('Top Nav : Toggle menu class on body via menu icon : ', function() {
+
+  // ----- SET UP ----- //
+  it('setup for tests', function() {
+      login.default();
+  });
 
   it('should toggle the body with a new class when menu icon is clicked', function(){
     var bod;
@@ -38,6 +45,13 @@ describe('Toggle menu class on body via menu icon : ', function() {
             expect(elClassNew).toMatch('');
           });
       });
+  });
+
+  // ----- TEAR DOWN ----- //
+  it('tear down for tests', function() {
+    browser.executeScript('document.getElementById("body-js").setAttribute("class", "");').then(function() {
+      logout();
+    });
   });
 
 });

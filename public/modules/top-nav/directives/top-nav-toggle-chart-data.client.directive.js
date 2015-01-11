@@ -7,19 +7,10 @@
       restrict : 'A',
       link : function postLink(scope, element, attr, ctrl) {
         var dataSelector = element.attr('data-data-selector');
-
         var chartList;
         var click = element.on('click', toggleMenu);
         var bod = document.querySelector('body');
-
-        function toggleMenu(event) {
-          chartList = document.querySelector('#dataselector-list-js');
-
-          event.preventDefault();
-          chartList.classList.toggle('inactive');
-          element.toggleClass('open');
-        }
-
+        var matchMedia = window.matchMedia('min-width: 1200px');
         var toggleDataSelector =
         (function(dataSelectorId) {
           var dataSelector = dataSelectorId;
@@ -31,10 +22,17 @@
         })(dataSelector);
 
 
+        function toggleMenu(event) {
+          chartList = document.querySelector('#dataselector-list-js');
 
+          event.preventDefault();
+          chartList.classList.toggle('inactive');
+          element.toggleClass('open');
+        }
 
-        element.on('click', toggleDataSelector);
-
+        element.on('click', function(event) {
+         toggleDataSelector(event);
+        });
 
 
         // ----- remove event listener when scope is destroyed ----- //

@@ -40,10 +40,6 @@ var config = function($stateProvider) {
           templateUrl : 'modules/runs/views/run-table.client.view.html',
           controller : 'DashboardSummCtrl'
         }
-        // 'map@dashboard' : {
-        //   templateUrl : 'modules/gmap/views/run-map.client.view.html',
-        //   controller : 'DashboardMapCtrl'
-        // }
       }
     });
 
