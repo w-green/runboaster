@@ -2739,7 +2739,7 @@ angular.module('users').controller('AuthenticationController', [
         // If successful we assign the response to the global user model
         $scope.authentication.user = response;
         // And redirect to the index page
-        $location.path('/');
+        $location.path('/upload/gpx');
       }).error(function (response) {
         $scope.error = response.message;
       });

@@ -3,7 +3,9 @@
     <div class="top-nav__left">
 
       <div class="menu-icon menu-icon--logo">
-        <span ui-sref="home" title="Run Boaster">Run Boaster</span>
+        <span data-ng-hide="authentication.user" ui-sref="home" title="Run Boaster">Run Boaster</span>
+
+        <span data-ng-show="authentication.user" title="Run Boaster">Run Boaster</span>
       </div>
 
       <div data-ng-hide="authentication.user" class="menu-icon">
