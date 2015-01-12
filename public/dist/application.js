@@ -62,7 +62,10 @@ ApplicationConfiguration.registerModule('charts', [
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');'use strict';
-ApplicationConfiguration.registerModule('customCore', ['mediator']);'use strict';
+ApplicationConfiguration.registerModule('customCore', [
+  'ui.router',
+  'mediator'
+]);'use strict';
 // Use Applicaion configuration module to register a new module
 // ApplicationConfiguration.registerModule('dashboard', ['ngResource', 'runs', 'ui.router', 'uiGmapgoogle-maps', 'gmap', 'users', 'charts', 'mediator']);
 ApplicationConfiguration.registerModule('dashboard', [
@@ -92,7 +95,7 @@ ApplicationConfiguration.registerModule('left-nav', [
   'mediator'
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('top-nav');'use strict';
+ApplicationConfiguration.registerModule('top-nav', ['charts']);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('upload-data', [
   'angularFileUpload',
@@ -101,6 +104,7 @@ ApplicationConfiguration.registerModule('upload-data', [
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');'use strict';
+ApplicationConfiguration.registerModule('wg-carousel', []);'use strict';
 // Configuring the Articles module
 angular.module('articles').run([
   'Menus',
@@ -496,6 +500,22 @@ angular.module('charts').directive('lineChartAltitude', [
     lineChart
   ]);
 }(window._));'use strict';
+var chartHelpers = function chartHelpers() {
+  var helperSuite = null;
+  var currentChart = null;
+  function getCurrentChart() {
+    return currentChart;
+  }
+  function setCurrentChart(chart) {
+    currentChart = chart;
+  }
+  helperSuite = {
+    getCurrentChart: getCurrentChart,
+    setCurrentChart: setCurrentChart
+  };
+  return helperSuite;
+};
+angular.module('charts').service('chartHelpers', [chartHelpers]);'use strict';
 (function () {
   var createSingleLineChart = function ($window) {
     return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
@@ -508,7 +528,7 @@ angular.module('charts').directive('lineChartAltitude', [
           left: 20
         };
       var chartHeight = 368;
-      // same size as gmap on dashboard when you add 40px margin
+      // same size as map on dashboard when you add 40px margin
       var yAxisHeight = chartHeight - margin.top - margin.bottom;
       var chartContainerHeight;
       // ----- CHART WIDTH - RESPONSIVE ----- //
@@ -624,15 +644,15 @@ var createChart = function ($window) {
     var margin = 30;
     // pads the chart inside of the svg
     var lineColors = [
-        '#B65020',
-        '#000',
-        '#ec6b60',
-        '#563D7C',
         '#F4FD1F',
-        '#EE5FF1',
-        '#F28483',
+        '#F0FFF0',
         '#6AF0D4',
-        '#2C4F53',
+        '#2AB21B',
+        '#ec6b60',
+        '#B65020',
+        '#EE5FF1',
+        '#563D7C',
+        '#F28483',
         '#3A4F56'
       ];
     var yAxisHeight = chartHeight - margin * 2;
@@ -712,7 +732,15 @@ var createChart = function ($window) {
             0
           ]
         },
-        scatterplot: { circles: { radius: 3 } }
+        scatterplot: {
+          circles: {
+            radius: 5,
+            border: {
+              size: 1,
+              color: '#FFF'
+            }
+          }
+        }
       };
     init = function init() {
       setChartParameters();
@@ -743,7 +771,7 @@ var createChart = function ($window) {
           'class': pathClass + ' path' + index
         });
         // Add the scatterplot
-        runGroup[index].selectAll('dot').data(d.markers).enter().append('circle').attr('r', chart.scatterplot.circles.radius).attr('cx', function (d) {
+        runGroup[index].selectAll('dot').data(d.markers).enter().append('circle').attr('r', chart.scatterplot.circles.radius).attr('stroke', chart.scatterplot.circles.border.color).attr('stroke-width', chart.scatterplot.circles.border.size).attr('cx', function (d) {
           return xScale(d.km);
         }).attr('cy', function (d) {
           return yScale(d.time);
@@ -771,7 +799,7 @@ var createChart = function ($window) {
     // setChartParameters
     function drawAxis() {
       svg.append('svg:g').attr('class', 'xAxis axis grid').attr('transform', 'translate(0,' + chart.axis.y.height + ')').call(xAxisGen).append('text').attr('class', 'xAxis__label').attr('y', 20).attr('x', getChartWidth() / 2).attr('dy', '1em').style('text-anchor', 'end').text('Distance (km)');
-      svg.append('svg:g').attr('class', 'yAxis axis grid').attr('transform', 'translate(50, 0)').call(yAxisGen).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text('Time');
+      svg.append('svg:g').attr('class', 'yAxis axis grid').attr('transform', 'translate(50, 0)').call(yAxisGen).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text('Pace');
     }
     // drawAxis
     // ----- Redraw axis on window resize ----- //
@@ -817,18 +845,36 @@ angular.module('charts').service('createChart', [
       var e = event;
       var el = angular.element(e.target.parentNode);
       var runNum = el.attr('class').split(' ')[0];
+      var runClass;
       if (runNum === 'run-all') {
         toggleAllRuns();
       } else {
         el.toggleClass('inactive');
-        var runClass = 'g.' + runNum;
-        var chartRun = document.querySelector(runClass);
-        toggleVis(chartRun);
+        runClass = 'g.' + runNum;
+        showRunInChart(runClass);
       }
-      // toggle visibility of a single chart line
-      function toggleVis(chartRun) {
-        var el = angular.element(chartRun);
-        el.toggleClass('vis-hidden');
+      function showRunInChart(runClass) {
+        var path = document.querySelector(runClass + ' path');
+        var pathGroup = path.parentNode;
+        var isHidden = pathGroup.classList.contains('vis-hidden');
+        // make hidden and return
+        pathGroup.classList.toggle('vis-hidden');
+        if (!isHidden) {
+          return;
+        }
+        var PathLength = path.getTotalLength();
+        // Clear any previous transition
+        path.style.transition = path.style.WebkitTransition = 'none';
+        // Set up the starting positions
+        path.style.strokeDasharray = PathLength + ' ' + PathLength;
+        path.style.strokeDashoffset = PathLength;
+        // Trigger a layout so styles are calculated & the browser
+        // picks up the starting position before animating
+        path.getBoundingClientRect();
+        // Define our transition
+        path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 2s ease-in-out';
+        // Go!
+        path.style.strokeDashoffset = '0';
       }
       // toggle visibility of all chart lines.
       // Also toggle dataselector background colours for all runs
@@ -863,6 +909,7 @@ angular.module('charts').service('createChart', [
         // toggleGraphRuns
         function toggleAllSelectorItems() {
           var selectorListItems = document.querySelectorAll('.dataselector-list li');
+          var aListItem;
           var allSelectorsArray = function () {
               var result = [];
               for (var i = 0; i < selectorListItems.length; i++) {
@@ -871,7 +918,7 @@ angular.module('charts').service('createChart', [
               return result;
             }();
           allSelectorsArray.forEach(function (listItem, index, array) {
-            var aListItem = angular.element(listItem);
+            aListItem = angular.element(listItem);
             toggleAClass(aListItem, 'inactive');
           });
         }  // toggleAllSelectorItems
@@ -1057,6 +1104,41 @@ angular.module('core').service('Menus', [function () {
     //Adding the topbar menu
     this.addMenu('topbar');
   }]);'use strict';
+var routes = function routes($stateProvider) {
+  $stateProvider.state('about', {
+    url: '/about',
+    templateUrl: 'modules/custom-core/views/about.client.view.html'
+  });
+};
+angular.module('customCore').config([
+  '$stateProvider',
+  routes
+]);'use strict';
+var body = function body($location, Authentication) {
+  return {
+    restrict: 'A',
+    replace: false,
+    link: function link(scope, elem, attr) {
+      var aboutRegex;
+      var currentUrl;
+      scope.aboutState = false;
+      scope.authentication = Authentication;
+      aboutRegex = new RegExp('/about');
+      function checkState() {
+        currentUrl = $location.url();
+        scope.aboutState = aboutRegex.test(currentUrl);
+      }
+      scope.$on('$stateChangeSuccess', function () {
+        checkState();
+      });
+    }
+  };
+};
+angular.module('customCore').directive('body', [
+  '$location',
+  'Authentication',
+  body
+]);'use strict';
 var mainContent = function (mediator, setHeightAftrTopNav) {
   return {
     restrict: 'C',
@@ -1294,38 +1376,55 @@ angular.module('customCore').directive('mainContent', [
       link: function (scope, elem, attr) {
         var mapData = scope.LMap;
         var iconClass = 'leaflet-map__marker-icons';
+        var currentLayerGroup = null;
         scope.mapContainer = L.map(elem[0], {});
+        scope.setMapData = setMapData;
+        scope.mapHasLayer = function (layer) {
+          return scope.mapContainer.hasLayer(layer);
+        };
+        scope.getCurrentLayerGroup = function () {
+          return currentLayerGroup;
+        };
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: 'Map data &copy;',
           maxZoom: 18
         }).addTo(scope.mapContainer);
         function setMapData(mapData) {
-          setBounds(mapData);
-          setPolylines(mapData);
-          setMarkers(mapData);
+          var bounds;
+          var polylines;
+          var markers;
+          if (currentLayerGroup !== null) {
+            scope.mapContainer.removeLayer(currentLayerGroup);
+          }
+          bounds = setBounds(mapData);
+          scope.mapContainer.fitBounds(bounds);
+          polylines = setPolylines(mapData);
+          markers = setMarkers(mapData);
+          currentLayerGroup = L.layerGroup(markers).addLayer(polylines);
+          currentLayerGroup.addTo(scope.mapContainer);
         }
         function setBounds(mapData) {
           var boundsMarkers = [];
           boundsMarkers = _.pluck(mapData.markers, 'coords');
-          // add bounds
-          scope.mapContainer.fitBounds(boundsMarkers);
+          return boundsMarkers;
         }
         function setPolylines(mapData) {
-          // add polylines
-          L.multiPolyline(mapData.polylines, { color: 'red' }).addTo(scope.mapContainer);
+          return L.multiPolyline(mapData.polylines, { color: 'red' });
         }
         function setMarkers(mapData) {
+          var mapMarkers = [];
           // add start marker
-          createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start').addTo(scope.mapContainer);
+          mapMarkers.push(createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start'));
           // add finish marker
-          createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish').addTo(scope.mapContainer);
+          mapMarkers.push(createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish'));
           // add other markers
           mapData.markers.filter(function (marker, i, arry) {
             return marker.meters > 0;
           }).forEach(function (marker, i) {
             var title = marker.meters / 1000 + ' km';
-            createMarkerIcon(marker, title).addTo(scope.mapContainer);
+            mapMarkers.push(createMarkerIcon(marker, title));
           });
+          return mapMarkers;
         }
         function createMarkerIcon(marker, title, extraClass) {
           var iconClassNames = extraClass === undefined ? iconClass : iconClass + ' ' + extraClass;
@@ -1430,7 +1529,12 @@ angular.module('leaflet-maps').factory('setLeafletMapMarkers', [setLeafletMapMar
   var setLeafletMapPolylines = function () {
     return function setMapPolylines(coordinates) {
       var polylines = [];
-      coordinates.forEach(function (coords) {
+      if (typeof coordinates[0][0] === 'number') {
+        setPolylines(coordinates);
+      } else {
+        coordinates.forEach(setPolylines);
+      }
+      function setPolylines(coords) {
         var newPolyline = [];
         var newCoord;
         coords.map(function (data) {
@@ -1441,7 +1545,7 @@ angular.module('leaflet-maps').factory('setLeafletMapMarkers', [setLeafletMapMar
           newPolyline.push(newCoord);
         });
         polylines.push(newPolyline);
-      });
+      }
       return polylines;
     };
   };
@@ -1720,7 +1824,7 @@ angular.module('runs').config([
       });
       return deferred.promise;
     };
-    function changeMap(event, info) {
+    $scope.changeMap = function changeMap(event, info) {
       if (!mapData[info.listOrder]) {
         $scope.getNewMap(info.activityId, info.listOrder).then(function (map) {
           mapData[info.listOrder] = map;
@@ -1731,8 +1835,8 @@ angular.module('runs').config([
         $scope.$digest();
       }
       $rootScope.$digest();
-    }
-    $scope.$on('summarySelected', changeMap);
+    };
+    $scope.$on('summarySelected', $scope.changeMap);
     $scope.$on('destroy', function () {
       mapData = [];
     });
@@ -2282,6 +2386,22 @@ angular.module('runs').directive('mapSummaries', [
     };
   };
   angular.module('left-nav').directive('sideNavItem', sideNavItem);
+}());'use strict';
+(function () {
+  var sideNavContainer = function (Authentication) {
+    return {
+      restrict: 'AE',
+      replace: false,
+      link: function link(scope, elem, attr) {
+        // Only show side nav when signed in
+        scope.Authentication = Authentication;
+      }
+    };
+  };
+  angular.module('left-nav').directive('sideNavContainer', [
+    'Authentication',
+    sideNavContainer
+  ]);
 }());(function () {
   var sideNav = function sideNav($location, setHeightAftrTopNav, mediator) {
     return {
@@ -2308,7 +2428,7 @@ angular.module('runs').directive('mapSummaries', [
                 var newEl = document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]').parentNode;
                 newEl.classList.add('active');
               }
-              if (mediaQuery.matches) {
+              if (mediaQuery.matches || toState.name === 'charts') {
                 bod.classList.toggle('leftNav--toggle');
               }
             });
@@ -2347,12 +2467,7 @@ angular.module('runs').directive('mapSummaries', [
         var chartList;
         var click = element.on('click', toggleMenu);
         var bod = document.querySelector('body');
-        function toggleMenu(event) {
-          chartList = document.querySelector('#dataselector-list-js');
-          event.preventDefault();
-          chartList.classList.toggle('inactive');
-          element.toggleClass('open');
-        }
+        var matchMedia = window.matchMedia('min-width: 1200px');
         var toggleDataSelector = function (dataSelectorId) {
             var dataSelector = dataSelectorId;
             return function toggleDataSelector(event) {
@@ -2360,7 +2475,15 @@ angular.module('runs').directive('mapSummaries', [
               bod.classList.toggle('dataselector-list-' + dataSelector + '--open');
             };
           }(dataSelector);
-        element.on('click', toggleDataSelector);
+        function toggleMenu(event) {
+          chartList = document.querySelector('#dataselector-list-js');
+          event.preventDefault();
+          chartList.classList.toggle('inactive');
+          element.toggleClass('open');
+        }
+        element.on('click', function (event) {
+          toggleDataSelector(event);
+        });
         // ----- remove event listener when scope is destroyed ----- //
         scope.$on('$destroy', function () {
           click();
@@ -2372,11 +2495,12 @@ angular.module('runs').directive('mapSummaries', [
   angular.module('top-nav').directive('topNavToggleChartData', [topNavToggleChartData]);
 }());'use strict';
 (function () {
-  var topNavMenuIcon = function topNavMenuIcon() {
+  var topNavMenuIcon = function topNavMenuIcon(Authentication) {
     return {
       restrict: 'A',
       link: function postLink(scope, el, attr, ctrl) {
         var bod = document.querySelector('body');
+        scope.authentication = Authentication;
         el.on('click', toggleMenu);
         function toggleMenu(event) {
           event.preventDefault();
@@ -2385,7 +2509,10 @@ angular.module('runs').directive('mapSummaries', [
       }
     };
   };
-  angular.module('top-nav').directive('topNavMenuIcon', [topNavMenuIcon]);
+  angular.module('top-nav').directive('topNavMenuIcon', [
+    'Authentication',
+    topNavMenuIcon
+  ]);
 }());'use strict';
 /*
  * Decorator for Angular File Upload service
@@ -2755,4 +2882,22 @@ angular.module('users').factory('Users', [
   function ($resource) {
     return $resource('users', {}, { update: { method: 'PUT' } });
   }
-]);
+]);'use strict';
+var wgCarousel = function wgCarousel() {
+  return {
+    restrict: 'A',
+    replace: false,
+    link: function link(scope, elem, attr) {
+      var toggleElem;
+      scope.toggleClass = function toggleClass(elementAng, className) {
+        elementAng.toggleClass(className);
+      };
+      toggleElem = elem.find('a')[0];
+      toggleElem = angular.element(toggleElem);
+      toggleElem.on('click', function () {
+        scope.toggleClass(elem, 'wg-carousel--is-selected');
+      });
+    }
+  };
+};
+angular.module('wg-carousel').directive('wgCarousel', [wgCarousel]);
