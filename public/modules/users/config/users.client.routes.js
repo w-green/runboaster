@@ -29,10 +29,13 @@ angular.module('users').config(['$stateProvider',
       url: '/auth/one/signout', // need to have a url for links to work in nav
       controller: function($http, $state, $location, $scope) {
         $http.get('auth/signout').then(function() {
+          var isItReloaded = false;
           $location.url('/');
-
+          if(isItReloaded) {
+            return;
+          }
           // Need to force a reload otherwise user is not removed.
-          window.location.reload();
+          window.location.assign('/');
         });
       }
     }).

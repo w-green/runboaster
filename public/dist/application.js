@@ -2717,9 +2717,13 @@ angular.module('users').config([
       url: '/auth/one/signout',
       controller: function ($http, $state, $location, $scope) {
         $http.get('auth/signout').then(function () {
+          var isItReloaded = false;
           $location.url('/');
+          if (isItReloaded) {
+            return;
+          }
           // Need to force a reload otherwise user is not removed.
-          window.location.reload();
+          window.location.assign('/');
         });
       }
     }).state('forgot', {
