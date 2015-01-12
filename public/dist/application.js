@@ -104,7 +104,6 @@ ApplicationConfiguration.registerModule('upload-data', [
 ]);'use strict';
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');'use strict';
-ApplicationConfiguration.registerModule('wg-carousel', []);'use strict';
 // Configuring the Articles module
 angular.module('articles').run([
   'Menus',
@@ -500,22 +499,6 @@ angular.module('charts').directive('lineChartAltitude', [
     lineChart
   ]);
 }(window._));'use strict';
-var chartHelpers = function chartHelpers() {
-  var helperSuite = null;
-  var currentChart = null;
-  function getCurrentChart() {
-    return currentChart;
-  }
-  function setCurrentChart(chart) {
-    currentChart = chart;
-  }
-  helperSuite = {
-    getCurrentChart: getCurrentChart,
-    setCurrentChart: setCurrentChart
-  };
-  return helperSuite;
-};
-angular.module('charts').service('chartHelpers', [chartHelpers]);'use strict';
 (function () {
   var createSingleLineChart = function ($window) {
     return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
@@ -2886,22 +2869,4 @@ angular.module('users').factory('Users', [
   function ($resource) {
     return $resource('users', {}, { update: { method: 'PUT' } });
   }
-]);'use strict';
-var wgCarousel = function wgCarousel() {
-  return {
-    restrict: 'A',
-    replace: false,
-    link: function link(scope, elem, attr) {
-      var toggleElem;
-      scope.toggleClass = function toggleClass(elementAng, className) {
-        elementAng.toggleClass(className);
-      };
-      toggleElem = elem.find('a')[0];
-      toggleElem = angular.element(toggleElem);
-      toggleElem.on('click', function () {
-        scope.toggleClass(elem, 'wg-carousel--is-selected');
-      });
-    }
-  };
-};
-angular.module('wg-carousel').directive('wgCarousel', [wgCarousel]);
+]);
