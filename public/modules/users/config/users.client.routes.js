@@ -27,10 +27,11 @@ angular.module('users').config(['$stateProvider',
 		}).
     state('signout', {
       url: '/auth/one/signout', // need to have a url for links to work in nav
-      controller: function($http, $state, $location, $scope) {
+      controller: function($http, $state, $location, $scope, Authentication) {
         $http.get('auth/signout').then(function() {
           $location.url('/');
         });
+        Authentication.user = null;
       }
     }).
 		state('forgot', {

@@ -2715,10 +2715,11 @@ angular.module('users').config([
       templateUrl: 'modules/users/views/authentication/signin.client.view.html'
     }).state('signout', {
       url: '/auth/one/signout',
-      controller: function ($http, $state, $location, $scope) {
+      controller: function ($http, $state, $location, $scope, Authentication) {
         $http.get('auth/signout').then(function () {
           $location.url('/');
         });
+        Authentication.user = null;
       }
     }).state('forgot', {
       url: '/password/forgot',
@@ -2760,7 +2761,7 @@ angular.module('users').controller('AuthenticationController', [
         // If successful we assign the response to the global user model
         $scope.authentication.user = response;
         // And redirect to the index page
-        $location.path('/');
+        $location.path('/runs/table');
       }).error(function (response) {
         $scope.error = response.message;
       });
