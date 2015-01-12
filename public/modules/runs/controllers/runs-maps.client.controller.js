@@ -36,8 +36,7 @@
       return deferred.promise;
     };
 
-    function changeMap(event, info) {
-
+    $scope.changeMap = function changeMap(event, info) {
       if(!mapData[info.listOrder]) {
         $scope.getNewMap(info.activityId, info.listOrder)
           .then(function(map) {
@@ -51,9 +50,10 @@
       }
       $rootScope.$digest();
 
-    }
+    };
 
-    $scope.$on('summarySelected', changeMap);
+    $scope.$on('summarySelected', $scope.changeMap);
+
 
     $scope.$on('destroy', function() {
       mapData = [];

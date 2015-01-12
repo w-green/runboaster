@@ -5,23 +5,20 @@ describe('Create map polylines : ', function() {
 
   beforeEach(function() {
     module('mocks');
-    // polylines module
-    module('gmap');
+    module('leaflet-maps');
   });
 
-  beforeEach(inject(function(mocksSingleRunData, setMapPolylines) {
+  beforeEach(inject(function(mocksSingleRunData, setLeafletMapPolylines) {
     var coords;
     coords = mocksSingleRunData.features[0].geometry.coordinates;
 
     // polylines service initiated with mock data
-    polylines = setMapPolylines(coords);
+    polylines = setLeafletMapPolylines(coords);
 
   }));
 
   it('should have polylines and paths defined', function(){
-    // expect output of polylines
-    expect(polylines.paths).toBeDefined();
-    expect(polylines.polylines).toBeDefined();
+    expect(polylines[0][0][0]).toEqual(jasmine.any(Number));
   });
 
 });

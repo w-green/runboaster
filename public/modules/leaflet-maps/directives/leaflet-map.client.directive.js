@@ -13,9 +13,17 @@
       link : function(scope, elem, attr) {
         var mapData = scope.LMap;
         var iconClass = 'leaflet-map__marker-icons';
-
+        var currentLayerGroup = null;
 
         scope.mapContainer = L.map(elem[0], {});
+        scope.setMapData = setMapData;
+        scope.mapHasLayer = function(layer) {
+          return scope.mapContainer.hasLayer(layer);
+        };
+
+        scope.getCurrentLayerGroup = function(){
+          return currentLayerGroup;
+        };
 
         L.tileLayer(
           'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -26,34 +34,43 @@
           .addTo(scope.mapContainer);
 
         function setMapData(mapData) {
-          setBounds(mapData);
-          setPolylines(mapData);
-          setMarkers(mapData);
+          var bounds;
+          var polylines;
+          var markers;
+
+          if(currentLayerGroup !== null) {
+            scope.mapContainer.removeLayer(currentLayerGroup);
+          }
+
+          bounds = setBounds(mapData);
+          scope.mapContainer.fitBounds(bounds);
+          polylines = setPolylines(mapData);
+          markers = setMarkers(mapData);
+          currentLayerGroup = L.layerGroup(markers)
+            .addLayer(polylines);
+          currentLayerGroup.addTo(scope.mapContainer);
+
         }
 
         function setBounds(mapData) {
           var boundsMarkers = [];
 
           boundsMarkers = _.pluck(mapData.markers, 'coords');
-
-          // add bounds
-          scope.mapContainer.fitBounds(boundsMarkers);
+          return boundsMarkers;
         }
 
         function setPolylines(mapData) {
-          // add polylines
-          L.multiPolyline(mapData.polylines, {color: 'red'})
-            .addTo(scope.mapContainer);
+          return L.multiPolyline(mapData.polylines, {color: 'red'});
         }
 
         function setMarkers(mapData) {
+          var mapMarkers = [];
+
           // add start marker
-          createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start')
-            .addTo(scope.mapContainer);
+          mapMarkers.push(createMarkerIcon(mapData.markers[0], 'START', 'leaflet-map__marker-icons--start'));
 
           // add finish marker
-          createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish')
-            .addTo(scope.mapContainer);
+          mapMarkers.push(createMarkerIcon(mapData.markers[1], 'FINISH', 'leaflet-map__marker-icons--finish'));
 
           // add other markers
           mapData.markers
@@ -62,9 +79,10 @@
             })
             .forEach(function(marker, i) {
               var title = (marker.meters / 1000) + ' km';
-              createMarkerIcon(marker, title)
-                .addTo(scope.mapContainer);
+              mapMarkers.push(createMarkerIcon(marker, title));
             });
+
+          return mapMarkers;
 
         }
 
@@ -79,7 +97,6 @@
 
           return L.marker(marker.coords, marker.options);
         }
-
 
         // if map data changes recreate map
         scope.$watch('LMap', createMap);
