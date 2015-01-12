@@ -1397,7 +1397,12 @@ angular.module('customCore').directive('mainContent', [
             scope.mapContainer.removeLayer(currentLayerGroup);
           }
           bounds = setBounds(mapData);
-          scope.mapContainer.fitBounds(bounds);
+          scope.mapContainer.fitBounds(bounds, {
+            padding: [
+              20,
+              20
+            ]
+          });
           polylines = setPolylines(mapData);
           markers = setMarkers(mapData);
           currentLayerGroup = L.layerGroup(markers).addLayer(polylines);
