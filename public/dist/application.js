@@ -820,7 +820,7 @@ angular.module('charts').service('createChart', [
   '$window',
   createChart
 ]);'use strict';
-(function () {
+(function (lunar) {
   var toggleData = function () {
     var allRunsSelect = false;
     return function toggleData(event) {
@@ -832,32 +832,43 @@ angular.module('charts').service('createChart', [
       if (runNum === 'run-all') {
         toggleAllRuns();
       } else {
+        // add active state to dataselector item
         el.toggleClass('inactive');
         runClass = 'g.' + runNum;
+        // show path of selected run
         showRunInChart(runClass);
       }
       function showRunInChart(runClass) {
         var path = document.querySelector(runClass + ' path');
         var pathGroup = path.parentNode;
-        var isHidden = pathGroup.classList.contains('vis-hidden');
-        // make hidden and return
-        pathGroup.classList.toggle('vis-hidden');
+        var isHidden = lunar.hasClass(pathGroup, 'vis-hidden');
+        var canIuseSVGAnimation;
+        // make hidden and return a
+        function toggleHidden(run) {
+          lunar.toggleClass(run, 'vis-hidden');
+        }
+        toggleHidden(pathGroup);
         if (!isHidden) {
           return;
         }
-        var PathLength = path.getTotalLength();
-        // Clear any previous transition
-        path.style.transition = path.style.WebkitTransition = 'none';
-        // Set up the starting positions
-        path.style.strokeDasharray = PathLength + ' ' + PathLength;
-        path.style.strokeDashoffset = PathLength;
-        // Trigger a layout so styles are calculated & the browser
-        // picks up the starting position before animating
-        path.getBoundingClientRect();
-        // Define our transition
-        path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 2s ease-in-out';
-        // Go!
-        path.style.strokeDashoffset = '0';
+        canIuseSVGAnimation = function () {
+          return 'transition' in path.style;
+        }();
+        if (canIuseSVGAnimation) {
+          var PathLength = path.getTotalLength();
+          // Clear any previous transition
+          path.style.transition = path.style.WebkitTransition = 'none';
+          // Set up the starting positions
+          path.style.strokeDasharray = PathLength + ' ' + PathLength;
+          path.style.strokeDashoffset = PathLength;
+          // Trigger a layout so styles are calculated & the browser
+          // picks up the starting position before animating
+          path.getBoundingClientRect();
+          // Define our transition
+          path.style.transition = path.style.WebkitTransition = 'stroke-dashoffset 2s ease-in-out';
+          // Go!
+          path.style.strokeDashoffset = '0';
+        }
       }
       // toggle visibility of all chart lines.
       // Also toggle dataselector background colours for all runs
@@ -910,7 +921,7 @@ angular.module('charts').service('createChart', [
   };
   // var toggleData
   angular.module('charts').factory('toggleData', [toggleData]);
-}());'use strict';
+}(window.lunar));'use strict';
 // Setting up route
 angular.module('core').config([
   '$stateProvider',

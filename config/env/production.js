@@ -21,6 +21,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
         // 'public/lib/polyfill/matchmedia/media.match.min.js',
         'public/lib/polyfill/class-list/classList.min.js',
+        'public/lib/lunar/dist/lunar.min.js',
         'http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js',
 				// 'public/lib/lodash/dist/lodash.underscore.min.js',
         'public/lib/lodash/dist/lodash.min.js',

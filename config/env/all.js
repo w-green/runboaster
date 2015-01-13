@@ -28,7 +28,8 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
         // 'public/lib/polyfill/matchmedia/media.match.min.js',
-        'public/lib/polyfill/class-list/classList.min.js',
+        'public/lib/polyfill/class-list/classList.js',
+        'public/lib/lunar/dist/lunar.js',
         'http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js',
 				// 'public/lib/lodash/dist/lodash.underscore.js',
 				'public/lib/lodash/dist/lodash.js',
@@ -37,8 +38,8 @@ module.exports = {
         'http://d3js.org/d3.v3.min.js',
         'http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js',
         'public/lib/c3-0.3.0/c3.js',
-        'public/lib/sorttable/sorttable.min.js',
-        'public/lib/Snap.svg-0.3.0/dist/snap.svg.js'
+        'public/lib/sorttable/sorttable.min.js'
+        // 'public/lib/Snap.svg-0.3.0/dist/snap.svg.js'
 
 			]
 		},
