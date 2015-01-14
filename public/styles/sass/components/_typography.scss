@@ -22,8 +22,8 @@
 
 
 body {
-  font-size: 22px;
-  line-height: 32px;
+  font-size: $base---font-size;
+  line-height: $base---line-height;
   font-family: 'dosisregular';
   text-transform: uppercase;
   color: $green-pale;

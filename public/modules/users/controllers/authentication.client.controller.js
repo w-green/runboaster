@@ -25,7 +25,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				$scope.authentication.user = response;
 
 				// And redirect to the index page
-				$location.path('/runs/table');
+				$location.path('/welcome');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
