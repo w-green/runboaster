@@ -24,10 +24,10 @@
           var table = document.createElement('table');
           // note sortable class added for sorttable.js
           if (sortable) {
-            table.className = 'table table-responsive sortable';
+            table.className = 'table sortable';
           }
           else {
-            table.className = 'table table-responsive';
+            table.className = 'table';
           }
           var thead = document.createElement('thead');
           var headingRow;

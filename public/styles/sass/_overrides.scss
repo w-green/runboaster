@@ -16,3 +16,9 @@ label {
   font-weight: normal;
   font-size: 18px;
 }
+
+@media(max-width: $screen-sm-min) {
+  .table-responsive {
+    overflow-y: auto;
+  }
+}
