@@ -13,6 +13,8 @@
             var mediaQuery = window.matchMedia('(max-width: 768px)');
             var bod = document.querySelector('body');
 
+            // Add active state to nav element that matches new state
+            // & remove active class for previous active nav element
             scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
               if (fromState.name !== '') {
 
@@ -29,11 +31,19 @@
                 newEl.classList.add('active');
               }
 
-              if (mediaQuery.matches || toState.name === 'charts') {
+            });
+
+            scope.closeMenu = function closeMenu(event) {
+                console.log(event.target.textContent.toLowerCase());
+
+                if (mediaQuery.matches && (event.target.textContent.toLowerCase() !== 'charts')) {
                 bod.classList.toggle('leftNav--toggle');
               }
+            };
 
-            });
+            // toggle menu. When a nav item is selected. For smaller than desktop
+            iElement.on('click', scope.closeMenu);
+
 
 
             // ----- set the height for scrolling ----- //

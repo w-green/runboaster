@@ -366,16 +366,20 @@ angular.module('charts').config([
     chartDataSelector
   ]);
 }());'use strict';
-var lineChartAltitude = function (createSingleLineChart, mediator) {
+// createChart is the same one used in charts area
+var lineChartAltitude = function (createSingleLineChart, createChart, mediator) {
   return {
     restrict: 'A',
     replace: true,
     template: '<div class="svgContainer"><svg id="chart--altitude" class="svgChart"></svg></div>',
     link: function (scope, elem, attr) {
       var run = scope.run;
+      var summ = scope.summ;
       var rawSvg = elem.find('svg')[0];
       // var chartHeight = 360; // in px
-      var chart = createSingleLineChart(run, elem[0], rawSvg);
+      var chart = createSingleLineChart(run, summ, elem[0], rawSvg);
+      // runs, rawElem, rawSvg, chartHeight
+      var otherChart = createChart(summ, elem[0], rawSvg, 500);
       var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
       // ----- remove event listener when scope is destroyed ----- //
       scope.$on('$destroy', function () {
@@ -386,9 +390,30 @@ var lineChartAltitude = function (createSingleLineChart, mediator) {
 };
 angular.module('charts').directive('lineChartAltitude', [
   'createSingleLineChart',
+  'createChart',
   'mediator',
   lineChartAltitude
-]);'use strict';
+]);  // 'use strict';
+     // var lineChartAltitude = function(createSingleLineChart, mediator) {
+     //   return {
+     //     restrict :  'A',
+     //     replace : true,
+     //     template:'<div class="svgContainer"><svg id="chart--altitude" class="svgChart"></svg></div>',
+     //     link : function(scope, elem, attr) {
+     //       var run = scope.run;
+     //       var rawSvg = elem.find('svg')[0];
+     //       // var chartHeight = 360; // in px
+     //       var chart = createSingleLineChart(run, elem[0], rawSvg);
+     //       var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
+     //       // ----- remove event listener when scope is destroyed ----- //
+     //       scope.$on('$destroy', function() {
+     //         mediator.unsubscribe(resizeEvent);
+     //       });
+     //     }
+     //   };
+     // };
+     // angular.module('charts').directive('lineChartAltitude', ['createSingleLineChart', 'mediator', lineChartAltitude]);
+'use strict';
 (function (lodash) {
   var _ = lodash;
   var lineChart = function lineChart($window, $filter, mediator, createChart) {
@@ -501,9 +526,10 @@ angular.module('charts').directive('lineChartAltitude', [
 }(window._));'use strict';
 (function () {
   var createSingleLineChart = function ($window) {
-    return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
+    return function createSingleLineChart(getRunRes, runSumm, rawElem, rawSvg) {
       var d3 = $window.d3;
       var run = getRunRes;
+      var summ = runSumm;
       var margin = {
           top: 20,
           right: 20,
@@ -606,13 +632,149 @@ angular.module('charts').directive('lineChartAltitude', [
     '$window',
     createSingleLineChart
   ]);
-}());'use strict';
+}());  // 'use strict';
+       // (function() {
+       //   var createSingleLineChart = function($window) {
+       //     return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
+       //       var d3 = $window.d3;
+       //       var run = getRunRes;
+       //       var margin = {top: 20, right: 20, bottom: 20, left: 20};
+       //       var chartHeight = 368; // same size as map on dashboard when you add 40px margin
+       //       var yAxisHeight = chartHeight - margin.top - margin.bottom;
+       //       var chartContainerHeight;
+       //       // ----- CHART WIDTH - RESPONSIVE ----- //
+       //       var chartContainerWidth = 0;
+       //       var getChartContainerWidth;
+       //       var setChartContainerWidth;
+       //       // this is from using bootstrap cols - they use 15px padding either side
+       //       var chartContainerPadding = 30;
+       //       var getChartWidth;
+       //       var resizeChart;
+       //       setChartContainerWidth = function setChartContainerWidth(wrapper) {
+       //         chartContainerWidth = parseInt(wrapper.offsetWidth);
+       //       };
+       //       getChartContainerWidth = function getChartContainerWidth() {
+       //         if(chartContainerWidth === 0) {
+       //           setChartContainerWidth(rawElem);
+       //         }
+       //         return chartContainerWidth;
+       //       };
+       //       getChartWidth = function getChartWidth() {
+       //         var containerWidth = getChartContainerWidth();
+       //         return containerWidth - margin.left - margin.right;
+       //       };
+       //       setChartContainerWidth(rawElem);
+       //       // ----- END CHART WIDTH - RESPONSIVE ----- //
+       //       // set x axis range
+       //       var x = d3.time.scale()
+       //           .range([0, getChartWidth()]);
+       //       // set y axis range
+       //       var y = d3.scale.linear()
+       //           .range([yAxisHeight, 0]);
+       //       var xAxis = d3.svg.axis()
+       //           .scale(x)
+       //           .orient('bottom')
+       //           .ticks(
+       //             d3.time.minute,
+       //             2
+       //           )
+       //           .tickFormat(d3.time.format('%M'));
+       //       var yAxis = d3.svg.axis()
+       //           .scale(y)
+       //           .orient('left');
+       //       var line = d3.svg.line()
+       //           .x(function(d) { return x(d.time); })
+       //           .y(function(d) { return y(d.altitude); });
+       //       chartContainerHeight = chartHeight + margin.top + margin.bottom;
+       //       // var svg = d3.select('body').append('svg')
+       //       var svg = d3.select(rawSvg)
+       //         // .attr('width', getChartWidth() + margin.left + margin.right)
+       //         .attr('width',  getChartContainerWidth())
+       //         .attr('height', chartContainerHeight);
+       //       var svgAxis =
+       //       svg
+       //         .append('g')
+       //           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+       //       var startTime = new Date(run[0][0][3]);
+       //       var data = [];
+       //       setData(run);
+       //       function setData(coords) {
+       //         coords.forEach(function(coord, i) {
+       //           var set = i;
+       //           coord.map(function(d, i) {
+       //             var runData = {};
+       //             var currentTime = new Date(d[3]);
+       //             var newTime = currentTime - startTime;
+       //             runData.altitude = d[2];
+       //             runData.time = newTime;
+       //             data.push(runData);
+       //           });
+       //         });
+       //       }
+       //       // so there is an array whose values are objects.
+       //       // These objects are the x values and the y values
+       //       x.domain(d3.extent(data, function(d) { return d.time; }));
+       //       y.domain(d3.extent(data, function(d) { return d.altitude; }));
+       //       svgAxis.append('g')
+       //           .attr('class', 'xAxis axis')
+       //           .attr('transform', 'translate(0,' + yAxisHeight + ')')
+       //           .call(xAxis)
+       //         .append('text')
+       //           .attr('y', 20)
+       //           .attr('x', getChartWidth() / 2)
+       //           .attr('dy', '1em')
+       //           .style('text-anchor', 'end')
+       //           .text('Time (mins)');
+       //       svgAxis.append('g')
+       //           .attr('class', 'yAxis axis')
+       //           .call(yAxis)
+       //         .append('text')
+       //           .attr('transform', 'rotate(-90)')
+       //           .attr('y', 6)
+       //           .attr('dy', '.71em')
+       //           .style('text-anchor', 'end')
+       //           .text('Altitude');
+       //       svgAxis.append('path')
+       //           .datum(data)
+       //           .attr('class', 'line')
+       //           .attr('d', line)
+       //           .attr('stroke', 'blue')
+       //           .attr('stroke-width', 2)
+       //           .attr('fill', 'none');
+       //       resizeChart =
+       //       function resizeChart() {
+       //         setChartContainerWidth(rawElem);
+       //         svg.attr('width', getChartContainerWidth());
+       //         // Update range of scale with new width
+       //         x.range([0, getChartWidth()]);
+       //         // xScale.range([50, chart.axis.x.width.get()]);
+       //         var xAxisGen = svg.select('.xAxis');
+       //         xAxisGen.call(xAxis);
+       //         var runPath = svg.select('.line');
+       //         runPath.attr({
+       //              'd': line(data)
+       //          });
+       //       };
+       //       return {
+       //         resizeChart : resizeChart
+       //       };
+       //     }; // returned function
+       //   };
+       //   angular.module('charts').service('createSingleLineChart', ['$window', createSingleLineChart]);
+       // })();
+'use strict';
 var createChart = function ($window) {
   return function (runs, rawElem, rawSvg, chartHeight) {
     var d3 = $window.d3;
     var data = runs.runs;
-    var markerCount = d3.max(runs.markerSize);
-    // highest marker
+    var markerCount;
+    console.log(data);
+    if (runs.markerSize) {
+      markerCount = d3.max(runs.markerSize);  // highest marker
+    } else {
+      markerCount = data.markerItems.length;
+    }
+    console.log(markerCount);
     var longestMarkerTime = runs.longestMarkerTime;
     var shortestMarkerTime = runs.shortestMarkerTime;
     var getLowestYAxis = function getLowestYAxis() {
@@ -1102,6 +1264,9 @@ var routes = function routes($stateProvider) {
   $stateProvider.state('about', {
     url: '/about',
     templateUrl: 'modules/custom-core/views/about.client.view.html'
+  }).state('welcome', {
+    url: '/welcome',
+    templateUrl: 'modules/custom-core/views/welcome.client.view.html'
   });
 };
 angular.module('customCore').config([
@@ -1289,12 +1454,35 @@ angular.module('customCore').directive('mainContent', [
   ]);
 }());'use strict';
 (function () {
-  function DashboardChartlineCtrl($scope, getRunRes) {
-    $scope.run = getRunRes[0].features[0].geometry.coordinates;
+  function DashboardChartlineCtrl($scope, getRunRes, getSummariesOneRes) {
+    // Add altitude chart
+    if (Array.isArray(getRunRes[0].features)) {
+      getRunRes[0].features.forEach(function (feature) {
+        var runCoords = feature.geometry.coordinates;
+        // linestring - only one set of data
+        if (typeof runCoords[0][0] === 'number') {
+          $scope.run = [runCoords];
+        }  // MultiLine string - multiple sets of data
+        else {
+          $scope.run = runCoords;
+        }
+      });  //getRunRes[0].features.forEach
+    }
+    // console.log(getSummariesOneRes);
+    var summary = {};
+    summary.runs = getSummariesOneRes[0];
+    summary.runs.longestMarkerTime = function () {
+      return _.max(getSummariesOneRes.markerItems.totalTime);
+    };
+    summary.runs.shortestMarkerTime = function () {
+      return _.min(getSummariesOneRes.markerItems.totalTime);
+    };
+    $scope.summ = summary;
   }
   angular.module('dashboard').controller('DashboardChartlineCtrl', [
     '$scope',
     'getRunRes',
+    'getSummariesOneRes',
     DashboardChartlineCtrl
   ]);
 }());// 'use strict';
@@ -2015,9 +2203,9 @@ angular.module('runs').directive('mapSummaries', [
           var table = document.createElement('table');
           // note sortable class added for sorttable.js
           if (sortable) {
-            table.className = 'table table-responsive sortable';
+            table.className = 'table sortable';
           } else {
-            table.className = 'table table-responsive';
+            table.className = 'table';
           }
           var thead = document.createElement('thead');
           var headingRow;
@@ -2414,6 +2602,8 @@ angular.module('runs').directive('mapSummaries', [
           post: function postLink(scope, iElement, iAttrs, controller) {
             var mediaQuery = window.matchMedia('(max-width: 768px)');
             var bod = document.querySelector('body');
+            // Add active state to nav element that matches new state
+            // & remove active class for previous active nav element
             scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
               if (fromState.name !== '') {
                 // remove the li with active
@@ -2427,10 +2617,15 @@ angular.module('runs').directive('mapSummaries', [
                 var newEl = document.querySelector('#left-nav-js [ui-sref="' + toState.name + '"]').parentNode;
                 newEl.classList.add('active');
               }
-              if (mediaQuery.matches || toState.name === 'charts') {
+            });
+            scope.closeMenu = function closeMenu(event) {
+              console.log(event.target.textContent.toLowerCase());
+              if (mediaQuery.matches && event.target.textContent.toLowerCase() !== 'charts') {
                 bod.classList.toggle('leftNav--toggle');
               }
-            });
+            };
+            // toggle menu. When a nav item is selected. For smaller than desktop
+            iElement.on('click', scope.closeMenu);
             // ----- set the height for scrolling ----- //
             setHeightAftrTopNav(iElement[0].parentElement);
             // ----- add event listener on window resize ----- //
@@ -2760,7 +2955,7 @@ angular.module('users').controller('AuthenticationController', [
         // If successful we assign the response to the global user model
         $scope.authentication.user = response;
         // And redirect to the index page
-        $location.path('/runs/table');
+        $location.path('/welcome');
       }).error(function (response) {
         $scope.error = response.message;
       });
