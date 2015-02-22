@@ -1,6 +1,17 @@
 ## Run Boaster
 Where you can upload GPX files and have them charted, mapped and tabled.
 
+## Project structure
+app directory = node.js and Express related code
+
+public directory = angular.js related code
+
+Testing uses Mocha and Superagent for the backend. Jasmine for TDD and Protractor for BDD, e2e tests.
+
+The file structure uses a modular approach, based on features. Inside each module you'll find a test folder with the Jasmine specs for controller, services and directives.
+
+In addition there is a e2etests module that houses the Protractor e2e tests.
+
 
 ## Built using Mean.JS
 Mean.js is a full-stack JavaScript open-source solution.
@@ -8,7 +19,7 @@ Mean.js is a full-stack JavaScript open-source solution.
 Before you begin we recommend you read about the basic building blocks that assemble a MEAN.JS application: 
 * MongoDB - Go through [MongoDB Official Website](http://mongodb.org/) and proceed to their [Official Manual](http://docs.mongodb.org/manual/), which should help you understand NoSQL and MongoDB better.
 * Express - The best way to understand express is through its [Official Website](http://expressjs.com/), particularly [The Express Guide](http://expressjs.com/guide.html); you can also go through this [StackOverflow Thread](http://stackoverflow.com/questions/8144214/learning-express-for-node-js) for more resources.
-* AngularJS - Angular's [Official Website](http://angularjs.org/) is a great starting point. You can also use [Thinkster Popular Guide](http://www.thinkster.io/), and the [Egghead Videos](https://egghead.io/).
+* AngularJS - Angular's [Official Website](http://angularjs.org/) is a great starting point.
 * Node.js - Start by going through [Node.js Official Website](http://nodejs.org/) and this [StackOverflow Thread](http://stackoverflow.com/questions/2353818/how-do-i-get-started-with-node-js), which should get you going with the Node.js platform in no time.
 
 
