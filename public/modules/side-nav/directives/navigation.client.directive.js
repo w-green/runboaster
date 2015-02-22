@@ -34,8 +34,6 @@
             });
 
             scope.closeMenu = function closeMenu(event) {
-                console.log(event.target.textContent.toLowerCase());
-
                 if (mediaQuery.matches && (event.target.textContent.toLowerCase() !== 'charts')) {
                 bod.classList.toggle('leftNav--toggle');
               }
@@ -66,7 +64,7 @@
 
           } // post
         }; // returned object
-      }, // compile
+      } // compile
     }; // returned object
   }; // sideNav
 

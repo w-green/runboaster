@@ -6,7 +6,14 @@ var createChart = function($window) {
 
     var d3 = $window.d3;
     var data = runs.runs;
-    var markerCount = d3.max(runs.markerSize); // highest marker
+    var markerCount;
+    if(runs.markerSize) {
+      markerCount = d3.max(runs.markerSize); // highest marker
+    }
+    else {
+      markerCount = data.markerItems.length;
+    }
+
     var longestMarkerTime = runs.longestMarkerTime;
     var shortestMarkerTime = runs.shortestMarkerTime;
     var getLowestYAxis = function getLowestYAxis() {

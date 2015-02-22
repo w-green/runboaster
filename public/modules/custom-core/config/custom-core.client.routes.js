@@ -5,6 +5,10 @@ var routes = function routes($stateProvider) {
     state('about', {
       url : '/about',
       templateUrl : 'modules/custom-core/views/about.client.view.html'
+    })
+    .state('welcome', {
+      url : '/welcome',
+      templateUrl : 'modules/custom-core/views/welcome.client.view.html'
     });
 };
 

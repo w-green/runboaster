@@ -3,10 +3,11 @@
 (function() {
 
   var createSingleLineChart = function($window) {
-    return function createSingleLineChart(getRunRes, rawElem, rawSvg) {
+    return function createSingleLineChart(getRunRes, runSumm, rawElem, rawSvg) {
 
       var d3 = $window.d3;
       var run = getRunRes;
+      var summ = runSumm;
 
       var margin = {top: 20, right: 20, bottom: 20, left: 20};
       var chartHeight = 368; // same size as map on dashboard when you add 40px margin

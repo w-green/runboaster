@@ -1,5 +1,7 @@
 'use strict';
-var lineChartAltitude = function(createSingleLineChart, mediator) {
+
+// createChart is the same one used in charts area
+var lineChartAltitude = function(createSingleLineChart, createChart, mediator) {
 
   return {
 
@@ -9,9 +11,14 @@ var lineChartAltitude = function(createSingleLineChart, mediator) {
     link : function(scope, elem, attr) {
 
       var run = scope.run;
+      var summ = scope.summ;
       var rawSvg = elem.find('svg')[0];
+
       // var chartHeight = 360; // in px
-      var chart = createSingleLineChart(run, elem[0], rawSvg);
+      var chart = createSingleLineChart(run, summ, elem[0], rawSvg);
+      // runs, rawElem, rawSvg, chartHeight
+      var otherChart = createChart(summ, elem[0], rawSvg, 500);
+
 
       var resizeEvent = mediator.subscribe('windowResize', chart.resizeChart, this);
 
@@ -27,4 +34,4 @@ var lineChartAltitude = function(createSingleLineChart, mediator) {
 };
 
 
-angular.module('charts').directive('lineChartAltitude', ['createSingleLineChart', 'mediator', lineChartAltitude]);
+angular.module('charts').directive('lineChartAltitude', ['createSingleLineChart', 'createChart', 'mediator', lineChartAltitude]);
