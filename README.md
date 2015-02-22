@@ -1,5 +1,5 @@
-## http://runboaster.com/
-Where you can upload GPX files and have them charted and tabled.
+## Run Boaster
+Where you can upload GPX files and have them charted, mapped and tabled.
 
 
 ## Built using Mean.JS
@@ -50,7 +50,7 @@ $ grunt
 
 Your application should run on the 3000 port so in your browser just go to [http://localhost:3000](http://localhost:3000)
                             
-That's it! your application should be running by now, to proceed with your development check the other sections in this documentation. 
+That's it! your application should be running by now. 
 
 ## License
 
