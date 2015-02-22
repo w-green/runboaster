@@ -50,18 +50,90 @@ $ npm install
 This command does a few things:
 * First it will install the dependencies needed for the application to run.
 * If you're running in a development environment, it will then also install development dependencies needed for testing and running your application.
-* Finally, when the install process is over, npm will initiate a bower installcommand to install all the front-end modules needed for the application
 
-## Running Your Application
-After the install process is over, you'll be able to run your application using Grunt, just run grunt default task:
+Next run bower
+
+```
+$ bower install
+```
+
+and run the grunt sass task to compile the sass into css.
+
+```
+$ grunt sass
+```
+
+Once this has finished you can start the default grunt task.
 
 ```
 $ grunt
 ```
 
+wait for the line
+
+```
+$ MEAN.JS application started on port 3000
+```
+
 Your application should run on the 3000 port so in your browser just go to [http://localhost:3000](http://localhost:3000)
-                            
-That's it! your application should be running by now. 
+
+That's it! your application should be running by now.
+
+
+
+This will be a clean install so you will have to add a new user and add their GPX files.
+
+For the e2e tests you will also need to update an end user here too.
+
+Create an end user. Add their GPX files. Then update their username and password in public/modules/e2etests/tasks/login.js
+
+```
+var login = {
+  default : function () {
+    loginPage.goto();
+    loginPage.formUserName.sendKeys('wgreen');
+    loginPage.formPwd.sendKeys('password');
+    loginPage.formSubmit.click();
+  }
+};
+```
+
+## Jasmine and server tests
+
+grunt command to run the Jasmine, and server tests:
+
+```
+$ grunt test
+```
+
+## Protractor tests
+
+Follow the instructions on setup over at the [Protractor website] (http://angular.github.io/protractor/#/).
+
+To run protractor
+
+In one command terminal run
+
+```
+$ webdriver-manager start
+```
+
+and in another run
+
+```
+$ protractor protractor.conf.js
+```
+
+If you would like to run a single suite, such as the top nav, you can run
+
+```
+$ protractor protractor.conf.js --suite uploadPage
+```
+
+The suites are set up in the protractor.conf.js file
+
+
+
 
 ## License
 
