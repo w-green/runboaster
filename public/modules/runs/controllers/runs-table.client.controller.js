@@ -1,15 +1,16 @@
-'use strict';
-
 (function() {
 
+  'use strict';
+
   // table of runs
-  function TableRunsCtrl(getSummariesTenRes, $scope) {
+  function TableRunsCtrl(getSummariesCountRes, getSummariesTenRes, $scope) {
 
     $scope.runs = getSummariesTenRes;
+    $scope.runsCount = getSummariesCountRes;
 
   }
 
-  angular.module('runs').controller('TableRunsCtrl', [ 'getSummariesTenRes', '$scope', TableRunsCtrl ]);
+  angular.module('runs').controller('TableRunsCtrl', [ 'getSummariesCountRes', 'getSummariesTenRes', '$scope', TableRunsCtrl]);
 
 }());
 

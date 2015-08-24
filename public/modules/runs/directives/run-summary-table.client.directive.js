@@ -3,21 +3,51 @@
 (function(lodash, sorttable) {
   var _ = lodash;
 
-  var runsSummaryTable = function runsSummaryTable($filter) {
+  var runsSummaryTable = function runsSummaryTable($rootScope, $filter) {
 
     return {
 
-      restrict : 'AE',
+      restrict : 'A',
       link : function(scope, element, attrs) {
         var runs = scope.runs;
         var sortable = (scope.tableSortable !== undefined) ? scope.tableSortable : true;
-        // Makes sure the runs are sorted by date initially
-        var runsSorted = _.sortBy(runs.runs, 'startTime').reverse();
-        runs.runs = runsSorted;
-        // creates placeholder container
-        var docFragment = document.createDocumentFragment();
 
-        var tableOfRuns = createTableOfRuns(runs, sortable);
+        // Main function to present data in a table.
+        // We've exposed on scope for unit tests
+        scope.updateTable = function updateTable(runs, sortable) {
+          // Makes sure the runs are sorted by date initially
+          runs.runs = sortRuns(runs.runs, 'startTime');
+          // creates placeholder container
+          var docFragment = document.createDocumentFragment();
+          var tableOfRuns = createTableOfRuns(runs, sortable);
+          var table;
+
+          element.append(tableOfRuns);
+          table = document.querySelector('table.sortable') || '';
+          // add the sorttable.js initiation
+          if(table !== ''){
+            sorttable.makeSortable(table);
+          }
+        }
+
+        scope.updateTable(runs, sortable);
+
+        $rootScope.$on('get next runs', changeTable);
+
+        function changeTable() {
+          var origTable = document.getElementById('js-tableOfRuns');
+          if(origTable) {
+            // remove origTable
+            origTable.parentNode.removeChild(origTable);
+          }
+
+          scope.updateTable(scope.runs, sortable);
+        }
+
+        // Sort runs by start time
+        function sortRuns(runsRaw) {
+          return _.sortBy(runsRaw, 'startTime').reverse();
+        }
 
         // layout our table.
         function createTableOfRuns(runs, sortable) {
@@ -29,6 +59,7 @@
           else {
             table.className = 'table';
           }
+          table.id = 'js-tableOfRuns';
           var thead = document.createElement('thead');
           var headingRow;
           var tableHeadings;
@@ -150,19 +181,11 @@
 
         }
 
-
-        element.append(tableOfRuns);
-
-        // add the sorttable.js initiation
-        var table = document.querySelector('table.sortable') || '';
-        if(table !== ''){
-          sorttable.makeSortable(table);
-        }
       } // link
 
     };
   };
 
-angular.module('runs').directive('runsSummaryTable', [ '$filter', runsSummaryTable]);
+angular.module('runs').directive('runsSummaryTable', [ '$rootScope', '$filter', runsSummaryTable]);
 
 }(window._, window.sorttable));

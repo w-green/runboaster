@@ -21,6 +21,11 @@ angular.module('runs').config(['$stateProvider',
                 return formatSummaries(d);
               });
           return formattedSumms;
+        }],
+        getSummariesCountRes : ['getSummariesCount', function(getSummariesCount) {
+          return getSummariesCount.then(function(count) {
+            return count.data;
+          });
         }]
       },
       templateUrl : 'modules/runs/views/run-table.client.view.html',

@@ -21,4 +21,11 @@ module.exports = function(app) {
       users.requiresLogin,
       runsSummary.get
     );
+
+  app.route('/api/v_' + apiVersion +'/:user_id/run/summaries-count')
+    .get(
+      users.requiresLogin,
+      runsSummary.getCount
+    );
+
 };

@@ -101,3 +101,22 @@ exports.getById = function(req, res) {
     }
   });
 };
+
+/*
+ * Get total count for runssummaries
+ */
+exports.getCount = function(req, res) {
+  var userId = req.params.user_id;
+
+  console.log(userId);
+  runsSummary
+    .count({'user' : new ObjectId(userId)}, function(err, count) {
+      if(err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.status(200).jsonp(count);
+      }
+    })
+};

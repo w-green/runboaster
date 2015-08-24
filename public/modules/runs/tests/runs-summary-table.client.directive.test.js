@@ -47,5 +47,13 @@ describe('runsSummaryTable directive : ', function() {
   });
 
 
+  it('should refresh with new runs when next is clicked', inject(function($rootScope) {
+
+    spyOn(scope, 'updateTable');
+    // Mimics clicking on the 'next' control
+    $rootScope.$broadcast('get next runs');
+    expect(scope.updateTable).toHaveBeenCalled();
+
+  }));
 
 });

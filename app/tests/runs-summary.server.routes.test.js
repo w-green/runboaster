@@ -52,6 +52,7 @@ describe('getting runs summaries', function() {
 
   });
 
+
   it('should return a summary by id', function(done) {
 
     agent
@@ -68,6 +69,26 @@ describe('getting runs summaries', function() {
       });
 
   });
+
+  // KEEP GETTING AN ERROR OF DUPLICATE KEYS WHEN RESAVING SUMMARIES
+  // THIS WILL WORK ON ITS OWN IF YOU DISABLE THE OTHERS
+
+  // it('should return a count for summaries', function(done) {
+
+  //   agent
+  //     .post('/auth/signin')
+  //     .send(user)
+  //     .end(function(err, res){
+  //       var userId = res.body._id;
+  //       agent
+  //         .get('/api/v_' + apiVersion +'/' + userId + '/run/summaries-count')
+  //         .end(function(err, res){
+  //           (res.body).should.be.a.Number;
+  //           done();
+  //         });
+  //     });
+
+  // });
 
   // KEEP GETTING AN ERROR OF DUPLICATE KEYS WHEN RESAVING SUMMARIES
   // THIS WILL WORK ON ITS OWN IF YOU DISABLE THE OTHERS
